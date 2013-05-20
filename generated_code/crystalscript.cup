@@ -2,10 +2,10 @@ import java_cup.runtime.*;
 
 parser code  {:
 
-	private DocumentNode docNode;
+	private ParseTreeRoot root;
 	
-	public DocumentNode getDocumentNode() {
-		return docNode;
+	public ParseTreeRoot getRoot() {
+		return root;
 	}
 
   public void report_error(String message, Object info) {
@@ -207,7 +207,7 @@ question_multiline ::= QUESTION terminators_opt;
 
 // 19.2) The Syntactic Grammar
 goal ::= import_declarations_opt:i top_level_sections_opt:t
-	{: docNode = new DocumentNode((ImportDeclarations)i, (TopLevelSections)t); :}
+	{: root = new ParseTreeRoot((ImportDeclarations)i, (TopLevelSections)t); :}
 	;
 top_level_sections_opt ::= {: RESULT = new TopLevelSections(); :}
 	| top_level_sections:t {: RESULT = t; :}
@@ -392,7 +392,7 @@ explicit_constructor_invocation ::=
 		THIS lparen_multiline argument_list_opt:a rparen_multiline terminators
 		{: RESULT = new ConstructorInvocation(ConstructorInvocation.THIS, (Arguments)a); :}
 	|	SUPER lparen_multiline argument_list_opt:a rparen_multiline terminators
-		{: RESULT = new ConstructorInvocation(ConstructorInvocation.SUPER, (Arugments)a); :}
+		{: RESULT = new ConstructorInvocation(ConstructorInvocation.SUPER, (Arguments)a); :}
 	;
 
 // 19.9) Interfaces
@@ -676,34 +676,34 @@ unary_expression_not_plus_minus ::=
 	;
 multiplicative_expression ::=
 		unary_expression:u {: RESULT = u; :}
-	|	multiplicative_expression:l MULT terminators_opt unary_expression:r {: RESULT = new MultiplicativeExpression((MultiplicativeExpression)l, (MultiplicativeExpression)r, MultiplicativeExpression.MULTIPLY); :}
-	|	multiplicative_expression:l DIV terminators_opt unary_expression:r {: RESULT = new MultiplicativeExpression((MultiplicativeExpression)l, (MultiplicativeExpression)r, MultiplicativeExpression.DIVIDE); :}
-	|	multiplicative_expression:l MOD terminators_opt unary_expression:r {: RESULT = new MultiplicativeExpression((MultiplicativeExpression)l, (MultiplicativeExpression)r, MultiplicativeExpression.MODULO); :}
+	|	multiplicative_expression:l MULT terminators_opt unary_expression:r {: RESULT = new MultiplicativeExpression((MultiplicativeExpression)l, (MultiplicativeExpression)r, MultiplicativeExpression.Kind.MULTIPLY); :}
+	|	multiplicative_expression:l DIV terminators_opt unary_expression:r {: RESULT = new MultiplicativeExpression((MultiplicativeExpression)l, (MultiplicativeExpression)r, MultiplicativeExpression.Kind.DIVIDE); :}
+	|	multiplicative_expression:l MOD terminators_opt unary_expression:r {: RESULT = new MultiplicativeExpression((MultiplicativeExpression)l, (MultiplicativeExpression)r, MultiplicativeExpression.Kind.MODULO); :}
 	;
 additive_expression ::=
 		multiplicative_expression:m {: RESULT = m; :}
-	|	additive_expression:a PLUS terminators_opt multiplicative_expression:m {: RESULT = new AdditiveExpression((AdditiveExpression)a, (MultiplicativeExpression)m, AdditiveExpression.ADD); :}
-	|	additive_expression:a MINUS terminators_opt multiplicative_expression:m {: RESULT = new AdditiveExpression((AdditiveExpression)a, (MultiplicativeExpression)m, AdditiveExpression.MINUS); :}
+	|	additive_expression:a PLUS terminators_opt multiplicative_expression:m {: RESULT = new AdditiveExpression((AdditiveExpression)a, (MultiplicativeExpression)m, AdditiveExpression.Kind.ADD); :}
+	|	additive_expression:a MINUS terminators_opt multiplicative_expression:m {: RESULT = new AdditiveExpression((AdditiveExpression)a, (MultiplicativeExpression)m, AdditiveExpression.Kind.MINUS); :}
 	;
 shift_expression ::=
 		additive_expression:a {: RESULT = a; :}
-	|	shift_expression:s LSHIFT terminators_opt additive_expression:a {: RESULT = new ShiftExpression((ShiftExpression)s, (AdditiveExpression)a, ShiftExpression.LEFT_SHIFT); :}
-	|	shift_expression:s RSHIFT terminators_opt additive_expression:a {: RESULT = new ShiftExpression((ShiftExpression)s, (AdditiveExpression)a, ShiftExpression.RIGHT_SHIFT); :}
-	|	shift_expression:s URSHIFT terminators_opt additive_expression:a {: RESULT = new ShiftExpression((ShiftExpression)s, (AdditiveExpression)a, ShiftExpression.UNSIGNED_RIGHT_SHIFT); :}
+	|	shift_expression:s LSHIFT terminators_opt additive_expression:a {: RESULT = new ShiftExpression((ShiftExpression)s, (AdditiveExpression)a, ShiftExpression.Kind.LEFT_SHIFT); :}
+	|	shift_expression:s RSHIFT terminators_opt additive_expression:a {: RESULT = new ShiftExpression((ShiftExpression)s, (AdditiveExpression)a, ShiftExpression.Kind.RIGHT_SHIFT); :}
+	|	shift_expression:s URSHIFT terminators_opt additive_expression:a {: RESULT = new ShiftExpression((ShiftExpression)s, (AdditiveExpression)a, ShiftExpression.Kind.UNSIGNED_RIGHT_SHIFT); :}
 	;
 relational_expression ::=
 		shift_expression:s {: RESULT = s; :}
-	|	relational_expression:r LT terminators_opt shift_expression:s {: RESULT = new RelationalExpression((RelationalExpression)r, (ShiftExpression)s, RelationalExpression.LESS_THAN) :}
-	|	relational_expression:r GT terminators_opt shift_expression:s {: RESULT = new RelationalExpression((RelationalExpression)r, (ShiftExpression)s, RelationalExpression.GREATERTHAN) :}
-	|	relational_expression:r LTEQ terminators_opt shift_expression:s {: RESULT = new RelationalExpression((RelationalExpression)r, (ShiftExpression)s, RelationalExpression.LESSTHANEQUAL) :}
-	|	relational_expression:r GTEQ terminators_opt shift_expression:s {: RESULT = new RelationalExpression((RelationalExpression)r, (ShiftExpression)s, RelationalExpression.GREATERTHANEQUAL) :}
-	|	relational_expression:r IS terminators_opt reference_type:s {: RESULT = new RelationalExpression((RelationalExpression)r, (ShiftExpression)s, RelationalExpression.IS) :}
-	|	relational_expression:r ISNT terminators_opt reference_type:s {: RESULT = new RelationalExpression((RelationalExpression)r, (ShiftExpression)s, RelationalExpression.ISNT) :}
+	|	relational_expression:r LT terminators_opt shift_expression:s {: RESULT = new RelationalExpression((RelationalExpression)r, (ShiftExpression)s, RelationalExpression.Kind.LESS_THAN) :}
+	|	relational_expression:r GT terminators_opt shift_expression:s {: RESULT = new RelationalExpression((RelationalExpression)r, (ShiftExpression)s, RelationalExpression.Kind.GREATER_THAN) :}
+	|	relational_expression:r LTEQ terminators_opt shift_expression:s {: RESULT = new RelationalExpression((RelationalExpression)r, (ShiftExpression)s, RelationalExpression.Kind.LESS_THAN_EQUAL) :}
+	|	relational_expression:r GTEQ terminators_opt shift_expression:s {: RESULT = new RelationalExpression((RelationalExpression)r, (ShiftExpression)s, RelationalExpression.Kind.GREATER_THAN_EQUAL) :}
+	|	relational_expression:r IS terminators_opt reference_type:s {: RESULT = new RelationalExpression((RelationalExpression)r, (ShiftExpression)s, RelationalExpression.Kind.IS) :}
+	|	relational_expression:r ISNT terminators_opt reference_type:s {: RESULT = new RelationalExpression((RelationalExpression)r, (ShiftExpression)s, RelationalExpression.Kind.ISNT) :}
 	;
 equality_expression ::=
 		relational_expression:r {: RESULT = r; :}
-	|	equality_expression:e EQEQ terminators_opt relational_expression:r {: RESULT = new EqualityExpression((EqualityExpression)e, (RelationalExpression)r, EqualityExpression.EQUAL); :}
-	|	equality_expression:e NOTEQ terminators_opt relational_expression:r {: RESULT = new EqualityExpression((EqualityExpression)e, (RelationalExpression)r, EqualityExpression.NOT_EQUAL); :}
+	|	equality_expression:e EQEQ terminators_opt relational_expression:r {: RESULT = new EqualityExpression((EqualityExpression)e, (RelationalExpression)r, EqualityExpression.Kind.EQUAL); :}
+	|	equality_expression:e NOTEQ terminators_opt relational_expression:r {: RESULT = new EqualityExpression((EqualityExpression)e, (RelationalExpression)r, EqualityExpression.Kind.NOT_EQUAL); :}
 	;
 and_expression ::=
 		equality_expression:e {: RESULT = e; :}
@@ -742,18 +742,18 @@ left_hand_side ::=
 	|	array_access:a {: RESULT = a; :}
 	;
 assignment_operator ::=
-		EQ {: RESULT = Assignment.EQ; :}
-	|	MULTEQ {: RESULT = Assignment.MULTEQ; :}
-	|	DIVEQ {: RESULT = Assignment.DIVEQ; :}
-	|	MODEQ {: RESULT = Assignment.MODEQ; :}
-	|	PLUSEQ {: RESULT = Assignment.PLUSEQ; :}
-	|	MINUSEQ {: RESULT = Assignment.MINUSEQ; :}
-	|	LSHIFTEQ {: RESULT = Assignment.LSHIFTEQ; :}
-	|	RSHIFTEQ {: RESULT = Assignment.RSHIFTEQ; :}
-	|	URSHIFTEQ {: RESULT = Assignment.URSHIFTEQ; :}
-	|	ANDEQ {: RESULT = Assignment.ANDEQ; :}
-	|	XOREQ {: RESULT = Assignment.XOREQ; :}
-	|	OREQ {: RESULT = Assignment.OREQ; :}
+		EQ {: RESULT = Assignment.Operator.EQ; :}
+	|	MULTEQ {: RESULT = Assignment.Operator.MULTEQ; :}
+	|	DIVEQ {: RESULT = Assignment.Operator.DIVEQ; :}
+	|	MODEQ {: RESULT = Assignment.Operator.MODEQ; :}
+	|	PLUSEQ {: RESULT = Assignment.Operator.PLUSEQ; :}
+	|	MINUSEQ {: RESULT = Assignment.Operator.MINUSEQ; :}
+	|	LSHIFTEQ {: RESULT = Assignment.Operator.LSHIFTEQ; :}
+	|	RSHIFTEQ {: RESULT = Assignment.Operator.RSHIFTEQ; :}
+	|	URSHIFTEQ {: RESULT = Assignment.Operator.URSHIFTEQ; :}
+	|	ANDEQ {: RESULT = Assignment.Operator.ANDEQ; :}
+	|	XOREQ {: RESULT = Assignment.Operator.XOREQ; :}
+	|	OREQ {: RESULT = Assignment.Operator.OREQ; :}
 	;
 expression_opt ::= {: RESULT = new Expression(); :}
 	|	expression:e {: RESULT = e; :}
