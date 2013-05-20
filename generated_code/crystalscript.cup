@@ -98,7 +98,6 @@ non terminal type, primitive_type;
 non terminal reference_type;
 non terminal class_or_interface_type;
 non terminal class_type, interface_type;
-non terminal array_type;
 // 19.5) Names
 non terminal name, qualified_name;
 // 19.6) Packages
@@ -163,8 +162,7 @@ non terminal finally;
 non terminal primary, primary_no_new_array;
 non terminal class_instance_creation_expression;
 non terminal argument_list_opt, argument_list;
-non terminal array_creation_expression;
-non terminal dim_exprs, dim_expr, dims_opt, dims;
+non terminal array_creation_expression, object_creation_expression;
 non terminal field_access, method_invocation, array_access;
 non terminal postfix_expression;
 non terminal postincrement_expression, postdecrement_expression;
@@ -239,10 +237,10 @@ primitive_type ::= NUMBER {: RESULT = new NumberType(); :}
 	|	STRING {: RESULT = new StringType(); :}
 	|	BOOLEAN {: RESULT = new BooleanType(); :}
 	|	OBJECT {: RESULT = new ObjectType(); :}
+	|	ARRAY {: RESULT = new ArrayType(); :}
 	;
 reference_type ::=
 		class_or_interface_type:t {: RESULT = t; :}
-	|	array_type:a {: RESULT = a; :}
 	;
 	
 class_or_interface_type ::= name:n {: RESULT = new ClassOrInterfaceType((Name)n); :}
@@ -250,11 +248,6 @@ class_or_interface_type ::= name:n {: RESULT = new ClassOrInterfaceType((Name)n)
 class_type ::=	class_or_interface_type:t {: RESULT = t; :}
 	;
 interface_type ::= class_or_interface_type:t {: RESULT = t; :}
-	;
-
-array_type ::=	primitive_type:t dims:d {: RESULT = new ArrayType((PrimitiveType)t, (Dimensions)d); :}
-	|	name:n dims:d {: RESULT = new ArrayType((Name)n, (Dimension)d); :}
-	|	ARRAY {: RESULT = new ArrayType(); :}
 	;
 
 // 19.5) Names
@@ -607,6 +600,7 @@ finally ::=	FINALLY terminators block_statements {: RESULT = new FinallyBlock((B
 // 19.12) Expressions
 primary ::=	primary_no_new_array:p {: RESULT = p; :}
 	|	array_creation_expression:c {: RESULT = c; :}
+	|	object_creation_expression:c {: RESULT = c; :}
 	;
 primary_no_new_array ::=
 		literal:l {: RESULT = l; :}
@@ -623,161 +617,149 @@ class_instance_creation_expression ::=
 	|	NEW class_type:t lparen_multiline argument_list_opt:a rparen_multiline OVERRIDE terminators class_body_declarations_opt:d END OVERRIDE
 		{: RESULT = new ClassInstantiationExpression((ClassOrInterfaceType)t, (ArgumentList)a, (ClassBodyDeclarations)d); :}
 	;
-argument_list_opt ::=
-	|	argument_list
+argument_list_opt ::= {: RESULT = new ArgumentList(); :}
+	|	argument_list:a {: RESULT = a; :}
 	;
 argument_list ::=
-		expression
-	|	argument_list comma_multiline expression
+		expression:e {: RESULT = new ArgumentList((Expression)e); :}
+	|	expression:e comma_multiline argument_list:a {: RESULT = new ArgumentList((Expression)e, (ArgumentList)a); :}
 	;
 array_creation_expression ::=
-		NEW primitive_type dim_exprs dims_opt
-	|	NEW class_or_interface_type dim_exprs dims_opt
-	|	NEW primitive_type dims array_initializer
-	|	NEW class_or_interface_type dims array_initializer
+		NEW ARRAY lparen_multiline argument_list_opt:a rparen_multiline {: RESULT = new ArrayInstantiationExpression((ArgumentList)a); :}
 	;
-dim_exprs ::=	dim_expr
-	|	dim_exprs dim_expr
-	;
-dim_expr ::=	lbrack_multiline expression rbrack_multiline
-	;
-dims_opt ::=
-	|	dims
-	;
-dims ::=	lbrack_multiline rbrack_multiline
-	|	dims lbrack_multiline rbrack_multiline
+object_creation_expression ::=
+		NEW OBJECT lparen_multiline argument_list_opt:a rparen_multiline {: RESULT = new ObjectInstantiationExpression((ArgumentList)a); :}
 	;
 field_access ::=
-		primary DOT IDENTIFIER
-	|	SUPER DOT IDENTIFIER
-	|	name DOT SUPER DOT IDENTIFIER
+		SUPER DOT IDENTIFIER:i {: RESULT = new FieldAccess((String)i); :}
+	|	name:n DOT SUPER DOT IDENTIFIER:i {: RESULT = new FieldAccess((String)i, (Name)n); :}
 	;
 method_invocation ::=
-		name lparen_multiline argument_list_opt rparen_multiline
-	|	primary DOT IDENTIFIER lparen_multiline argument_list_opt rparen_multiline
-	|	SUPER DOT IDENTIFIER lparen_multiline argument_list_opt rparen_multiline
-	|	name DOT SUPER DOT IDENTIFIER lparen_multiline argument_list_opt rparen_multiline
+		name:n lparen_multiline argument_list_opt:a rparen_multiline {: RESULT = new MethodInvocation((Name)n, (ArgumentList)a); :}
+	|	primary:p DOT IDENTIFIER:i lparen_multiline argument_list_opt:a rparen_multiline {: RESULT = new MethodInvocation((Primary)p, (String)i, (ArgumentList)a); :}
+	|	SUPER DOT IDENTIFIER:i lparen_multiline argument_list_opt:a rparen_multiline {: RESULT = new SuperMethodInvocation((String)i, (ArgumentList)a); :}
+	|	name:n DOT SUPER DOT IDENTIFIER:i lparen_multiline argument_list_opt:a rparen_multiline {: RESULT = new SuperMethodInvocation((Name)n, (String)i, (ArgumentList)a); :}
 	;
 array_access ::=
-		name lbrack_multiline expression rbrack_multiline
-	|	primary_no_new_array lbrack_multiline expression rbrack_multiline
+		name:n lbrack_multiline expression:e rbrack_multiline {: RESULT = new ArrayAccess((Name)n, (Expression)e); :}
+	|	primary_no_new_array:p lbrack_multiline expression:e rbrack_multiline {: RESULT = new ArrayAccess((Primary)p, (Expression)e); :}
 	;
 postfix_expression ::=
-		primary
-	|	name
-	|	postincrement_expression
-	|	postdecrement_expression
+		primary:p {: RESULT = new PostfixExpression((Primary)p); :}
+	|	name:n {: RESULT = new PostfixExpression((Name)n); :}
+	|	postincrement_expression:p {: RESULT = p; :}
+	|	postdecrement_expression:p {: RESULT = p; :}
 	;
 postincrement_expression ::=
-		postfix_expression PLUSPLUS
+		postfix_expression:p PLUSPLUS {: RESULT = new PostIncrementExpression((PostfixExpression)p); :}
 	;
 postdecrement_expression ::=
-		postfix_expression MINUSMINUS
+		postfix_expression:p MINUSMINUS {: RESULT = new PostDecrementExpression((PostfixExpression)p); :}
 	;
 unary_expression ::=
-		preincrement_expression
-	|	predecrement_expression
-	|	PLUS unary_expression
-	|	MINUS unary_expression
-	|	unary_expression_not_plus_minus
+		preincrement_expression:p {: RESULT = p; :}
+	|	predecrement_expression:p {: RESULT = p; :}
+	|	PLUS unary_expression:u {: RESULT = new PositiveUnaryExpression((UnaryExpression)u); :}
+	|	MINUS unary_expression:u {: RESULT = new NegativeUnaryExpression((UnaryExpression)u); :}
+	|	unary_expression_not_plus_minus:u {: RESULT = u; :}
 	;
 preincrement_expression ::=
-		PLUSPLUS unary_expression
+		PLUSPLUS unary_expression:u {: RESULT = new PreIncrementExpression((UnaryExpression)u); :}
 	;
 predecrement_expression ::=
-		MINUSMINUS unary_expression
+		MINUSMINUS unary_expression:u {: RESULT = new PreIncrementExpression((UnaryExpression)u); :}
 	;
 unary_expression_not_plus_minus ::=
-		postfix_expression
-	|	COMP unary_expression
-	|	NOT unary_expression
+		postfix_expression:p {: RESULT = p; :}
+	|	COMP unary_expression:c {: RESULT = new ComplementExpression((UnaryExpression)c); :}
+	|	NOT unary_expression:n {: RESULT = new NegateExpression((UnaryExpression)n); :}
 	;
 multiplicative_expression ::=
-		unary_expression
-	|	multiplicative_expression MULT terminators_opt unary_expression
-	|	multiplicative_expression DIV terminators_opt unary_expression
-	|	multiplicative_expression MOD terminators_opt unary_expression
+		unary_expression:u {: RESULT = u; :}
+	|	multiplicative_expression:l MULT terminators_opt unary_expression:r {: RESULT = new MultiplicativeExpression((MultiplicativeExpression)l, (MultiplicativeExpression)r, MultiplicativeExpression.MULTIPLY); :}
+	|	multiplicative_expression:l DIV terminators_opt unary_expression:r {: RESULT = new MultiplicativeExpression((MultiplicativeExpression)l, (MultiplicativeExpression)r, MultiplicativeExpression.DIVIDE); :}
+	|	multiplicative_expression:l MOD terminators_opt unary_expression:r {: RESULT = new MultiplicativeExpression((MultiplicativeExpression)l, (MultiplicativeExpression)r, MultiplicativeExpression.MODULO); :}
 	;
 additive_expression ::=
-		multiplicative_expression
-	|	additive_expression PLUS terminators_opt multiplicative_expression
-	|	additive_expression MINUS terminators_opt multiplicative_expression
+		multiplicative_expression:m {: RESULT = m; :}
+	|	additive_expression:a PLUS terminators_opt multiplicative_expression:m {: RESULT = new AdditiveExpression((AdditiveExpression)a, (MultiplicativeExpression)m, AdditiveExpression.ADD); :}
+	|	additive_expression:a MINUS terminators_opt multiplicative_expression:m {: RESULT = new AdditiveExpression((AdditiveExpression)a, (MultiplicativeExpression)m, AdditiveExpression.MINUS); :}
 	;
 shift_expression ::=
-		additive_expression
-	|	shift_expression LSHIFT terminators_opt additive_expression
-	|	shift_expression RSHIFT terminators_opt additive_expression
-	|	shift_expression URSHIFT terminators_opt additive_expression
+		additive_expression:a {: RESULT = a; :}
+	|	shift_expression:s LSHIFT terminators_opt additive_expression:a {: RESULT = new ShiftExpression((ShiftExpression)s, (AdditiveExpression)a, ShiftExpression.LEFT_SHIFT); :}
+	|	shift_expression:s RSHIFT terminators_opt additive_expression:a {: RESULT = new ShiftExpression((ShiftExpression)s, (AdditiveExpression)a, ShiftExpression.RIGHT_SHIFT); :}
+	|	shift_expression:s URSHIFT terminators_opt additive_expression:a {: RESULT = new ShiftExpression((ShiftExpression)s, (AdditiveExpression)a, ShiftExpression.UNSIGNED_RIGHT_SHIFT); :}
 	;
 relational_expression ::=
-		shift_expression
-	|	relational_expression LT terminators_opt shift_expression
-	|	relational_expression GT terminators_opt shift_expression
-	|	relational_expression LTEQ terminators_opt shift_expression
-	|	relational_expression GTEQ terminators_opt shift_expression
-	|	relational_expression IS terminators_opt reference_type
-	|	relational_expression ISNT terminators_opt reference_type
+		shift_expression:s {: RESULT = s; :}
+	|	relational_expression:r LT terminators_opt shift_expression:s {: RESULT = new RelationalExpression((RelationalExpression)r, (ShiftExpression)s, RelationalExpression.LESS_THAN) :}
+	|	relational_expression:r GT terminators_opt shift_expression:s {: RESULT = new RelationalExpression((RelationalExpression)r, (ShiftExpression)s, RelationalExpression.GREATERTHAN) :}
+	|	relational_expression:r LTEQ terminators_opt shift_expression:s {: RESULT = new RelationalExpression((RelationalExpression)r, (ShiftExpression)s, RelationalExpression.LESSTHANEQUAL) :}
+	|	relational_expression:r GTEQ terminators_opt shift_expression:s {: RESULT = new RelationalExpression((RelationalExpression)r, (ShiftExpression)s, RelationalExpression.GREATERTHANEQUAL) :}
+	|	relational_expression:r IS terminators_opt reference_type:s {: RESULT = new RelationalExpression((RelationalExpression)r, (ShiftExpression)s, RelationalExpression.IS) :}
+	|	relational_expression:r ISNT terminators_opt reference_type:s {: RESULT = new RelationalExpression((RelationalExpression)r, (ShiftExpression)s, RelationalExpression.ISNT) :}
 	;
 equality_expression ::=
-		relational_expression
-	|	equality_expression EQEQ terminators_opt relational_expression
-	|	equality_expression NOTEQ terminators_opt relational_expression
+		relational_expression:r {: RESULT = r; :}
+	|	equality_expression:e EQEQ terminators_opt relational_expression:r {: RESULT = new EqualityExpression((EqualityExpression)e, (RelationalExpression)r, EqualityExpression.EQUAL); :}
+	|	equality_expression:e NOTEQ terminators_opt relational_expression:r {: RESULT = new EqualityExpression((EqualityExpression)e, (RelationalExpression)r, EqualityExpression.NOT_EQUAL); :}
 	;
 and_expression ::=
-		equality_expression
-	|	and_expression AND terminators_opt equality_expression
+		equality_expression:e {: RESULT = e; :}
+	|	and_expression:a AND terminators_opt equality_expression:e {: RESULT = new AndExpression((AndExpression)a, (EqualityExpression)e); :}
 	;
 exclusive_or_expression ::=
-		and_expression
-	|	exclusive_or_expression XOR terminators_opt and_expression
+		and_expression:e {: RESULT = e; :}
+	|	exclusive_or_expression:e XOR terminators_opt and_expression:a {: RESULT = new XorExpression((XorExpression)e, (AndExpression)a); :}
 	;
 inclusive_or_expression ::=
-		exclusive_or_expression
-	|	inclusive_or_expression OR terminators_opt exclusive_or_expression
+		exclusive_or_expression:e {: RESULT = e; :}
+	|	inclusive_or_expression:o OR terminators_opt exclusive_or_expression:e {: RESULT = new OrExpression((OrExpression)o, (XorExpression)e); :}
 	;
 conditional_and_expression ::=
-		inclusive_or_expression
-	|	conditional_and_expression ANDAND terminators_opt inclusive_or_expression
+		inclusive_or_expression:o {: RESULT = o; :}
+	|	conditional_and_expression:a ANDAND terminators_opt inclusive_or_expression:o {: RESULT = new ConditionalAndExpression((ConditionalAndExpression)a, (OrExpression)o); :}
 	;
 conditional_or_expression ::=
-		conditional_and_expression
-	|	conditional_or_expression OROR terminators_opt conditional_and_expression
+		conditional_and_expression:a {: RESULT = a; :}
+	|	conditional_or_expression:o OROR terminators_opt conditional_and_expression:a {: RESULT = new ConditionalOrExpression((ConditionalOrExpression)o, (ConditionalAndExpression)a); :}
 	;
 conditional_expression ::=
-		conditional_or_expression
-	|	conditional_or_expression question_multiline expression 
-			colon_multiline conditional_expression
+		conditional_or_expression:o {: RESULT = o; :}
+	|	conditional_or_expression:o question_multiline expression:e colon_multiline conditional_expression:c
+		{: RESULT = new ConditionalExpression((ConditionalOrExpression)o, (Expression)e, (ConditionalExpression)c); :}
 	;
 assignment_expression ::=
-		conditional_expression
-	|	assignment
+		conditional_expression:e {: RESULT = e; :}
+	|	assignment:a {: RESULT = a; :}
 	;
-assignment ::=	left_hand_side assignment_operator terminators_opt assignment_expression
+assignment ::=	left_hand_side:l assignment_operator:o terminators_opt assignment_expression:e {: RESULT = new Assignment((LeftValue)l, (Assignment.Operator)o, (AssignmentExpression)e); :}
 	;
 left_hand_side ::=
-		name
-	|	field_access
-	|	array_access
+		name:n {: RESULT = n; :}
+	|	field_access:f {: RESULT = f; :}
+	|	array_access:a {: RESULT = a; :}
 	;
 assignment_operator ::=
-		EQ
-	|	MULTEQ
-	|	DIVEQ
-	|	MODEQ
-	|	PLUSEQ
-	|	MINUSEQ
-	|	LSHIFTEQ
-	|	RSHIFTEQ
-	|	URSHIFTEQ
-	|	ANDEQ
-	|	XOREQ
-	|	OREQ
+		EQ {: RESULT = Assignment.EQ; :}
+	|	MULTEQ {: RESULT = Assignment.MULTEQ; :}
+	|	DIVEQ {: RESULT = Assignment.DIVEQ; :}
+	|	MODEQ {: RESULT = Assignment.MODEQ; :}
+	|	PLUSEQ {: RESULT = Assignment.PLUSEQ; :}
+	|	MINUSEQ {: RESULT = Assignment.MINUSEQ; :}
+	|	LSHIFTEQ {: RESULT = Assignment.LSHIFTEQ; :}
+	|	RSHIFTEQ {: RESULT = Assignment.RSHIFTEQ; :}
+	|	URSHIFTEQ {: RESULT = Assignment.URSHIFTEQ; :}
+	|	ANDEQ {: RESULT = Assignment.ANDEQ; :}
+	|	XOREQ {: RESULT = Assignment.XOREQ; :}
+	|	OREQ {: RESULT = Assignment.OREQ; :}
 	;
-expression_opt ::=
-	|	expression
+expression_opt ::= {: RESULT = new Expression(); :}
+	|	expression:e {: RESULT = e; :}
 	;
-expression ::=	assignment_expression
+expression ::=	assignment_expression:a {: RESULT = a; :}
 	;
 constant_expression ::=
-		expression
+		expression:e {: RESULT = e; :}
 	;
