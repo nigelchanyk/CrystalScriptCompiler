@@ -31,7 +31,7 @@ parser code  {:
 terminal ARRAY, BOOLEAN, NUMBER, OBJECT, STRING, VAR; // types
 terminal LBRACK, RBRACK; // array_type
 terminal DOT; // qualified_name
-terminal SEMICOLON, MULT, COMMA, LBRACE, RBRACE, EQ, LPAREN, RPAREN, COLON;
+terminal SEMICOLON, MULT, COMMA, EQ, LPAREN, RPAREN, COLON;
 terminal IMPORT; // import_declaration
 terminal AS;
 terminal PUBLIC, PROTECTED, PRIVATE; // modifier
@@ -39,14 +39,17 @@ terminal STATIC; // modifier
 terminal ABSTRACT;
 terminal CLASS; // class_declaration
 terminal EXTENDS; // super
+terminal THEN;
+terminal END;
 terminal IMPLEMENTS; // interfaces
 terminal DEF; // method_declaration
 terminal THIS, SUPER; // explicit_constructor_invocation
 terminal INTERFACE; // interface_declaration
-terminal IF, ELSE; // if_then_statement, if_then_else_statement
+terminal IF, ELSE, ELSEIF; // if_then_statement, full_if_statement
 terminal SWITCH; // switch_statement
 terminal CASE, DEFAULT; // switch_label
 terminal DO, WHILE; // while_statement, do_statement
+terminal OVERRIDE;
 terminal FOR; // for_statement
 terminal BREAK; // break_statement
 terminal CONTINUE; // continue_statement
@@ -84,7 +87,7 @@ terminal NEWLINE, ENDOFFILE; // new line
 
 // 1. Terminator
 non terminal terminators, terminators_opt, terminator;
-non terminal comma_multiline, colon_multiline, semicolon_multiline, question_multiline, lbrace_multiline, rbrace_multiline, lbrack_multiline, rbrack_multiline, lparen_multiline, rparen_multiline;
+non terminal comma_multiline, colon_multiline, semicolon_multiline, question_multiline, lbrack_multiline, rbrack_multiline, lparen_multiline, rparen_multiline;
 // 19.2) The Syntactic Grammar
 non terminal goal;
 non terminal top_level_sections_opt, top_level_sections, top_level_section;
@@ -106,7 +109,6 @@ non terminal modifiers_opt, modifiers, modifier;
 // 19.8.1) Class Declaration
 non terminal class_declaration, super_cl, super_opt;
 non terminal interfaces, interfaces_opt, interface_type_list;
-non terminal class_body;
 non terminal class_body_declarations, class_body_declarations_opt;
 non terminal class_body_declaration, class_member_declaration;
 // 19.8.2) Field Declarations
@@ -122,7 +124,6 @@ non terminal explicit_constructor_invocation_opt, explicit_constructor_invocatio
 // 19.9.1) Interface Declarations
 non terminal interface_declaration;
 non terminal extends_interfaces_opt, extends_interfaces;
-non terminal interface_body;
 non terminal interface_member_declarations_opt, interface_member_declarations;
 non terminal interface_member_declaration, constant_declaration;
 non terminal abstract_method_declaration;
@@ -130,28 +131,29 @@ non terminal abstract_method_declaration;
 non terminal array_initializer;
 non terminal variable_initializers;
 // 19.11) Blocks and Statements
-non terminal block;
 non terminal block_statements_opt, block_statements, block_statement;
 non terminal local_variable_declaration_statement, local_variable_declaration;
-non terminal statement, statement_no_short_if;
+non terminal statement;
 non terminal statement_without_trailing_substatement;
 non terminal empty_statement;
-non terminal labeled_statement, labeled_statement_no_short_if;
+non terminal labeled_statement;
 non terminal expression_statement, statement_expression;
 non terminal if_then_statement;
-non terminal if_then_else_statement, if_then_else_statement_no_short_if;
-non terminal switch_statement, switch_block;
+non terminal else_if_statements_opt, else_if_statements, else_if_statement;
+non terminal else_statement_opt, else_statement;
+non terminal full_if_statement;
+non terminal switch_statement;
+non terminal switch_block_statement_groups_opt;
 non terminal switch_block_statement_groups;
 non terminal switch_block_statement_group;
 non terminal switch_case_header;
 non terminal switch_labels, switch_label;
-non terminal while_statement, while_statement_no_short_if;
+non terminal while_statement;
 non terminal do_statement;
-non terminal for_statement, for_statement_no_short_if;
+non terminal for_statement;
 non terminal for_init_opt, for_init;
 non terminal for_update_opt, for_update;
 non terminal statement_expression_list;
-non terminal identifier_opt;
 non terminal break_statement, continue_statement;
 non terminal return_statement, throw_statement;
 non terminal try_statement;
@@ -183,7 +185,6 @@ precedence left NEWLINE, ENDOFFILE;
 precedence right PLUSPLUS, MINUSMINUS;
 precedence right NEW, SUPER, THIS;
 precedence right NUMBER_LITERAL, BOOLEAN_LITERAL, STRING_LITERAL, NULL_LITERAL, UNDEFINED_LITERAL, IDENTIFIER;
-precedence right LBRACK, LBRACE, LPAREN;
 
 start with goal;
 
@@ -200,8 +201,6 @@ terminator ::= NEWLINE | ENDOFFILE;
 semicolon_multiline ::= SEMICOLON terminators_opt;
 comma_multiline ::= COMMA terminators_opt;
 colon_multiline ::= COLON terminators_opt;
-lbrace_multiline ::= LBRACE terminators_opt;
-rbrace_multiline ::= terminators_opt RBRACE;
 lbrack_multiline ::= LBRACK terminators_opt;
 rbrack_multiline ::= terminators_opt RBRACK;
 lparen_multiline ::= LPAREN terminators_opt;
@@ -303,7 +302,7 @@ modifier ::= PUBLIC {: RESULT = new Modifier(Modifier.Public); :}
 
 // 19.8.1) Class Declaration:
 class_declaration ::= 
-	modifiers_opt:m CLASS IDENTIFIER:i super_opt:s interfaces_opt:i class_body:b
+	modifiers_opt:m CLASS IDENTIFIER:i super_opt:s interfaces_opt:i terminators class_body_declarations_opt:b END CLASS
 	{: RESULT = new ClassDeclaration((Modifiers)m, (String)i, (SuperclassOptional)s, (Interfaces)i, (MemberDeclarations)b); :}
 	;
 super_cl ::=	EXTENDS class_type:t {: RESULT = t; :}
@@ -320,17 +319,15 @@ interface_type_list ::=
 		interface_type:t {: RESULT = new Interfaces((ClassOrInterfaceType)t); :}
 	|	interface_type:t comma_multiline interface_type_list:u {: RESULT = new Interfaces((ClassOrInterfaceType)t, (Interfaces)u); :}
 	;
-class_body ::=	lbrace_multiline class_body_declarations_opt:b rbrace_multiline {: RESULT = b; :}
-	;
 class_body_declarations_opt ::= {: RESULT = new MemberDeclarations(); :}
 	|	class_body_declarations:b {: RESULT = b; :}
 	;
 class_body_declarations ::= 
 		class_body_declaration:b terminators {: RESULT = new MemberDeclarations((MemberDeclaration)b); :}
-	|	class_body_declaration:b terminators class_body_declarations:c {: RESULT = new ClassBodyDeclarations((MemberDeclaration)b, (Membe!ˆ!5
+	|	class_body_declarations:c terminators class_body_declaration:b {: RESULT = new ClassBodyDeclarations((MemberDeclaration)b, (MemberDeclarations)c); :}
 	;
 class_body_declaration ::=
-		class_member_declaration:m {: RESULT = m; :}
+	class_member_declaration:m {: RESULT = m; :}
 	|	constructor_declaration:c {: RESULT = c; :}
 	;
 class_member_declaration ::=
@@ -362,7 +359,7 @@ variable_initializer ::=
 
 // 19.8.3) Method Declarations
 method_declaration ::=
-		method_header:h block:b {: RESULT = new MethodDeclaration((MethodHeader)h, (BlockStatements)b); :}
+		method_header:h terminators block_statements_opt:b terminators END DEF {: RESULT = new MethodDeclaration((MethodHeader)h, (BlockStatements)b); :}
 	;
 method_header ::=
 		modifiers_opt:m type:t method_declarator:d {: RESULT = new MethodHeader((Modifiers)m, (MethodDeclarator)d, (Type)t); :}
@@ -387,7 +384,7 @@ formal_parameter ::=
 
 // 19.8.5) Constructor Declarations
 constructor_declaration ::=
-		modifiers_opt:m constructor_declarator:d block:b
+		modifiers_opt:m constructor_declarator:d terminators block_statements_opt:b terminators END DEF
 		{: RESULT = new ConstructorDeclaration((Modifiers)m, (ConstructorDeclarator)d, (BlockStatements)b); :}
 	;
 constructor_declarator ::=
@@ -409,7 +406,7 @@ explicit_constructor_invocation ::=
 
 // 19.9.1) Interface Declarations
 interface_declaration ::=
-		modifiers_opt:m INTERFACE IDENTIFIER:i extends_interfaces_opt:e interface_body:b
+		modifiers_opt:m INTERFACE IDENTIFIER:i extends_interfaces_opt:e terminators interface_member_declarations_opt:b terminators END INTERFACE
 		{: RESULT = new InterfaceDeclaration((Modifiers)m, (String)i, (Interfaces)e, (MemberDeclarations)b; :}
 	;
 extends_interfaces_opt ::= {: RESULT = new Interfaces(); :}
@@ -418,9 +415,6 @@ extends_interfaces_opt ::= {: RESULT = new Interfaces(); :}
 extends_interfaces ::=
 		interface_type:i {: RESULT = new Interfaces((Interface)i); :}
 	|	interface_type:i comma_multiline extends_interfaces:j {: RESULT = new Interfaces((Interface)i, (Interfaces)j); :}
-	;
-interface_body ::=
-		lbrace_multiline interface_member_declarations_opt rbrace_multiline
 	;
 interface_member_declarations_opt ::= {: RESULT = new MemberDeclarations(); :}
 	|	interface_member_declarations:d {: RESULT = d; :}
@@ -451,196 +445,183 @@ array_initializer ::=
 	;
 variable_initializers ::=
 		variable_initializer:i {: RESULT = new VariableInitializers((VariableInitializer)i); :}
-	|	variable_initializer comma_multiline variable_initializers
+	|	variable_initializers:j comma_multiline variable_initializer:i {: RESULT = new VariableInitializers((VariableInitializer)i, (VariableInitializers)j); :}
 	;
 
 // 19.11) Blocks and Statements
-block ::=	lbrace_multiline block_statements_opt rbrace_multiline
-	;
-block_statements_opt ::=
-	|	block_statements
+block_statements_opt ::= {: RESULT = new BlockStatements(); :}
+	|	block_statements:s {: RESULT = s; :}
 	;
 block_statements ::=
-		block_statement terminators
-	|	block_statement terminators block_statements
+		block_statement:b terminators {: RESULT = new BlockStatements((BlockStatement)b); :}
+	|	block_statement:b terminators block_statements:c {: RESULT = new BlockStatements((BlockStatement)b, (BlockStatements)c); :}
 	;
 block_statement ::=
-		local_variable_declaration_statement
-	|	statement
-	|	class_declaration
-	|	interface_declaration
+		local_variable_declaration_statement:d {: RESULT = d; :}
+	|	statement:s {: RESULT = s; :}
+	|	class_declaration:c {: RESULT = c; :}
+	|	interface_declaration:i {: RESULT = i :}
 	;
 local_variable_declaration_statement ::=
-		local_variable_declaration
+		local_variable_declaration:d {: RESULT = new DeclarationStatement((LocalVariableDeclaration)d); :}
 	;
 local_variable_declaration ::=
-		type variable_declarators
+		type:t variable_declarators:d {: RESULT = new LocalVariableDeclaration((Type)t, (VariableDeclarators)d); :}
 	;
-statement ::=	statement_without_trailing_substatement
-	|	labeled_statement
-	|	if_then_statement
-	|	if_then_else_statement
-	|	while_statement
-	|	for_statement
-	;
-statement_no_short_if ::=
-		statement_without_trailing_substatement
-	|	labeled_statement_no_short_if
-	|	if_then_else_statement_no_short_if
-	|	while_statement_no_short_if
-	|	for_statement_no_short_if
+statement ::=	statement_without_trailing_substatement:s {: RESULT = s; :}
+	|	labeled_statement:l {: RESULT = l; :}
+	|	if_then_statement:i {: RESULT = i; :}
+	|	full_if_statement:i {: RESULT = i; :}
+	|	while_statement:w {: RESULT = w; :}
+	|	for_statement:f {: RESULT = f; :}
 	;
 statement_without_trailing_substatement ::=
-		block
-	|	empty_statement
-	|	expression_statement
-	|	switch_statement
-	|	do_statement
-	|	break_statement
-	|	continue_statement
-	|	return_statement
-	|	throw_statement
-	|	try_statement
+	empty_statement:e {: RESULT = e; :}
+	|	expression_statement:e {: RESULT = e; :}
+	|	switch_statement:s {: RESULT = s; :}
+	|	do_statement:d {: RESULT = d; :}
+	|	break_statement:b {: RESULT = b; :}
+	|	continue_statement:c {: RESULT = c; :}
+	|	return_statement:r {: RESULT = r; :}
+	|	throw_statement:t {: RESULT = t; :}
+	|	try_statement:t {: RESULT = t; :}
 	;
 empty_statement ::=
-		PASS
+		PASS {: RESULT = new EmptyStatement(); :}
 	;
 labeled_statement ::=
-		IDENTIFIER colon_multiline statement
-	;
-labeled_statement_no_short_if ::=
-		IDENTIFIER colon_multiline statement_no_short_if
+		IDENTIFIER:i colon_multiline statement:s {: RESULT = new LabeledStatement((Statement)s); :}
 	;
 expression_statement ::=
-		statement_expression
+		statement_expression:s {: RESULT = new ExpressionStatement((StatementExpression)s); :}
 	;
 statement_expression ::=
-		assignment
-	|	preincrement_expression
-	|	predecrement_expression
-	|	postincrement_expression
-	|	postdecrement_expression
-	|	method_invocation
-	|	class_instance_creation_expression
+		assignment:a {: RESULT = a; :}
+	|	preincrement_expression:p {: RESULT = p; :}
+	|	predecrement_expression:p {: RESULT = p; :}
+	|	postincrement_expression:p {: RESULT = p; :}
+	|	postdecrement_expression:p {: RESULT = p; :}
+	|	method_invocation:m {: RESULT = m; :}
+	|	class_instance_creation_expression:c {: RESULT = c; :}
 	;
 if_then_statement ::=
-		IF expression terminators statement
+		IF expression:e THEN statement:s {: RESULT = new IfStatement((Expression)e, (Statement)s); :}
 	;
-if_then_else_statement ::=
-		IF expression terminators statement_no_short_if 
-			ELSE terminators_opt statement
+full_if_statement ::=
+		IF expression:e terminators block_statements:s terminators else_if_statements_opt:f else_statement_opt:g END IF {: RESULT = new IfStatement((Expression)e, (BlockStatements)s, (ElseIfStatements)f, (ElseStatement)g); :}
 	;
-if_then_else_statement_no_short_if ::=
-		IF expression terminators statement_no_short_if
-			ELSE terminators_opt statement_no_short_if
+else_if_statements_opt ::= {: RESULT = new ElseIfStatement(); :}
+	| else_if_statements:s {: RESULT = s; :}
+	;
+else_if_statements ::=
+		else_if_statement:s terminators {: RESULT = new ElseIfStatements((ElseIfStatement)s); :}
+	|	else_if_statement:s terminators else_if_statements:t {: RESULT = new ElseIfStatements((ElseIfStatement)s, (ElseIfStatements)t); :}
+	;
+else_if_statement ::=
+		ELSEIF expression:e terminators block_statements:s {: RESULT = new ElseIfStatement((Expression)e, (BlockStatements)s); :}
+	;
+else_statement_opt ::= {: RESULT = new ElseStatement(); :}
+	|	else_statement:e {: RESULT = e; :}
+	;
+else_statement ::= ELSE terminators block_statements:s {: RESULT = new ElseStatement((BlockStatements)s); :}
 	;
 switch_statement ::=
-		SWITCH expression switch_block
+		SWITCH expression:e terminators switch_block_statement_groups_opt:g END SWITCH
 	;
-switch_block ::=
-		lbrace_multiline switch_block_statement_groups switch_labels rbrace_multiline
-	|	lbrace_multiline switch_block_statement_groups rbrace_multiline
-	|	lbrace_multiline switch_labels rbrace_multiline
-	|	lbrace_multiline rbrace_multiline
+switch_block_statement_groups_opt ::= {: RESULT = new SwitchGroups(); :}
+	|	switch_block_statement_groups:g {: RESULT = g; :}
 	;
 switch_block_statement_groups ::=
-		switch_block_statement_group
-	|	switch_block_statement_groups switch_block_statement_group
+		switch_block_statement_group:g terminators {: RESULT = new SwitchGroups((SwitchGroup)g); :}
+	|	switch_block_statement_group:g terminators switch_block_statement_groups:h {: RESULT = new SwitchGroups((SwitchGroup)g, (SwitchGroups)h); :}
 	;
 switch_block_statement_group ::=
-		switch_case_header block_statement terminators block_statements
+		switch_case_header:h terminators block_statements:s {: RESULT = new SwitchGroup((SwitchHeader)h, (BlockStatements)s); :}
 	;
 switch_case_header ::=
-		CASE switch_labels colon_multiline
-	|	DEFAULT colon_multiline
+		CASE switch_labels:l colon_multiline {: RESULT = new SwitchHeader((SwitchLabels)l); :}
+	|	DEFAULT colon_multiline {: RESULT = new SwitchHeader(); :}
 	;
 switch_labels ::=
-		switch_label
-	|	switch_labels comma_multiline switch_label
+		switch_label:l {: RESULT = new SwitchLabels((SwitchLabel)l); :}
+	|	switch_labels:l comma_multiline switch_label:m {: RESULT = new SwitchLabels((SwitchLabel)m, (SwitchLabels)l); :}
 	;
-switch_label ::= constant_expression;
-
+switch_label ::= constant_expression {: RESULT = new SwitchLabel((Expression)e); :}
+	;
 while_statement ::=
-		WHILE expression terminators statement
-	;
-while_statement_no_short_if ::=
-		WHILE expression terminators statement_no_short_if
+		WHILE expression:e terminators block_statements:s END WHILE {: RESULT = new WhileStatement((Expression)e, (BlockStatements)s); :}
 	;
 do_statement ::=
-		DO terminators_opt statement terminators_opt WHILE expression
+		DO terminators block_statements:s END WHILE expression:e {: RESULT = new DoStatement((Expression)e, ((BlockStatements)s); :}
 	;
 for_statement ::=
-		FOR for_init_opt semicolon_multiline expression_opt semicolon_multiline
-			for_update_opt terminators statement
+		FOR for_init_opt:f semicolon_multiline expression_opt:e semicolon_multiline for_update_opt:u terminators statement
+		{: RESULT = new ForStatement((ForInitializer)f, (Expression)e, (StatementExpressionList)u); :}
 	;
-for_statement_no_short_if ::=
-		FOR for_init_opt semicolon_multiline expression_opt semicolon_multiline
-			for_update_opt terminators statement_no_short_if
+for_init_opt ::= {: RESULT = new ForInitializer(); :}
+	|	for_init:i {: RESULT = i; :}
 	;
-for_init_opt ::=
-	|	for_init
+for_init ::= statement_expression_list:e {: RESULT = new ForInitializer((StatementExpressionList)e); :}
+	|	local_variable_declaration:d {: RESULT = new ForInitializer((LocalVariableDeclaration)d); :}
 	;
-for_init ::=	statement_expression_list
-	|	local_variable_declaration
+for_update_opt ::= {: RESULT = new StatementExpressionList(); :}
+	|	for_update:u {: RESULT = u; :}
 	;
-for_update_opt ::=
-	|	for_update
-	;
-for_update ::=	statement_expression_list
+for_update ::= statement_expression_list:e {: RESULT = e; :}
 	;
 statement_expression_list ::=
-		statement_expression
-	|	statement_expression_list comma_multiline statement_expression
-	;
-
-identifier_opt ::= 
-	|	IDENTIFIER
+		statement_expression:e {: RESULT = new StatementExpressionList((StatementExpression)e); :}
+	|	statement_expression:e comma_multiline statement_expression_list:f {: RESULT = new StatementExpressionList((StatementExpression)e, (StatementExpressionList)f); :}
 	;
 
 break_statement ::=
-		BREAK identifier_opt
+		BREAK {: RESULT = new BreakStatement(); :}
+	|	BREAK IDENTIFIER:i {: RESULT = new BreakStatement((String)i); :}
 	;
 
 continue_statement ::=
-		CONTINUE identifier_opt
+		CONTINUE {: RESULT = new ContinueStatement(); :}
+	|	CONTINUE IDENTIFIER:i {: RESULT = new ContinueStatement((String)i); :}
 	;
 return_statement ::=
-		RETURN expression_opt
+		RETURN {: RESULT = new ReturnStatement(); :}
+	|	RETURN expression:e {: RESULT = new ReturnStatement((Expression)e); :}
 	;
 throw_statement ::=
-		THROW expression
+		THROW expression:e {: RESULT = new ThrowStatement((Expression)e); :}
 	;
 try_statement ::=
-		TRY block terminators_opt catches
-	|	TRY block terminators_opt catches terminators_opt finally
-	|	TRY block terminators_opt finally
+		TRY terminators block_statements:s catches:c END TRY {: RESULT = new TryStatement((BlockStatements)s, (CatchBlocks)c); :}
+	|	TRY terminators block_statements:s catches:c terminators_opt finally:f END TRY {: RESULT = new TryStatement((BlockStatements)s, (CatchBlocks)c, (FinallyBlock)f); :}
+	|	TRY terminators block_statements:s finally:f END TRY {: RESULT = new TryStatement((BlockStatements)s, (FinallyBlock)f); :}
 	;
-catches ::=	catch_clause
-	|	catches catch_clause
+catches ::=	catch_clause:c {: RESULT = new CatchBlocks((CatchBlock)c); :}
+	|	catch_clause catches:d {: RESULT = new CatchBlock((CatchBlock)c, (CatchBlocks)d); :}
 	;
 catch_clause ::=
-		CATCH formal_parameter terminators block
+		CATCH formal_parameter:p terminators block_statements_opt:b {: RESULT = new CatchBlock((Parameter)p, (BlockStatements)b); :}
 	;
-finally ::=	FINALLY terminators block
+finally ::=	FINALLY terminators block_statements {: RESULT = new FinallyBlock((BlockStatements)b); :}
 	;
 
 // 19.12) Expressions
-primary ::=	primary_no_new_array
-	|	array_creation_expression
+primary ::=	primary_no_new_array:p {: RESULT = p; :}
+	|	array_creation_expression:c {: RESULT = c; :}
 	;
 primary_no_new_array ::=
-		literal
-	|	THIS
-	|	lparen_multiline expression rparen_multiline
-	|	class_instance_creation_expression
-	|	field_access
-	|	method_invocation
-	|	array_access
-	|	name DOT THIS
+		literal:l {: RESULT = l; :}
+	|	THIS {: RESULT = new ThisPrimary(); :}
+	|	lparen_multiline expression:e rparen_multiline {: RESULT = e; :}
+	|	class_instance_creation_expression:e {: RESULT = e; :}
+	|	field_access:a {: RESULT = a; :}
+	|	method_invocation:m {: RESULT = m; :}
+	|	array_access:a {: RESULT = a; :}
+	|	name:n DOT THIS {: RESULT = new ThisPrimary((Name)n); :}
 	;
 class_instance_creation_expression ::=
-		NEW class_type lparen_multiline argument_list_opt rparen_multiline
-	|	NEW class_type lparen_multiline argument_list_opt rparen_multiline class_body
+		NEW class_type:c lparen_multiline argument_list_opt:a rparen_multiline {: RESULT = new ClassInstantiationExpression((ClassOrInterfaceType)t, (ArgumentList)a); :}
+	|	NEW class_type lparen_multiline argument_list_opt rparen_multiline OVERRIDE terminators class_body_declarations_opt:d END OVERRIDE
+		{: RESULT = new ClassInstantiationExpression((ClassOrInterfaceType)t, (ArgumentList)a, (ClassBodyDeclarations)d); :}
 	;
 argument_list_opt ::=
 	|	argument_list

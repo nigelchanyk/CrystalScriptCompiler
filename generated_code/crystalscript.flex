@@ -149,8 +149,6 @@ EscapeCharacters = \\\'|\\\"|\\\\|\\n|\\r|\\t|\\b|\\f
   /* separators */
   "("                            { return symbol(LPAREN); }
   ")"                            { return symbol(RPAREN); }
-  "{"                            { return symbol(LBRACE); }
-  "}"                            { return symbol(RBRACE); }
   "["                            { return symbol(LBRACK); }
   "]"                            { return symbol(RBRACK); }
   ";"                            { return symbol(SEMICOLON); }
