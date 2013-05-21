@@ -1,4 +1,4 @@
-class a {
-	def b() {
-	}
-}
+class a
+	def b
+	end def
+end class

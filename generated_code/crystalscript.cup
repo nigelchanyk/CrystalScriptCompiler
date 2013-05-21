@@ -1,4 +1,26 @@
 import java_cup.runtime.*;
+import crystalscriptcompiler.syntaxtree.*;
+import crystalscriptcompiler.syntaxtree.classes.*;
+import crystalscriptcompiler.syntaxtree.expressions.*;
+import crystalscriptcompiler.syntaxtree.expressions.basic.*;
+import crystalscriptcompiler.syntaxtree.expressions.basic.unary.*;
+import crystalscriptcompiler.syntaxtree.expressions.primary.*;
+import crystalscriptcompiler.syntaxtree.expressions.primary.instantiations.*;
+import crystalscriptcompiler.syntaxtree.expressions.primary.literals.*;
+import crystalscriptcompiler.syntaxtree.expressions.primary.methodinvocation.*;
+import crystalscriptcompiler.syntaxtree.fields.*;
+import crystalscriptcompiler.syntaxtree.imports.*;
+import crystalscriptcompiler.syntaxtree.interfaces.*;
+import crystalscriptcompiler.syntaxtree.methods.*;
+import crystalscriptcompiler.syntaxtree.names.*;
+import crystalscriptcompiler.syntaxtree.statements.*;
+import crystalscriptcompiler.syntaxtree.statements.conditionals.*;
+import crystalscriptcompiler.syntaxtree.statements.exceptions.*;
+import crystalscriptcompiler.syntaxtree.statements.forloops.*;
+import crystalscriptcompiler.syntaxtree.statements.switches.*;
+import crystalscriptcompiler.syntaxtree.types.*;
+import crystalscriptcompiler.syntaxtree.variables.*;
+import crystalscriptcompiler.syntaxtree.variables.initializers.*;
 
 parser code  {:
 
@@ -233,11 +255,11 @@ type	::=	primitive_type:p {: RESULT = p; :}
 	|	reference_type:r {: RESULT = r; :}
 	|	VAR {: RESULT = new VarType(); :}
 	;
-primitive_type ::= NUMBER {: RESULT = new NumberType(); :}
-	|	STRING {: RESULT = new StringType(); :}
-	|	BOOLEAN {: RESULT = new BooleanType(); :}
-	|	OBJECT {: RESULT = new ObjectType(); :}
-	|	ARRAY {: RESULT = new ArrayType(); :}
+primitive_type ::= NUMBER {: RESULT = new PrimitiveType(PrimitiveType.Kind.NUMBER); :}
+	|	STRING {: RESULT = new PrimitiveType(PrimitiveType.Kind.STRING); :}
+	|	BOOLEAN {: RESULT = new new PrimitiveType(PrimitiveType.Kind.BOOLEAN); :}
+	|	OBJECT {: RESULT = new new PrimitiveType(PrimitiveType.Kind.OBJECT); :}
+	|	ARRAY {: RESULT = new new PrimitiveType(PrimitiveType.Kind.ARRAY); :}
 	;
 reference_type ::=
 		class_or_interface_type:t {: RESULT = t; :}
@@ -390,9 +412,9 @@ explicit_constructor_invocation_opt ::= {: RESULT = new ConstructorInvocationOpt
 
 explicit_constructor_invocation ::=
 		THIS lparen_multiline argument_list_opt:a rparen_multiline terminators
-		{: RESULT = new ConstructorInvocation(ConstructorInvocation.THIS, (Arguments)a); :}
+		{: RESULT = new ConstructorInvocation(ConstructorInvocation.Kind.THIS, (ArgumentList)a); :}
 	|	SUPER lparen_multiline argument_list_opt:a rparen_multiline terminators
-		{: RESULT = new ConstructorInvocation(ConstructorInvocation.SUPER, (Arguments)a); :}
+		{: RESULT = new ConstructorInvocation(ConstructorInvocation.Kind.SUPER, (ArgumentList)a); :}
 	;
 
 // 19.9) Interfaces
@@ -418,7 +440,7 @@ interface_member_declarations ::=
 	;
 interface_member_declaration ::=
 		constant_declaration:c {: RESULT = c; :}
-	|	abstract_method_declaration:a {: RESULT = a; }
+	|	abstract_method_declaration:a {: RESULT = a; :}
 	|	class_declaration:c {: RESULT = c; :}
 	|	interface_declaration:i {: RESULT = i; :}
 	;
