@@ -8,6 +8,6 @@ package crystalscriptcompiler.syntaxtree.expressions.primary.literals;
  *
  * @author User
  */
-public class NullLiteral {
+public class NullLiteral extends Literal {
 	
 }

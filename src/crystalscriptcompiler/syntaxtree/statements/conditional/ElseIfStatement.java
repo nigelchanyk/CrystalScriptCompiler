@@ -2,12 +2,12 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package crystalscriptcompiler.syntaxtree.expressions.basic.unary;
+package crystalscriptcompiler.syntaxtree.statements.conditional;
 
 /**
  *
  * @author User
  */
-public class UnaryExpression {
+public class ElseIfStatement {
 	
 }

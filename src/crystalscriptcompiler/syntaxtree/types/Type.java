@@ -4,10 +4,12 @@
  */
 package crystalscriptcompiler.syntaxtree.types;
 
+import crystalscriptcompiler.syntaxtree.ParseTreeNode;
+
 /**
  *
  * @author User
  */
-public class Type {
+public class Type extends ParseTreeNode {
 	
 }

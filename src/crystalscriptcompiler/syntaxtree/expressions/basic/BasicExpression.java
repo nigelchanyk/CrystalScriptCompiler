@@ -4,10 +4,12 @@
  */
 package crystalscriptcompiler.syntaxtree.expressions.basic;
 
+import crystalscriptcompiler.syntaxtree.ParseTreeNode;
+
 /**
  *
  * @author User
  */
-public class ConditionalOrExpression {
+public class BasicExpression extends ParseTreeNode {
 	
 }

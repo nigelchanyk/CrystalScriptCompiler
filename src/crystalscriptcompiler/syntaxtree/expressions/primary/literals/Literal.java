@@ -4,15 +4,12 @@
  */
 package crystalscriptcompiler.syntaxtree.expressions.primary.literals;
 
+import crystalscriptcompiler.syntaxtree.ParseTreeNode;
+
 /**
  *
  * @author User
  */
-public class BooleanLiteral extends Literal {
+public class Literal extends ParseTreeNode {
 	
-	private boolean value;
-
-	public BooleanLiteral(boolean value) {
-		this.value = value;
-	}
 }

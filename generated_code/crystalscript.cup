@@ -1,9 +1,7 @@
-import java_cup.runtime.*;
 import crystalscriptcompiler.syntaxtree.*;
 import crystalscriptcompiler.syntaxtree.classes.*;
 import crystalscriptcompiler.syntaxtree.expressions.*;
 import crystalscriptcompiler.syntaxtree.expressions.basic.*;
-import crystalscriptcompiler.syntaxtree.expressions.basic.unary.*;
 import crystalscriptcompiler.syntaxtree.expressions.primary.*;
 import crystalscriptcompiler.syntaxtree.expressions.primary.instantiations.*;
 import crystalscriptcompiler.syntaxtree.expressions.primary.literals.*;
@@ -14,13 +12,14 @@ import crystalscriptcompiler.syntaxtree.interfaces.*;
 import crystalscriptcompiler.syntaxtree.methods.*;
 import crystalscriptcompiler.syntaxtree.names.*;
 import crystalscriptcompiler.syntaxtree.statements.*;
-import crystalscriptcompiler.syntaxtree.statements.conditionals.*;
+import crystalscriptcompiler.syntaxtree.statements.conditional.*;
 import crystalscriptcompiler.syntaxtree.statements.exceptions.*;
 import crystalscriptcompiler.syntaxtree.statements.forloops.*;
 import crystalscriptcompiler.syntaxtree.statements.switches.*;
 import crystalscriptcompiler.syntaxtree.types.*;
 import crystalscriptcompiler.syntaxtree.variables.*;
 import crystalscriptcompiler.syntaxtree.variables.initializers.*;
+import java_cup.runtime.*;
 
 parser code  {:
 
@@ -28,6 +27,10 @@ parser code  {:
 	
 	public ParseTreeRoot getRoot() {
 		return root;
+	}
+
+	public void setRoot(ParseTreeRoot root) {
+		this.root = root;
 	}
 
   public void report_error(String message, Object info) {
@@ -229,7 +232,7 @@ question_multiline ::= QUESTION terminators_opt;
 
 // 19.2) The Syntactic Grammar
 goal ::= import_declarations_opt:i top_level_sections_opt:t
-	{: root = new ParseTreeRoot((ImportDeclarations)i, (TopLevelSections)t); :}
+	{: parser.setRoot(new ParseTreeRoot((ImportDeclarations)i, (TopLevelSections)t)); :}
 	;
 top_level_sections_opt ::= {: RESULT = new TopLevelSections(); :}
 	| top_level_sections:t {: RESULT = t; :}
@@ -237,9 +240,8 @@ top_level_sections_opt ::= {: RESULT = new TopLevelSections(); :}
 top_level_sections ::= top_level_section:t terminators {: RESULT = new TopLevelSections((TopLevelSection)t); :}
 	| top_level_section:t terminators top_level_sections:u {: RESULT = new TopLevelSections((TopLevelSection)t, (TopLevelSections)u); :}
 	;
-top_level_section ::= {: RESULT = new TopLevelSection(); :}
-	| class_declaration:c {: RESULT = new TopLevelSection((ClassDeclaration)c); :}
-	| interface_declaration:i {: RESULT = new TopLevelSection((InterfaceDeclaration)i); :}
+top_level_section ::= class_declaration:c {: RESULT = new TopLevelSection((ClassDeclaration)c); :}
+	|	interface_declaration:i {: RESULT = new TopLevelSection((InterfaceDeclaration)i); :}
 	;
 
 // 19.3) Lexical Structure.
@@ -257,9 +259,9 @@ type	::=	primitive_type:p {: RESULT = p; :}
 	;
 primitive_type ::= NUMBER {: RESULT = new PrimitiveType(PrimitiveType.Kind.NUMBER); :}
 	|	STRING {: RESULT = new PrimitiveType(PrimitiveType.Kind.STRING); :}
-	|	BOOLEAN {: RESULT = new new PrimitiveType(PrimitiveType.Kind.BOOLEAN); :}
-	|	OBJECT {: RESULT = new new PrimitiveType(PrimitiveType.Kind.OBJECT); :}
-	|	ARRAY {: RESULT = new new PrimitiveType(PrimitiveType.Kind.ARRAY); :}
+	|	BOOLEAN {: RESULT = new PrimitiveType(PrimitiveType.Kind.BOOLEAN); :}
+	|	OBJECT {: RESULT = new PrimitiveType(PrimitiveType.Kind.OBJECT); :}
+	|	ARRAY {: RESULT = new PrimitiveType(PrimitiveType.Kind.ARRAY); :}
 	;
 reference_type ::=
 		class_or_interface_type:t {: RESULT = t; :}
@@ -274,7 +276,7 @@ interface_type ::= class_or_interface_type:t {: RESULT = t; :}
 
 // 19.5) Names
 name ::= IDENTIFIER:i {: RESULT = new Name((String)i); :}
-	|	qualified_name:q {: RESULT = new Name((QualifiedName)q); :}
+	|	qualified_name:q {: RESULT = q; :}
 	;
 qualified_name ::=
 		name:n DOT IDENTIFIER:i {: RESULT = new QualifiedName((Name)n, (String)i); :}
@@ -306,19 +308,19 @@ modifiers_opt ::= {: RESULT = new Modifiers(); :}
 modifiers ::= modifier:m {: RESULT = new Modifiers((Modifier)m); :}
 	|	modifier:m modifiers:n {: RESULT = new Modifiers((Modifier)m, (Modifiers)n); :}
 	;
-modifier ::= PUBLIC {: RESULT = new Modifier(Modifier.Public); :}
-	| PROTECTED {: RESULT = new Modifier(Modifier.Protected); :}
-	| PRIVATE {: RESULT = new Modifier(Modifier.Private); :}
-	| STATIC {: RESULT = new Modifier(Modifier.Static); :}
-	| ABSTRACT {: RESULT = new Modifier(Modifier.Abstract); :}
+modifier ::= PUBLIC {: RESULT = new Modifier(Modifier.Kind.PUBLIC); :}
+	| PROTECTED {: RESULT = new Modifier(Modifier.Kind.PROTECTED); :}
+	| PRIVATE {: RESULT = new Modifier(Modifier.Kind.PRIVATE); :}
+	| STATIC {: RESULT = new Modifier(Modifier.Kind.STATIC); :}
+	| ABSTRACT {: RESULT = new Modifier(Modifier.Kind.ABSTRACT); :}
 	;
 
 // 19.8) Classes
 
 // 19.8.1) Class Declaration:
 class_declaration ::= 
-	modifiers_opt:m CLASS IDENTIFIER:i super_opt:s interfaces_opt:i terminators class_body_declarations_opt:b END CLASS
-	{: RESULT = new ClassDeclaration((Modifiers)m, (String)i, (SuperclassOptional)s, (Interfaces)i, (MemberDeclarations)b); :}
+	modifiers_opt:m CLASS IDENTIFIER:n super_opt:s interfaces_opt:i terminators class_body_declarations_opt:b END CLASS
+	{: RESULT = new ClassDeclaration((Modifiers)m, (String)n, (SuperclassOptional)s, (Interfaces)i, (MemberDeclarations)b); :}
 	;
 super_cl ::=	EXTENDS class_type:t {: RESULT = t; :}
 	;
@@ -667,90 +669,90 @@ array_access ::=
 	|	primary_no_new_array:p lbrack_multiline expression:e rbrack_multiline {: RESULT = new ArrayAccess((Primary)p, (Expression)e); :}
 	;
 postfix_expression ::=
-		primary:p {: RESULT = new PostfixExpression((Primary)p); :}
-	|	name:n {: RESULT = new PostfixExpression((Name)n); :}
+		primary:p {: RESULT = new UnaryExpression((Primary)p); :}
+	|	name:n {: RESULT = new UnaryExpression((Name)n); :}
 	|	postincrement_expression:p {: RESULT = p; :}
 	|	postdecrement_expression:p {: RESULT = p; :}
 	;
 postincrement_expression ::=
-		postfix_expression:p PLUSPLUS {: RESULT = new PostIncrementExpression((PostfixExpression)p); :}
+		postfix_expression:p PLUSPLUS {: RESULT = new UnaryExpression((UnaryExpression)p, UnaryExpression.Kind.POSTINCREMENT); :}
 	;
 postdecrement_expression ::=
-		postfix_expression:p MINUSMINUS {: RESULT = new PostDecrementExpression((PostfixExpression)p); :}
+		postfix_expression:p MINUSMINUS {: RESULT = new UnaryExpression((UnaryExpression)p, UnaryExpression.Kind.POSTDECREMENT); :}
 	;
 unary_expression ::=
 		preincrement_expression:p {: RESULT = p; :}
 	|	predecrement_expression:p {: RESULT = p; :}
-	|	PLUS unary_expression:u {: RESULT = new PositiveUnaryExpression((UnaryExpression)u); :}
-	|	MINUS unary_expression:u {: RESULT = new NegativeUnaryExpression((UnaryExpression)u); :}
+	|	PLUS unary_expression:u {: RESULT = new UnaryExpression((UnaryExpression)u, UnaryExpression.Kind.PLUS); :}
+	|	MINUS unary_expression:u {: RESULT = new UnaryExpression((UnaryExpression)u, UnaryExpression.Kind.MINUS); :}
 	|	unary_expression_not_plus_minus:u {: RESULT = u; :}
 	;
 preincrement_expression ::=
-		PLUSPLUS unary_expression:u {: RESULT = new PreIncrementExpression((UnaryExpression)u); :}
+		PLUSPLUS unary_expression:u {: RESULT = new UnaryExpression((UnaryExpression)u, UnaryExpression.Kind.PREINCREMENT); :}
 	;
 predecrement_expression ::=
-		MINUSMINUS unary_expression:u {: RESULT = new PreIncrementExpression((UnaryExpression)u); :}
+		MINUSMINUS unary_expression:u {: RESULT = new UnaryExpression((UnaryExpression)u, UnaryExpression.Kind.PREDECREMENT); :}
 	;
 unary_expression_not_plus_minus ::=
 		postfix_expression:p {: RESULT = p; :}
-	|	COMP unary_expression:c {: RESULT = new ComplementExpression((UnaryExpression)c); :}
-	|	NOT unary_expression:n {: RESULT = new NegateExpression((UnaryExpression)n); :}
+	|	COMP unary_expression:c {: RESULT = new UnaryExpression((UnaryExpression)c, UnaryExpression.Kind.COMPLEMENT); :}
+	|	NOT unary_expression:n {: RESULT = new UnaryExpression((UnaryExpression)n, UnaryExpression.Kind.NEGATE); :}
 	;
 multiplicative_expression ::=
 		unary_expression:u {: RESULT = u; :}
-	|	multiplicative_expression:l MULT terminators_opt unary_expression:r {: RESULT = new MultiplicativeExpression((MultiplicativeExpression)l, (MultiplicativeExpression)r, MultiplicativeExpression.Kind.MULTIPLY); :}
-	|	multiplicative_expression:l DIV terminators_opt unary_expression:r {: RESULT = new MultiplicativeExpression((MultiplicativeExpression)l, (MultiplicativeExpression)r, MultiplicativeExpression.Kind.DIVIDE); :}
-	|	multiplicative_expression:l MOD terminators_opt unary_expression:r {: RESULT = new MultiplicativeExpression((MultiplicativeExpression)l, (MultiplicativeExpression)r, MultiplicativeExpression.Kind.MODULO); :}
+	|	multiplicative_expression:l MULT terminators_opt unary_expression:r {: RESULT = new ArithmeticExpression((BasicExpression)l, (BasicExpression)r, ArithmeticExpression.Kind.MULTIPLY); :}
+	|	multiplicative_expression:l DIV terminators_opt unary_expression:r {: RESULT = new ArithmeticExpression((BasicExpression)l, (BasicExpression)r, ArithmeticExpression.Kind.DIVIDE); :}
+	|	multiplicative_expression:l MOD terminators_opt unary_expression:r {: RESULT = new ArithmeticExpression((BasicExpression)l, (BasicExpression)r, ArithmeticExpression.Kind.MODULO); :}
 	;
 additive_expression ::=
 		multiplicative_expression:m {: RESULT = m; :}
-	|	additive_expression:a PLUS terminators_opt multiplicative_expression:m {: RESULT = new AdditiveExpression((AdditiveExpression)a, (MultiplicativeExpression)m, AdditiveExpression.Kind.ADD); :}
-	|	additive_expression:a MINUS terminators_opt multiplicative_expression:m {: RESULT = new AdditiveExpression((AdditiveExpression)a, (MultiplicativeExpression)m, AdditiveExpression.Kind.MINUS); :}
+	|	additive_expression:a PLUS terminators_opt multiplicative_expression:m {: RESULT = new ArithmeticExpression((BasicExpression)a, (BasicExpression)m, ArithmeticExpression.Kind.ADD); :}
+	|	additive_expression:a MINUS terminators_opt multiplicative_expression:m {: RESULT = new ArithmeticExpression((BasicExpression)a, (BasicExpression)m, ArithmeticExpression.Kind.MINUS); :}
 	;
 shift_expression ::=
 		additive_expression:a {: RESULT = a; :}
-	|	shift_expression:s LSHIFT terminators_opt additive_expression:a {: RESULT = new ShiftExpression((ShiftExpression)s, (AdditiveExpression)a, ShiftExpression.Kind.LEFT_SHIFT); :}
-	|	shift_expression:s RSHIFT terminators_opt additive_expression:a {: RESULT = new ShiftExpression((ShiftExpression)s, (AdditiveExpression)a, ShiftExpression.Kind.RIGHT_SHIFT); :}
-	|	shift_expression:s URSHIFT terminators_opt additive_expression:a {: RESULT = new ShiftExpression((ShiftExpression)s, (AdditiveExpression)a, ShiftExpression.Kind.UNSIGNED_RIGHT_SHIFT); :}
+	|	shift_expression:s LSHIFT terminators_opt additive_expression:a {: RESULT = new ArithmeticExpression((BasicExpression)s, (BasicExpression)a, ArithmeticExpression.Kind.LEFT_SHIFT); :}
+	|	shift_expression:s RSHIFT terminators_opt additive_expression:a {: RESULT = new ArithmeticExpression((BasicExpression)s, (BasicExpression)a, ArithmeticExpression.Kind.RIGHT_SHIFT); :}
+	|	shift_expression:s URSHIFT terminators_opt additive_expression:a {: RESULT = new ArithmeticExpression((BasicExpression)s, (BasicExpression)a, ArithmeticExpression.Kind.UNSIGNED_RIGHT_SHIFT); :}
 	;
 relational_expression ::=
 		shift_expression:s {: RESULT = s; :}
-	|	relational_expression:r LT terminators_opt shift_expression:s {: RESULT = new RelationalExpression((RelationalExpression)r, (ShiftExpression)s, RelationalExpression.Kind.LESS_THAN) :}
-	|	relational_expression:r GT terminators_opt shift_expression:s {: RESULT = new RelationalExpression((RelationalExpression)r, (ShiftExpression)s, RelationalExpression.Kind.GREATER_THAN) :}
-	|	relational_expression:r LTEQ terminators_opt shift_expression:s {: RESULT = new RelationalExpression((RelationalExpression)r, (ShiftExpression)s, RelationalExpression.Kind.LESS_THAN_EQUAL) :}
-	|	relational_expression:r GTEQ terminators_opt shift_expression:s {: RESULT = new RelationalExpression((RelationalExpression)r, (ShiftExpression)s, RelationalExpression.Kind.GREATER_THAN_EQUAL) :}
-	|	relational_expression:r IS terminators_opt reference_type:s {: RESULT = new RelationalExpression((RelationalExpression)r, (ShiftExpression)s, RelationalExpression.Kind.IS) :}
-	|	relational_expression:r ISNT terminators_opt reference_type:s {: RESULT = new RelationalExpression((RelationalExpression)r, (ShiftExpression)s, RelationalExpression.Kind.ISNT) :}
+	|	relational_expression:r LT terminators_opt shift_expression:s {: RESULT = new ComparativeExpression((BasicExpression)r, (BasicExpression)s, ComparativeExpression.Kind.LESS_THAN); :}
+	|	relational_expression:r GT terminators_opt shift_expression:s {: RESULT = new ComparativeExpression((BasicExpression)r, (BasicExpression)s, ComparativeExpression.Kind.GREATER_THAN); :}
+	|	relational_expression:r LTEQ terminators_opt shift_expression:s {: RESULT = new ComparativeExpression((BasicExpression)r, (BasicExpression)s, ComparativeExpression.Kind.LESS_THAN_EQUAL); :}
+	|	relational_expression:r GTEQ terminators_opt shift_expression:s {: RESULT = new ComparativeExpression((BasicExpression)r, (BasicExpression)s, ComparativeExpression.Kind.GREATER_THAN_EQUAL); :}
 	;
 equality_expression ::=
 		relational_expression:r {: RESULT = r; :}
-	|	equality_expression:e EQEQ terminators_opt relational_expression:r {: RESULT = new EqualityExpression((EqualityExpression)e, (RelationalExpression)r, EqualityExpression.Kind.EQUAL); :}
-	|	equality_expression:e NOTEQ terminators_opt relational_expression:r {: RESULT = new EqualityExpression((EqualityExpression)e, (RelationalExpression)r, EqualityExpression.Kind.NOT_EQUAL); :}
+	|	equality_expression:e EQEQ terminators_opt relational_expression:r {: RESULT = new EqualityExpression((BasicExpression)e, (BasicExpression)r, EqualityExpression.Kind.EQUAL); :}
+	|	equality_expression:e NOTEQ terminators_opt relational_expression:r {: RESULT = new EqualityExpression((BasicExpression)e, (BasicExpression)r, EqualityExpression.Kind.NOT_EQUAL); :}
+	|	equality_expression:r IS terminators_opt relational_expression:s {: RESULT = new EqualityExpression((BasicExpression)r, (BasicExpression)s, EqualityExpression.Kind.IS); :}
+	|	equality_expression:r ISNT terminators_opt relational_expression:s {: RESULT = new EqualityExpression((BasicExpression)r, (BasicExpression)s, EqualityExpression.Kind.ISNT); :}
 	;
 and_expression ::=
 		equality_expression:e {: RESULT = e; :}
-	|	and_expression:a AND terminators_opt equality_expression:e {: RESULT = new AndExpression((AndExpression)a, (EqualityExpression)e); :}
+	|	and_expression:a AND terminators_opt equality_expression:e {: RESULT = new BitwiseExpression((BasicExpression)a, (BasicExpression)e, BitwiseExpression.Kind.AND); :}
 	;
 exclusive_or_expression ::=
 		and_expression:e {: RESULT = e; :}
-	|	exclusive_or_expression:e XOR terminators_opt and_expression:a {: RESULT = new XorExpression((XorExpression)e, (AndExpression)a); :}
+	|	exclusive_or_expression:e XOR terminators_opt and_expression:a {: RESULT = new BitwiseExpression((BasicExpression)e, (BasicExpression)a, BitwiseExpression.Kind.XOR); :}
 	;
 inclusive_or_expression ::=
 		exclusive_or_expression:e {: RESULT = e; :}
-	|	inclusive_or_expression:o OR terminators_opt exclusive_or_expression:e {: RESULT = new OrExpression((OrExpression)o, (XorExpression)e); :}
+	|	inclusive_or_expression:o OR terminators_opt exclusive_or_expression:e {: RESULT = new BitwiseExpression((BasicExpression)o, (BasicExpression)e, BitwiseExpression.Kind.OR); :}
 	;
 conditional_and_expression ::=
 		inclusive_or_expression:o {: RESULT = o; :}
-	|	conditional_and_expression:a ANDAND terminators_opt inclusive_or_expression:o {: RESULT = new ConditionalAndExpression((ConditionalAndExpression)a, (OrExpression)o); :}
+	|	conditional_and_expression:a ANDAND terminators_opt inclusive_or_expression:o {: RESULT = new BinaryExpression((BasicExpression)a, (BasicExpression)o, BinaryExpression.Kind.AND); :}
 	;
 conditional_or_expression ::=
 		conditional_and_expression:a {: RESULT = a; :}
-	|	conditional_or_expression:o OROR terminators_opt conditional_and_expression:a {: RESULT = new ConditionalOrExpression((ConditionalOrExpression)o, (ConditionalAndExpression)a); :}
+	|	conditional_or_expression:o OROR terminators_opt conditional_and_expression:a {: RESULT = new BinaryExpression((BasicExpression)o, (BasicExpression)a, BinaryExpression.Kind.OR); :}
 	;
 conditional_expression ::=
 		conditional_or_expression:o {: RESULT = o; :}
 	|	conditional_or_expression:o question_multiline expression:e colon_multiline conditional_expression:c
-		{: RESULT = new ConditionalExpression((ConditionalOrExpression)o, (Expression)e, (ConditionalExpression)c); :}
+		{: RESULT = new TernaryExpression((BasicExpression)o, (Expression)e, (BasicExpression)c); :}
 	;
 assignment_expression ::=
 		conditional_expression:e {: RESULT = e; :}

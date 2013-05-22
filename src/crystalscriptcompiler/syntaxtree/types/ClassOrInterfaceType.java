@@ -4,10 +4,18 @@
  */
 package crystalscriptcompiler.syntaxtree.types;
 
+import crystalscriptcompiler.syntaxtree.names.Name;
+
 /**
  *
  * @author User
  */
-public class ClassOrInterfaceType {
+public class ClassOrInterfaceType extends Type {
+	
+	private Name name;
+	
+	public ClassOrInterfaceType(Name name) {
+		this.name = name;
+	}
 	
 }

@@ -4,10 +4,18 @@
  */
 package crystalscriptcompiler.syntaxtree.names;
 
+import crystalscriptcompiler.syntaxtree.expressions.primary.LeftValue;
+
 /**
  *
  * @author User
  */
-public class Name {
+public class Name extends LeftValue {
+	
+	private String value;
+	
+	public Name(String value) {
+		this.value = value;
+	}
 	
 }

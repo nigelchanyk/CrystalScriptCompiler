@@ -8,6 +8,13 @@ package crystalscriptcompiler.syntaxtree.names;
  *
  * @author User
  */
-public class QualifiedName {
+public class QualifiedName extends Name {
+	
+	private Name context;
+
+	public QualifiedName(Name context, String value) {
+		super(value);
+		this.context = context;
+	}
 	
 }

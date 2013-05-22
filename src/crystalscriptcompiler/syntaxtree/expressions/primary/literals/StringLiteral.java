@@ -8,6 +8,12 @@ package crystalscriptcompiler.syntaxtree.expressions.primary.literals;
  *
  * @author User
  */
-public class StringLiteral {
+public class StringLiteral extends Literal {
+	
+	private String value;
+
+	public StringLiteral(String value) {
+		this.value = value;
+	}
 	
 }

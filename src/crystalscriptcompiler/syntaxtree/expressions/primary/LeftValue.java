@@ -8,6 +8,6 @@ package crystalscriptcompiler.syntaxtree.expressions.primary;
  *
  * @author User
  */
-public class LeftValue {
+public abstract class LeftValue extends Primary {
 	
 }

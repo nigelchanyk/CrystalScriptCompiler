@@ -8,6 +8,6 @@ package crystalscriptcompiler.syntaxtree.classes;
  *
  * @author User
  */
-public class ClassDeclaration {
+public class ClassDeclaration extends MemberDeclaration {
 	
 }

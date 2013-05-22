@@ -4,10 +4,18 @@
  */
 package crystalscriptcompiler.syntaxtree;
 
+import crystalscriptcompiler.syntaxtree.classes.MemberDeclaration;
+
 /**
  *
  * @author User
  */
-public class TopLevelSection {
+public class TopLevelSection extends ParseTreeNode {
+	
+	private MemberDeclaration declaration;
+	
+	public TopLevelSection(MemberDeclaration declaration) {
+		this.declaration = declaration;
+	}
 	
 }

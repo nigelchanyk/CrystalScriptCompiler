@@ -4,10 +4,23 @@
  */
 package crystalscriptcompiler.syntaxtree.classes;
 
+import crystalscriptcompiler.syntaxtree.SequentialCollection;
+
 /**
  *
  * @author User
  */
-public class Modifiers {
+public class Modifiers extends SequentialCollection<Modifier> {
+	
+	public Modifiers() {
+	}
+
+	public Modifiers(Modifier modifier) {
+		super(modifier);
+	}
+
+	public Modifiers(Modifier modifier, Modifiers next) {
+		super(modifier, next);
+	}
 	
 }

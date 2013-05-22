@@ -4,10 +4,23 @@
  */
 package crystalscriptcompiler.syntaxtree.imports;
 
+import crystalscriptcompiler.syntaxtree.SequentialCollection;
+
 /**
  *
  * @author User
  */
-public class ImportDeclarations {
+public class ImportDeclarations extends SequentialCollection<ImportDeclaration> {
+	
+	public ImportDeclarations() {
+	}
+
+	public ImportDeclarations(ImportDeclaration declaration) {
+		super(declaration);
+	}
+
+	public ImportDeclarations(ImportDeclaration declaration, ImportDeclarations next) {
+		super(declaration, next);
+	}
 	
 }

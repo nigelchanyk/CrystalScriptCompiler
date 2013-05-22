@@ -8,20 +8,19 @@ package crystalscriptcompiler.syntaxtree.expressions.basic;
  *
  * @author User
  */
-public class EqualityExpression extends BitwiseExpression {
+public class BitwiseExpression extends BinaryExpression {
 	
 	public static enum Kind {
 		INHERIT,
-		EQUAL,
-		NOT_EQUAL,
-		IS,
-		ISNT
+		AND,
+		XOR,
+		OR
 	}
 	
 	private Kind kind;
 	
-	public EqualityExpression(BasicExpression left, BasicExpression right, Kind kind) {
-		super(left, right, BitwiseExpression.Kind.INHERIT);
+	public BitwiseExpression(BasicExpression left, BasicExpression right, Kind kind) {
+		super(left, right, BinaryExpression.Kind.INHERIT);
 		this.kind = kind;
 	}
 	
