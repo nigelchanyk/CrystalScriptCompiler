@@ -4,10 +4,23 @@
  */
 package crystalscriptcompiler.syntaxtree.statements;
 
+import crystalscriptcompiler.syntaxtree.SequentialCollection;
+
 /**
  *
  * @author User
  */
-public class BlockStatements {
+public class BlockStatements extends SequentialCollection<BlockStatement> {
+	
+	public BlockStatements() {
+	}
+
+	public BlockStatements(BlockStatement statement) {
+		super(statement);
+	}
+
+	public BlockStatements(BlockStatement statement, BlockStatements next) {
+		super(statement, next);
+	}
 	
 }

@@ -4,10 +4,28 @@
  */
 package crystalscriptcompiler.syntaxtree.methods;
 
+import crystalscriptcompiler.syntaxtree.ParseTreeNode;
+
 /**
  *
  * @author User
  */
-public class MethodDeclarator {
+public class MethodDeclarator extends ParseTreeNode {
 	
+	private String id;
+	private Parameters parameters;
+
+	public MethodDeclarator(String id, Parameters parameters) {
+		this.id = id;
+		this.parameters = parameters;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public Parameters getParameters() {
+		return parameters;
+	}
+
 }

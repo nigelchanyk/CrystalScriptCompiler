@@ -4,10 +4,31 @@
  */
 package crystalscriptcompiler.syntaxtree.classes;
 
+import crystalscriptcompiler.syntaxtree.SequentialCollection;
+
 /**
  *
  * @author User
  */
-public class MemberDeclarations {
+public class MemberDeclarations extends SequentialCollection<MemberDeclaration> {
+	
+	public MemberDeclarations() {
+	}
+
+	public MemberDeclarations(MemberDeclaration member) {
+		super(member);
+	}
+
+	public MemberDeclarations(MemberDeclarations members) {
+		super(members);
+	}
+
+	public MemberDeclarations(MemberDeclaration member, MemberDeclarations next) {
+		super(member, next);
+	}
+
+	public MemberDeclarations(MemberDeclarations members, MemberDeclarations next) {
+		super(members, next);
+	}
 	
 }

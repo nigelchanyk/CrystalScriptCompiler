@@ -4,10 +4,24 @@
  */
 package crystalscriptcompiler.syntaxtree.interfaces;
 
+import crystalscriptcompiler.syntaxtree.SequentialCollection;
+import crystalscriptcompiler.syntaxtree.types.ClassOrInterfaceType;
+
 /**
  *
  * @author User
  */
-public class Interfaces {
+public class Interfaces extends SequentialCollection<ClassOrInterfaceType> {
+	
+	public Interfaces() {
+	}
+
+	public Interfaces(ClassOrInterfaceType interfaceType) {
+		super(interfaceType);
+	}
+
+	public Interfaces(ClassOrInterfaceType interfaceType, Interfaces next) {
+		super(interfaceType, next);
+	}
 	
 }

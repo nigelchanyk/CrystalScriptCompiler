@@ -4,10 +4,22 @@
  */
 package crystalscriptcompiler.syntaxtree.fields;
 
+import crystalscriptcompiler.syntaxtree.classes.MemberDeclaration;
+import crystalscriptcompiler.syntaxtree.classes.Modifiers;
+import crystalscriptcompiler.syntaxtree.types.Type;
+import crystalscriptcompiler.syntaxtree.variables.VariableDeclarator;
+
 /**
  *
  * @author User
  */
-public class FieldDeclaration {
+public class FieldDeclaration extends MemberDeclaration {
+	
+	private VariableDeclarator variable;
+
+	public FieldDeclaration(Modifiers modifiers, Type type, VariableDeclarator variable) {
+		super(Kind.FIELD, modifiers, type, variable.getId());
+		this.variable = variable;
+	}
 	
 }

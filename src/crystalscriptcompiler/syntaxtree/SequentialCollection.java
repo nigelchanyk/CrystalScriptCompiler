@@ -4,8 +4,8 @@
  */
 package crystalscriptcompiler.syntaxtree;
 
-import java.util.ArrayDeque;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 /**
  *
@@ -13,23 +13,39 @@ import java.util.Iterator;
  */
 public class SequentialCollection<T> extends ParseTreeNode implements Iterable<T> {
 	
-	private T current;
-	private SequentialCollection<T> next;
-	private ArrayDeque<T> collection;
+	private LinkedList<T> collection;
+	private Iterable<T> descIterable = new Iterable<T>() {
+
+		@Override
+		public Iterator<T> iterator() {
+			return collection.descendingIterator();
+		}
+	};
 	
-	protected SequentialCollection() {
-		collection = new ArrayDeque<>(0);
+	public SequentialCollection() {
+		collection = new LinkedList<>();
 	}
 
-	protected SequentialCollection(T obj) {
-		current = obj;
-		collection = new ArrayDeque<>();
+	public SequentialCollection(T obj) {
+		collection = new LinkedList<>();
 		collection.addFirst(obj);
 	}
 
-	protected SequentialCollection(T current, SequentialCollection<T> next) {
-		this.current = current;
-		this.next = next;
+	public SequentialCollection(LinkedList<T> collection) {
+		this.collection = collection;
+	}
+
+	public SequentialCollection(SequentialCollection<T> collection) {
+		this.collection = collection.collection;
+	}
+
+	public SequentialCollection(SequentialCollection<T> current, SequentialCollection<T> next) {
+		this.collection = next.collection;
+		for (T item : current.iterateReversed())
+			collection.addFirst(item);
+	}
+
+	public SequentialCollection(T current, SequentialCollection<T> next) {
 		this.collection = next.collection;
 		collection.addFirst(current);
 	}
@@ -37,6 +53,10 @@ public class SequentialCollection<T> extends ParseTreeNode implements Iterable<T
 	@Override
 	public Iterator<T> iterator() {
 		return collection.iterator();
+	}
+
+	public Iterable<T> iterateReversed() {
+		return descIterable;
 	}
 	
 }

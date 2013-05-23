@@ -4,10 +4,12 @@
  */
 package crystalscriptcompiler.syntaxtree.statements;
 
+import crystalscriptcompiler.syntaxtree.ParseTreeNode;
+
 /**
  *
  * @author User
  */
-public class BlockStatement {
+public abstract class BlockStatement extends ParseTreeNode {
 	
 }

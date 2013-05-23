@@ -8,6 +8,14 @@ package crystalscriptcompiler.syntaxtree.variables.initializers;
  *
  * @author User
  */
-public class ArrayInitializer {
+public class ArrayInitializer extends GenericVariableInitializer {
 	
+	private GenericVariableInitializers innerInitializers;
+
+	public ArrayInitializer() {
+	}
+
+	public ArrayInitializer(GenericVariableInitializers innerInitializers) {
+		this.innerInitializers = innerInitializers;
+	}
 }

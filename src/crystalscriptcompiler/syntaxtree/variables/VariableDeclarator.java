@@ -4,10 +4,29 @@
  */
 package crystalscriptcompiler.syntaxtree.variables;
 
+import crystalscriptcompiler.syntaxtree.ParseTreeNode;
+import crystalscriptcompiler.syntaxtree.variables.initializers.GenericVariableInitializer;
+
 /**
  *
  * @author User
  */
-public class VariableDeclarator {
+public class VariableDeclarator extends ParseTreeNode {
+	
+	private String id;
+	private GenericVariableInitializer init;
+
+	public VariableDeclarator(String id) {
+		this.id = id;
+	}
+	
+	public VariableDeclarator(String id, GenericVariableInitializer init) {
+		this.id = id;
+		this.init = init;
+	}
+
+	public String getId() {
+		return id;
+	}
 	
 }
