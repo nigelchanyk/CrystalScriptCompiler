@@ -4,10 +4,27 @@
  */
 package crystalscriptcompiler.syntaxtree.statements.forloops;
 
+import crystalscriptcompiler.syntaxtree.ParseTreeNode;
+import crystalscriptcompiler.syntaxtree.expressions.StatementExpressionList;
+import crystalscriptcompiler.syntaxtree.variables.LocalVariableDeclaration;
+
 /**
  *
  * @author User
  */
-public class ForInitializer {
+public class ForInitializer extends ParseTreeNode {
+
+	private ParseTreeNode initialization; // Nullable
+
+	public ForInitializer() {
+	}
+
+	public ForInitializer(LocalVariableDeclaration declaration) {
+		initialization = declaration;
+	}
+
+	public ForInitializer(StatementExpressionList expressionList) {
+		initialization = expressionList;
+	}
 	
 }

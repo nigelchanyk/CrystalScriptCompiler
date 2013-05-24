@@ -2,12 +2,12 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package crystalscriptcompiler.syntaxtree.statements;
+package crystalscriptcompiler.syntaxtree.expressions;
 
 /**
  *
  * @author User
  */
-public class StatementExpressionList {
+public class StatementExpression extends Expression {
 	
 }

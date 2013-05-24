@@ -507,7 +507,7 @@ empty_statement ::=
 		PASS {: RESULT = new EmptyStatement(); :}
 	;
 labeled_statement ::=
-		IDENTIFIER:i colon_multiline statement:s {: RESULT = new LabeledStatement((BlockStatement)s); :}
+		IDENTIFIER:i colon_multiline statement:s {: RESULT = new LabeledStatement((String)i, (BlockStatement)s); :}
 	;
 expression_statement ::=
 		statement_expression:s {: RESULT = new ExpressionStatement((StatementExpression)s); :}
@@ -522,12 +522,12 @@ statement_expression ::=
 	|	class_instance_creation_expression:c {: RESULT = c; :}
 	;
 if_then_statement ::=
-		IF expression:e THEN statement:s {: RESULT = new IfStatement((Expression)e, (BlockStatement)s); :}
+		IF expression:e THEN statement:s {: RESULT = new IfStatement((Expression)e, new BlockStatements((BlockStatement)s)); :}
 	;
 full_if_statement ::=
-		IF expression:e terminators block_statements:s terminators else_if_statements_opt:f else_statement_opt:g END IF {: RESULT = new IfStatement((Expression)e, (BlockStatements)s, (ElseIfStatements)f, (ElseStatement)g); :}
+		IF expression:e terminators block_statements:s terminators else_if_statements_opt:f else_statement_opt:g END IF {: RESULT = new IfStatement((Expression)e, (BlockStatements)s, (ElseIfStatements)f, (BlockStatements)g); :}
 	;
-else_if_statements_opt ::= {: RESULT = new ElseIfStatement(); :}
+else_if_statements_opt ::= {: RESULT = new ElseIfStatements(); :}
 	| else_if_statements:s {: RESULT = s; :}
 	;
 else_if_statements ::=
@@ -537,13 +537,13 @@ else_if_statements ::=
 else_if_statement ::=
 		ELSEIF expression:e terminators block_statements:s {: RESULT = new ElseIfStatement((Expression)e, (BlockStatements)s); :}
 	;
-else_statement_opt ::= {: RESULT = new ElseStatement(); :}
+else_statement_opt ::= {: RESULT = new BlockStatements(); :}
 	|	else_statement:e {: RESULT = e; :}
 	;
-else_statement ::= ELSE terminators block_statements:s {: RESULT = new ElseStatement((BlockStatements)s); :}
+else_statement ::= ELSE terminators block_statements:s {: RESULT = s; :}
 	;
 switch_statement ::=
-		SWITCH expression:e terminators switch_block_statement_groups_opt:g END SWITCH
+		SWITCH expression:e terminators switch_block_statement_groups_opt:g END SWITCH {: RESULT = new SwitchStatement((Expression)e, (SwitchGroups)g); :}
 	;
 switch_block_statement_groups_opt ::= {: RESULT = new SwitchGroups(); :}
 	|	switch_block_statement_groups:g {: RESULT = g; :}
@@ -553,27 +553,27 @@ switch_block_statement_groups ::=
 	|	switch_block_statement_group:g terminators switch_block_statement_groups:h {: RESULT = new SwitchGroups((SwitchGroup)g, (SwitchGroups)h); :}
 	;
 switch_block_statement_group ::=
-		switch_case_header:h terminators block_statements:s {: RESULT = new SwitchGroup((SwitchHeader)h, (BlockStatements)s); :}
+		switch_case_header:h terminators block_statements:s {: RESULT = new SwitchGroup((SwitchLabels)h, (BlockStatements)s); :}
 	;
 switch_case_header ::=
-		CASE switch_labels:l colon_multiline {: RESULT = new SwitchHeader((SwitchLabels)l); :}
-	|	DEFAULT colon_multiline {: RESULT = new SwitchHeader(); :}
+		CASE switch_labels:l colon_multiline {: RESULT = l; :}
+	|	DEFAULT colon_multiline {: RESULT = new SwitchLabels(); :}
 	;
 switch_labels ::=
 		switch_label:l {: RESULT = new SwitchLabels((SwitchLabel)l); :}
 	|	switch_labels:l comma_multiline switch_label:m {: RESULT = new SwitchLabels((SwitchLabel)m, (SwitchLabels)l); :}
 	;
-switch_label ::= constant_expression {: RESULT = new SwitchLabel((Expression)e); :}
+switch_label ::= constant_expression:e {: RESULT = new SwitchLabel((Expression)e); :}
 	;
 while_statement ::=
-		WHILE expression:e terminators block_statements:s END WHILE {: RESULT = new WhileStatement((Expression)e, (BlockStatements)s); :}
+		WHILE expression:e terminators block_statements:s END WHILE {: RESULT = new WhileStatement((Expression)e, (BlockStatements)s, WhileStatement.ConditionOrder.BEFORE); :}
 	;
 do_statement ::=
-		DO terminators block_statements:s END WHILE expression:e {: RESULT = new DoStatement((Expression)e, ((BlockStatements)s); :}
+		DO terminators block_statements:s END WHILE expression:e {: RESULT = new WhileStatement((Expression)e, (BlockStatements)s, WhileStatement.ConditionOrder.AFTER); :}
 	;
 for_statement ::=
-		FOR for_init_opt:f semicolon_multiline expression_opt:e semicolon_multiline for_update_opt:u terminators statement
-		{: RESULT = new ForStatement((ForInitializer)f, (Expression)e, (StatementExpressionList)u); :}
+		FOR for_init_opt:f semicolon_multiline expression_opt:e semicolon_multiline for_update_opt:u terminators block_statements:s END FOR
+		{: RESULT = new ForStatement((ForInitializer)f, (Expression)e, (StatementExpressionList)u, (BlockStatements)s); :}
 	;
 for_init_opt ::= {: RESULT = new ForInitializer(); :}
 	|	for_init:i {: RESULT = i; :}
@@ -592,13 +592,13 @@ statement_expression_list ::=
 	;
 
 break_statement ::=
-		BREAK {: RESULT = new BreakStatement(); :}
-	|	BREAK IDENTIFIER:i {: RESULT = new BreakStatement((String)i); :}
+		BREAK {: RESULT = new ControlStatement(ControlStatement.Kind.BREAK); :}
+	|	BREAK IDENTIFIER:i {: RESULT = new ControlStatement(ControlStatement.Kind.BREAK, (String)i); :}
 	;
 
 continue_statement ::=
-		CONTINUE {: RESULT = new ContinueStatement(); :}
-	|	CONTINUE IDENTIFIER:i {: RESULT = new ContinueStatement((String)i); :}
+		CONTINUE {: RESULT = new ControlStatement(ControlStatement.Kind.CONTINUE); :}
+	|	CONTINUE IDENTIFIER:i {: RESULT = new ControlStatement(ControlStatement.Kind.CONTINUE, (String)i); :}
 	;
 return_statement ::=
 		RETURN {: RESULT = new ReturnStatement(); :}

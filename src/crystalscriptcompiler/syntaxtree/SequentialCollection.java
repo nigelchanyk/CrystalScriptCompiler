@@ -59,4 +59,7 @@ public class SequentialCollection<T> extends ParseTreeNode implements Iterable<T
 		return descIterable;
 	}
 	
+	public int size() {
+		return collection.size();
+	}
 }
