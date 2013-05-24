@@ -5,18 +5,18 @@
 package crystalscriptcompiler.syntaxtree.expressions.primary.methodinvocation;
 
 import crystalscriptcompiler.syntaxtree.expressions.ArgumentList;
-import crystalscriptcompiler.syntaxtree.expressions.primary.Primary;
+import crystalscriptcompiler.syntaxtree.names.Name;
 
 /**
  *
  * @author User
  */
-public class MethodInvocation extends Primary {
+public class ImplicitMethodInvocation extends MethodInvocation {
+	
+	private Name name;
 
-	private ArgumentList arguments;
-	
-	public MethodInvocation(ArgumentList arguments) {
-		this.arguments = arguments;
+	public ImplicitMethodInvocation(Name name, ArgumentList arguments) {
+		super(arguments);
+		this.name = name;
 	}
-	
 }

@@ -5,7 +5,7 @@
 package crystalscriptcompiler.syntaxtree.classes;
 
 import crystalscriptcompiler.syntaxtree.ParseTreeNode;
-import crystalscriptcompiler.syntaxtree.expressions.primary.ArgumentList;
+import crystalscriptcompiler.syntaxtree.expressions.ArgumentList;
 
 /**
  *

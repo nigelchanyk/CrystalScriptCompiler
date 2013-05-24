@@ -2,9 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package crystalscriptcompiler.syntaxtree.expressions.primary;
+package crystalscriptcompiler.syntaxtree.expressions.primary.accesses;
 
 import crystalscriptcompiler.syntaxtree.expressions.Expression;
+import crystalscriptcompiler.syntaxtree.expressions.primary.LeftValue;
 import crystalscriptcompiler.syntaxtree.names.Name;
 
 /**

@@ -8,6 +8,5 @@ package crystalscriptcompiler.syntaxtree.expressions.primary;
  *
  * @author User
  */
-public class ThisPrimary {
-	
+public class ThisPrimary extends Primary {
 }

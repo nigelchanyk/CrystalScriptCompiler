@@ -3,6 +3,7 @@ import crystalscriptcompiler.syntaxtree.classes.*;
 import crystalscriptcompiler.syntaxtree.expressions.*;
 import crystalscriptcompiler.syntaxtree.expressions.basic.*;
 import crystalscriptcompiler.syntaxtree.expressions.primary.*;
+import crystalscriptcompiler.syntaxtree.expressions.primary.accesses.*;
 import crystalscriptcompiler.syntaxtree.expressions.primary.instantiations.*;
 import crystalscriptcompiler.syntaxtree.expressions.primary.literals.*;
 import crystalscriptcompiler.syntaxtree.expressions.primary.methodinvocation.*;
@@ -572,8 +573,8 @@ do_statement ::=
 		DO terminators block_statements:s END WHILE expression:e {: RESULT = new WhileStatement((Expression)e, (BlockStatements)s, WhileStatement.ConditionOrder.AFTER); :}
 	;
 for_statement ::=
-		FOR for_init_opt:f semicolon_multiline expression_opt:e semicolon_multiline for_update_opt:u terminators block_statements END FOR
-		{: RESULT = new ForStatement((ForInitializer)f, (Expression)e, (StatementExpressionList)u); :}
+		FOR for_init_opt:f semicolon_multiline expression_opt:e semicolon_multiline for_update_opt:u terminators block_statements:s END FOR
+		{: RESULT = new ForStatement((ForInitializer)f, (Expression)e, (StatementExpressionList)u, (BlockStatements)s); :}
 	;
 for_init_opt ::= {: RESULT = new ForInitializer(); :}
 	|	for_init:i {: RESULT = i; :}
@@ -608,17 +609,17 @@ throw_statement ::=
 		THROW expression:e {: RESULT = new ThrowStatement((Expression)e); :}
 	;
 try_statement ::=
-		TRY terminators block_statements:s catches:c END TRY {: RESULT = new TryStatement((BlockStatements)s, (CatchBlocks)c); :}
-	|	TRY terminators block_statements:s catches:c terminators_opt finally:f END TRY {: RESULT = new TryStatement((BlockStatements)s, (CatchBlocks)c, (FinallyBlock)f); :}
-	|	TRY terminators block_statements:s finally:f END TRY {: RESULT = new TryStatement((BlockStatements)s, (FinallyBlock)f); :}
+		TRY terminators block_statements:s catches:c END TRY {: RESULT = new TryStatement((BlockStatements)s, (CatchStatements)c); :}
+	|	TRY terminators block_statements:s catches:c terminators_opt finally:f END TRY {: RESULT = new TryStatement((BlockStatements)s, (CatchStatements)c, (BlockStatements)f); :}
+	|	TRY terminators block_statements:s finally:f END TRY {: RESULT = new TryStatement((BlockStatements)s, (BlockStatements)f); :}
 	;
-catches ::=	catch_clause:c {: RESULT = new CatchBlocks((CatchBlock)c); :}
-	|	catch_clause catches:d {: RESULT = new CatchBlock((CatchBlock)c, (CatchBlocks)d); :}
+catches ::=	catch_clause:c {: RESULT = new CatchStatements((CatchStatement)c); :}
+	|	catch_clause:c catches:d {: RESULT = new CatchStatements((CatchStatement)c, (CatchStatements)d); :}
 	;
 catch_clause ::=
-		CATCH formal_parameter:p terminators block_statements_opt:b {: RESULT = new CatchBlock((Parameter)p, (BlockStatements)b); :}
+		CATCH formal_parameter:p terminators block_statements_opt:b {: RESULT = new CatchStatement((Parameter)p, (BlockStatements)b); :}
 	;
-finally ::=	FINALLY terminators block_statements {: RESULT = new FinallyBlock((BlockStatements)b); :}
+finally ::=	FINALLY terminators block_statements:b {: RESULT = b; :}
 	;
 
 // 19.12) Expressions
@@ -634,12 +635,11 @@ primary_no_new_array ::=
 	|	field_access:a {: RESULT = a; :}
 	|	method_invocation:m {: RESULT = m; :}
 	|	array_access:a {: RESULT = a; :}
-	|	name:n DOT THIS {: RESULT = new ThisPrimary((Name)n); :}
 	;
 class_instance_creation_expression ::=
-		NEW class_type:c lparen_multiline argument_list_opt:a rparen_multiline {: RESULT = new ClassInstantiationExpression((ClassOrInterfaceType)t, (ArgumentList)a); :}
+		NEW class_type:c lparen_multiline argument_list_opt:a rparen_multiline {: RESULT = new InstantiationExpression((ClassOrInterfaceType)t, (ArgumentList)a); :}
 	|	NEW class_type:t lparen_multiline argument_list_opt:a rparen_multiline OVERRIDE terminators class_body_declarations_opt:d END OVERRIDE
-		{: RESULT = new ClassInstantiationExpression((ClassOrInterfaceType)t, (ArgumentList)a, (MemberDeclarations)d); :}
+		{: RESULT = new InstantiationExpression((ClassOrInterfaceType)t, (ArgumentList)a, (MemberDeclarations)d); :}
 	;
 argument_list_opt ::= {: RESULT = new ArgumentList(); :}
 	|	argument_list:a {: RESULT = a; :}
@@ -649,18 +649,18 @@ argument_list ::=
 	|	expression:e comma_multiline argument_list:a {: RESULT = new ArgumentList((Expression)e, (ArgumentList)a); :}
 	;
 array_creation_expression ::=
-		NEW ARRAY lparen_multiline argument_list_opt:a rparen_multiline {: RESULT = new ArrayInstantiationExpression((ArgumentList)a); :}
+		NEW ARRAY lparen_multiline argument_list_opt:a rparen_multiline {: RESULT = new InstantiationExpression(new PrimitiveType(PrimitiveType.Kind.ARRAY), (ArgumentList)a); :}
 	;
 object_creation_expression ::=
-		NEW OBJECT lparen_multiline argument_list_opt:a rparen_multiline {: RESULT = new ObjectInstantiationExpression((ArgumentList)a); :}
+		NEW OBJECT lparen_multiline argument_list_opt:a rparen_multiline {: RESULT = new InstantiationExpression(new PrimitiveType(PrimitiveType.Kind.OBJECT), (ArgumentList)a); :}
 	;
-field_access ::=
-		SUPER DOT IDENTIFIER:i {: RESULT = new FieldAccess((String)i); :}
-	|	name:n DOT SUPER DOT IDENTIFIER:i {: RESULT = new FieldAccess((String)i, (Name)n); :}
+field_access ::= primary:p DOT IDENTIFIER:i {: RESULT = new NonInheritedFieldAccess((Primary)p, (String)i); :}
+	|	SUPER DOT IDENTIFIER:i {: RESULT = new SuperFieldAccess((String)i); :}
+	|	name:n DOT SUPER DOT IDENTIFIER:i {: RESULT = new SuperFieldAccess((String)i, (Name)n); :}
 	;
 method_invocation ::=
-		name:n lparen_multiline argument_list_opt:a rparen_multiline {: RESULT = new MethodInvocation((Name)n, (ArgumentList)a); :}
-	|	primary:p DOT IDENTIFIER:i lparen_multiline argument_list_opt:a rparen_multiline {: RESULT = new MethodInvocation((Primary)p, (String)i, (ArgumentList)a); :}
+		name:n lparen_multiline argument_list_opt:a rparen_multiline {: RESULT = new ImplicitMethodInvocation((Name)n, (ArgumentList)a); :}
+	|	primary:p DOT IDENTIFIER:i lparen_multiline argument_list_opt:a rparen_multiline {: RESULT = new NonInheritedMethodInvocation((Primary)p, (String)i, (ArgumentList)a); :}
 	|	SUPER DOT IDENTIFIER:i lparen_multiline argument_list_opt:a rparen_multiline {: RESULT = new SuperMethodInvocation((String)i, (ArgumentList)a); :}
 	|	name:n DOT SUPER DOT IDENTIFIER:i lparen_multiline argument_list_opt:a rparen_multiline {: RESULT = new SuperMethodInvocation((Name)n, (String)i, (ArgumentList)a); :}
 	;

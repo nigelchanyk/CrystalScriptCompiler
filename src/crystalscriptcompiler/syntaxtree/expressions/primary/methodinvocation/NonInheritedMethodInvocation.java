@@ -4,26 +4,24 @@
  */
 package crystalscriptcompiler.syntaxtree.expressions.primary.methodinvocation;
 
+import crystalscriptcompiler.syntaxtree.ParseTreeNode;
 import crystalscriptcompiler.syntaxtree.expressions.ArgumentList;
+import crystalscriptcompiler.syntaxtree.expressions.primary.Primary;
 import crystalscriptcompiler.syntaxtree.names.Name;
 
 /**
  *
  * @author User
  */
-public class SuperMethodInvocation extends MethodInvocation {
+public class NonInheritedMethodInvocation extends MethodInvocation {
 
-	private Name superclassName; // Nullable
+	private Primary primary;
 	private String methodId;
 
-	public SuperMethodInvocation(String methodId, ArgumentList arguments) {
-		this(null, methodId, arguments);
+	public NonInheritedMethodInvocation(Primary primary, String methodId, ArgumentList arguments) {
+		super(arguments);
+		this.primary = primary;
+		this.methodId = methodId;
 	}
 	
-	public SuperMethodInvocation(Name superclassName, String methodId, ArgumentList arguments) {
-		super(arguments);
-		this.methodId = methodId;
-		this.superclassName = superclassName;
-	}
-
 }
