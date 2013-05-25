@@ -4,14 +4,11 @@
  */
 package crystalscriptcompiler.syntaxtree.expressions.basic;
 
-import crystalscriptcompiler.syntaxtree.ParseTreeNode;
-import crystalscriptcompiler.syntaxtree.expressions.primary.Primary;
-
 /**
  *
  * @author User
  */
-public class UnaryExpression extends BasicExpression {
+public class UnaryExpression extends SingularExpression {
 	
 	public static enum Kind {
 		NONE,
@@ -25,15 +22,15 @@ public class UnaryExpression extends BasicExpression {
 		NEGATE
 	}
 
-	private Primary value;
+	private SingularExpression value;
 	private Kind kind;
 
-	public UnaryExpression(Primary value) {
+	public UnaryExpression(SingularExpression value) {
 		this.value = value;
 		this.kind = Kind.NONE;
 	}
 
-	public UnaryExpression(Primary value, Kind kind) {
+	public UnaryExpression(SingularExpression value, Kind kind) {
 		this.value = value;
 		this.kind = kind;
 	}

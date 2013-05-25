@@ -4,7 +4,6 @@ import crystalscriptcompiler.syntaxtree.expressions.*;
 import crystalscriptcompiler.syntaxtree.expressions.basic.*;
 import crystalscriptcompiler.syntaxtree.expressions.primary.*;
 import crystalscriptcompiler.syntaxtree.expressions.primary.accesses.*;
-import crystalscriptcompiler.syntaxtree.expressions.primary.instantiations.*;
 import crystalscriptcompiler.syntaxtree.expressions.primary.literals.*;
 import crystalscriptcompiler.syntaxtree.expressions.primary.methodinvocation.*;
 import crystalscriptcompiler.syntaxtree.fields.*;
@@ -665,12 +664,12 @@ method_invocation ::=
 	|	name:n DOT SUPER DOT IDENTIFIER:i lparen_multiline argument_list_opt:a rparen_multiline {: RESULT = new SuperMethodInvocation((Name)n, (String)i, (ArgumentList)a); :}
 	;
 array_access ::=
-		name:n lbrack_multiline expression:e rbrack_multiline {: RESULT = new ArrayAccess((Name)n, (Expression)e); :}
-	|	primary_no_new_array:p lbrack_multiline expression:e rbrack_multiline {: RESULT = new ArrayAccess((Primary)p, (Expression)e); :}
+		name:n lbrack_multiline expression:e rbrack_multiline {: RESULT = new ImplicitArrayAccess((Name)n, (Expression)e); :}
+	|	primary_no_new_array:p lbrack_multiline expression:e rbrack_multiline {: RESULT = new PrimaryArrayAccess((Primary)p, (Expression)e); :}
 	;
 postfix_expression ::=
-		primary:p {: RESULT = new UnaryExpression((Primary)p); :}
-	|	name:n {: RESULT = new UnaryExpression((Name)n); :}
+		primary:p {: RESULT = new PrimaryExpression((Primary)p); :}
+	|	name:n {: RESULT = new NameExpression((Name)n); :}
 	|	postincrement_expression:p {: RESULT = p; :}
 	|	postdecrement_expression:p {: RESULT = p; :}
 	;

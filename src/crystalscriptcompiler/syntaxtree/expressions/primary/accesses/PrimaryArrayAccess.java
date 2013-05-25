@@ -5,18 +5,19 @@
 package crystalscriptcompiler.syntaxtree.expressions.primary.accesses;
 
 import crystalscriptcompiler.syntaxtree.expressions.Expression;
-import crystalscriptcompiler.syntaxtree.expressions.primary.LeftValue;
+import crystalscriptcompiler.syntaxtree.expressions.primary.Primary;
 
 /**
  *
  * @author User
  */
-public abstract class ArrayAccess extends LeftValue {
+public class PrimaryArrayAccess extends ArrayAccess {
 	
-	private Expression index;
+	private Primary primary;
 
-	public ArrayAccess(Expression index) {
-		this.index = index;
+	public PrimaryArrayAccess(Primary primary, Expression index) {
+		super(index);
+		this.primary = primary;
 	}
 	
 }

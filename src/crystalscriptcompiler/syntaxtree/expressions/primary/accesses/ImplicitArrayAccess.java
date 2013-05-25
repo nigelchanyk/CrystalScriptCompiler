@@ -5,18 +5,18 @@
 package crystalscriptcompiler.syntaxtree.expressions.primary.accesses;
 
 import crystalscriptcompiler.syntaxtree.expressions.Expression;
-import crystalscriptcompiler.syntaxtree.expressions.primary.LeftValue;
+import crystalscriptcompiler.syntaxtree.names.Name;
 
 /**
  *
  * @author User
  */
-public abstract class ArrayAccess extends LeftValue {
+public class ImplicitArrayAccess extends ArrayAccess {
 	
-	private Expression index;
+	private Name name;
 
-	public ArrayAccess(Expression index) {
-		this.index = index;
+	public ImplicitArrayAccess(Name name, Expression index) {
+		super(index);
+		this.name = name;
 	}
-	
 }
