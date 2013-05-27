@@ -12,6 +12,11 @@ import java.util.LinkedList;
  * @author User
  */
 public class SequentialCollection<T> extends ParseTreeNode implements Iterable<T> {
+
+	public static enum Order {
+		FORWARD,
+		REVERSE
+	}
 	
 	private LinkedList<T> collection;
 	private Iterable<T> descIterable = new Iterable<T>() {
@@ -40,14 +45,31 @@ public class SequentialCollection<T> extends ParseTreeNode implements Iterable<T
 	}
 
 	public SequentialCollection(SequentialCollection<T> current, SequentialCollection<T> next) {
+		this(current, next, Order.FORWARD);
+	}
+
+	public SequentialCollection(SequentialCollection<T> current, SequentialCollection<T> next, Order order) {
 		this.collection = next.collection;
-		for (T item : current.iterateReversed())
-			collection.addFirst(item);
+		if (order == Order.FORWARD) {
+			for (T item : current.iterateReversed())
+				collection.addFirst(item);
+		}
+		else {
+			for (T item : current)
+				collection.addLast(item);
+		}
 	}
 
 	public SequentialCollection(T current, SequentialCollection<T> next) {
+		this(current, next, Order.FORWARD);
+	}
+
+	public SequentialCollection(T current, SequentialCollection<T> next, Order order) {
 		this.collection = next.collection;
-		collection.addFirst(current);
+		if (order == Order.FORWARD)
+			collection.addFirst(current);
+		else
+			collection.addLast(current);
 	}
 
 	@Override

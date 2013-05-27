@@ -18,12 +18,12 @@ public class WhileStatement extends BlockStatement {
 	}
 	
 	private Expression condition;
-	private BlockStatements statements;
+	private BlockStatement statement;
 	private ConditionOrder order;
 	
-	public WhileStatement(Expression condition, BlockStatements statements, ConditionOrder order) {
+	public WhileStatement(Expression condition, BlockStatement statement, ConditionOrder order) {
 		this.condition = condition;
-		this.statements = statements;
+		this.statement = statement;
 		this.order = order;
 	}
 }

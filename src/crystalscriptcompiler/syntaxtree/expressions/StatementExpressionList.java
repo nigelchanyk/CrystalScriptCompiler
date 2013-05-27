@@ -19,8 +19,8 @@ public class StatementExpressionList extends SequentialCollection<StatementExpre
 		super(expression);
 	}
 
-	public StatementExpressionList(StatementExpression expression, StatementExpressionList next) {
-		super(expression, next);
+	public StatementExpressionList(StatementExpression expression, StatementExpressionList next, Order order) {
+		super(expression, next, order);
 	}
 	
 }

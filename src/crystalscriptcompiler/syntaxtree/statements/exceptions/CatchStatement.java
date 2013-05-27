@@ -6,7 +6,7 @@ package crystalscriptcompiler.syntaxtree.statements.exceptions;
 
 import crystalscriptcompiler.syntaxtree.ParseTreeNode;
 import crystalscriptcompiler.syntaxtree.methods.Parameter;
-import crystalscriptcompiler.syntaxtree.statements.BlockStatements;
+import crystalscriptcompiler.syntaxtree.statements.Block;
 
 /**
  *
@@ -15,11 +15,11 @@ import crystalscriptcompiler.syntaxtree.statements.BlockStatements;
 public class CatchStatement extends ParseTreeNode {
 	
 	private Parameter parameter;
-	private BlockStatements statements;
+	private Block block;
 	
-	public CatchStatement(Parameter parameter, BlockStatements statements) {
+	public CatchStatement(Parameter parameter, Block block) {
 		this.parameter = parameter;
-		this.statements = statements;
+		this.block = block;
 	}
 	
 }

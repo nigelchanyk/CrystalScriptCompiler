@@ -18,13 +18,13 @@ public class ForStatement extends BlockStatement {
 	private ForInitializer initializer;
 	private Expression condition;
 	private StatementExpressionList updates;
-	private BlockStatements statements;
+	private BlockStatement statement;
 	
-	public ForStatement(ForInitializer initializer, Expression condition, StatementExpressionList updates, BlockStatements statements) {
+	public ForStatement(ForInitializer initializer, Expression condition, StatementExpressionList updates, BlockStatement statement) {
 		this.initializer = initializer;
 		this.condition = condition;
 		this.updates = updates;
-		this.statements = statements;
+		this.statement = statement;
 	}
 	
 }

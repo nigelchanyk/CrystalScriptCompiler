@@ -19,8 +19,8 @@ public class BlockStatements extends SequentialCollection<BlockStatement> {
 		super(statement);
 	}
 
-	public BlockStatements(BlockStatement statement, BlockStatements next) {
-		super(statement, next);
+	public BlockStatements(BlockStatement statement, BlockStatements next, Order order) {
+		super(statement, next, order);
 	}
 	
 }

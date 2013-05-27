@@ -4,8 +4,8 @@
  */
 package crystalscriptcompiler.syntaxtree.statements.exceptions;
 
+import crystalscriptcompiler.syntaxtree.statements.Block;
 import crystalscriptcompiler.syntaxtree.statements.BlockStatement;
-import crystalscriptcompiler.syntaxtree.statements.BlockStatements;
 
 /**
  *
@@ -13,22 +13,22 @@ import crystalscriptcompiler.syntaxtree.statements.BlockStatements;
  */
 public class TryStatement extends BlockStatement {
 	
-	private BlockStatements statements;
+	private Block block;
 	private CatchStatements catches;
-	private BlockStatements finallyStatements;
+	private Block finallyBlock;
 
-	public TryStatement(BlockStatements statements, CatchStatements catches) {
-		this(statements, catches, new BlockStatements());
+	public TryStatement(Block block, CatchStatements catches) {
+		this(block, catches, new Block());
 	}
 
-	public TryStatement(BlockStatements statements, BlockStatements finallyStatements) {
-		this(statements, new CatchStatements(), finallyStatements);
+	public TryStatement(Block block, Block finallyBlock) {
+		this(block, new CatchStatements(), block);
 	}
 	
-	public TryStatement(BlockStatements statements, CatchStatements catches, BlockStatements finallyStatements) {
-		this.statements = statements;
+	public TryStatement(Block block, CatchStatements catches, Block finallyBlock) {
+		this.block = block;
 		this.catches = catches;
-		this.finallyStatements = finallyStatements;
+		this.finallyBlock = finallyBlock;
 	}
 	
 }

@@ -30,5 +30,13 @@ public class MemberDeclarations extends SequentialCollection<MemberDeclaration> 
 	public MemberDeclarations(MemberDeclarations members, MemberDeclarations next) {
 		super(members, next);
 	}
+
+	public MemberDeclarations(MemberDeclaration member, MemberDeclarations next, Order order) {
+		super(member, next, order);
+	}
+
+	public MemberDeclarations(MemberDeclarations members, MemberDeclarations next, Order order) {
+		super(members, next, order);
+	}
 	
 }

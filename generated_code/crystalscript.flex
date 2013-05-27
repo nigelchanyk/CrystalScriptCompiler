@@ -48,7 +48,6 @@ import java_cup.runtime.*;
 %cupdebug
 
 %{
-  boolean completed = false;
   StringBuffer string = new StringBuffer();
   
   private Symbol symbol(int type) {
@@ -98,7 +97,6 @@ EscapeCharacters = \\\'|\\\"|\\\\|\\n|\\r|\\t|\\b|\\f
 
   /* keywords */
   "abstract"                     { return symbol(ABSTRACT); }
-  "as"							 { return symbol(AS); }
   "array"						 { return symbol(ARRAY); }
   "boolean"                      { return symbol(BOOLEAN); }
   "break"                        { return symbol(BREAK); }
@@ -151,6 +149,8 @@ EscapeCharacters = \\\'|\\\"|\\\\|\\n|\\r|\\t|\\b|\\f
   ")"                            { return symbol(RPAREN); }
   "["                            { return symbol(LBRACK); }
   "]"                            { return symbol(RBRACK); }
+  "{"                            { return symbol(LBRACE); }
+  "}"                            { return symbol(RBRACE); }
   ";"                            { return symbol(SEMICOLON); }
   ","                            { return symbol(COMMA); }
   "."                            { return symbol(DOT); }
@@ -199,7 +199,7 @@ EscapeCharacters = \\\'|\\\"|\\\\|\\n|\\r|\\t|\\b|\\f
   
   {NumberLiteral}                { return symbol(NUMBER_LITERAL, new Double(yytext())); }
   
-  {LineTerminator}				 { return symbol(NEWLINE); }
+  {LineTerminator}				 { /* ignore */ }
   
   /* comments */
   {Comment}                      { /* ignore */ }
@@ -225,4 +225,4 @@ EscapeCharacters = \\\'|\\\"|\\\\|\\n|\\r|\\t|\\b|\\f
 /* error fallback */
 .|\n                             { throw new RuntimeException("Illegal character \""+yytext()+
                                                               "\" at line "+yyline+", column "+yycolumn); }
-<<EOF>>                          { if (completed) return symbol(EOF); completed = true; return symbol(ENDOFFILE); }
+<<EOF>>                          { return symbol(EOF); }

@@ -19,8 +19,8 @@ public class SwitchGroups extends SequentialCollection<SwitchGroup> {
 		super(group);
 	}
 
-	public SwitchGroups(SwitchGroup group, SwitchGroups next) {
-		super(group, next);
+	public SwitchGroups(SwitchGroup group, SwitchGroups next, Order order) {
+		super(group, next, order);
 	}
 	
 }

@@ -19,8 +19,8 @@ public class CatchStatements extends SequentialCollection<CatchStatement> {
 		super(catchStatement);
 	}
 
-	public CatchStatements(CatchStatement catchStatement, CatchStatements next) {
-		super(catchStatement, next);
+	public CatchStatements(CatchStatement catchStatement, CatchStatements next, Order order) {
+		super(catchStatement, next, order);
 	}
 	
 }

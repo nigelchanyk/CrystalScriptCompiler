@@ -19,8 +19,8 @@ public class Modifiers extends SequentialCollection<Modifier> {
 		super(modifier);
 	}
 
-	public Modifiers(Modifier modifier, Modifiers next) {
-		super(modifier, next);
+	public Modifiers(Modifier modifier, Modifiers next, Order order) {
+		super(modifier, next, order);
 	}
 	
 }

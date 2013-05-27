@@ -19,8 +19,8 @@ public class ArgumentList extends SequentialCollection<Expression> {
 		super(argument);
 	}
 
-	public ArgumentList(Expression argument, ArgumentList next) {
-		super(argument, next);
+	public ArgumentList(Expression argument, ArgumentList next, Order order) {
+		super(argument, next, order);
 	}
 	
 }

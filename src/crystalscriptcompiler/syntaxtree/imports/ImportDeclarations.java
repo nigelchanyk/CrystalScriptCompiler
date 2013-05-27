@@ -19,8 +19,8 @@ public class ImportDeclarations extends SequentialCollection<ImportDeclaration> 
 		super(declaration);
 	}
 
-	public ImportDeclarations(ImportDeclaration declaration, ImportDeclarations next) {
-		super(declaration, next);
+	public ImportDeclarations(ImportDeclaration declaration, ImportDeclarations next, Order order) {
+		super(declaration, next, order);
 	}
 	
 }

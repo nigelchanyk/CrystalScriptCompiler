@@ -19,8 +19,8 @@ public class SwitchLabels extends SequentialCollection<SwitchLabel> {
 		super(label);
 	}
 
-	public SwitchLabels(SwitchLabel label, SwitchLabels next) {
-		super(label, next);
+	public SwitchLabels(SwitchLabel label, SwitchLabels next, Order order) {
+		super(label, next, order);
 	}
 
 	public boolean isDefault() {

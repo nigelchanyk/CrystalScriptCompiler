@@ -20,8 +20,8 @@ public class Interfaces extends SequentialCollection<ClassOrInterfaceType> {
 		super(interfaceType);
 	}
 
-	public Interfaces(ClassOrInterfaceType interfaceType, Interfaces next) {
-		super(interfaceType, next);
+	public Interfaces(ClassOrInterfaceType interfaceType, Interfaces next, Order order) {
+		super(interfaceType, next, order);
 	}
 	
 }

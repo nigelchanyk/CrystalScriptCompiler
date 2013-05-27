@@ -19,8 +19,8 @@ public class Parameters extends SequentialCollection<Parameter> {
 		super(parameter);
 	}
 
-	public Parameters(Parameter parameter, Parameters next) {
-		super(parameter, next);
+	public Parameters(Parameter parameter, Parameters next, Order order) {
+		super(parameter, next, order);
 	}
 	
 }

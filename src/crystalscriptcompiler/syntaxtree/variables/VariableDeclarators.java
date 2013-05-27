@@ -19,8 +19,8 @@ public class VariableDeclarators extends SequentialCollection<VariableDeclarator
 		super(declarator);
 	}
 
-	public VariableDeclarators(VariableDeclarator declarator, VariableDeclarators next) {
-		super(declarator, next);
+	public VariableDeclarators(VariableDeclarator declarator, VariableDeclarators next, Order order) {
+		super(declarator, next, order);
 	}
 	
 }
