@@ -4,13 +4,14 @@
  */
 package crystalscriptcompiler;
 
+import java.io.File;
 import java.io.FileReader;
 
 /**
  *
  * @author User
  */
-public class CrystalScriptCompiler {
+public class Main {
 
 	/**
 	 * @param args the command line arguments
@@ -26,7 +27,10 @@ public class CrystalScriptCompiler {
 		try {
 			Scanner scanner = new Scanner(new FileReader(args[0]));
 			Parser parser = new Parser(scanner);
-			ModuleAnalyzer analyzer = new ModuleAnalyzer(parser.parse());
+			parser.parse();
+			File file = new File(args[0]);
+			Namespace root = new Namespace(file.getParentFile());
+			root.add(file.getName().substring(0, file.getName().lastIndexOf(".")), parser.getRoot());
 		} catch (Exception e) {
 			System.err.println("[Error]" + e.getMessage());
 		}

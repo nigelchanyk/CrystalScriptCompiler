@@ -4,10 +4,16 @@
  */
 package crystalscriptcompiler.syntaxtree;
 
+import crystalscriptcompiler.syntaxtree.names.Name;
+import java.util.List;
+
 /**
  *
  * @author User
  */
-public class ParseTreeNode {
+public abstract class ParseTreeNode {
+	
+	public void addDependencies(List<Name> importList) {
+	}
 	
 }

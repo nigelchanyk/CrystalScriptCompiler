@@ -4,7 +4,10 @@
  */
 package crystalscriptcompiler.syntaxtree;
 
+import crystalscriptcompiler.Namespace;
 import crystalscriptcompiler.syntaxtree.imports.ImportDeclarations;
+import crystalscriptcompiler.syntaxtree.names.Name;
+import java.util.List;
 
 /**
  *
@@ -18,6 +21,10 @@ public class ParseTreeRoot extends ParseTreeNode {
 	public ParseTreeRoot(ImportDeclarations imports, TopLevelSections sections) {
 		this.imports = imports;
 		this.sections = sections;
+	}
+
+	@Override
+	public void addDependencies(List<Name> importList) {
 	}
 	
 }
