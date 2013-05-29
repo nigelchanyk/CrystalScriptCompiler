@@ -18,7 +18,6 @@ public class Parameter extends ParseTreeNode {
 	
 	private VariableDeclarator variable;
 	private Type type;
-	private Expression defaultParameter; // Nullable
 
 	public Parameter(VariableDeclarator variable) {
 		this.variable = variable;
@@ -30,16 +29,4 @@ public class Parameter extends ParseTreeNode {
 		this.type = type;
 	}
 
-	public Parameter(VariableDeclarator variable, Expression defaultParameter) {
-		this.variable = variable;
-		this.type = new VarType();
-		this.defaultParameter = defaultParameter;
-	}
-
-	public Parameter(VariableDeclarator variable, Type type, Expression defaultParameter) {
-		this.variable = variable;
-		this.type = type;
-		this.defaultParameter = defaultParameter;
-	}
-	
 }

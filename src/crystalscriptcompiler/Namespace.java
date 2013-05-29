@@ -66,4 +66,28 @@ public class Namespace {
 		}
 	}
 	
+	public boolean contains(Name moduleName) {
+		if (parent != null)
+			return parent.contains(moduleName);
+
+		return contains(moduleName.iterator());
+	}
+
+	private boolean contains(Iterator<String> namespaceIterator) {
+		String name = namespaceIterator.next();
+		if (namespaceIterator.hasNext()) {
+			// Current name is a directory
+			if (subNamespaceMapper.containsKey(name))
+				return subNamespaceMapper.get(name).contains(namespaceIterator);
+
+			return false;
+		}
+		// Current name is a module
+		return moduleMapper.containsKey(name);
+	}
+
+	public File getDirectory() {
+		return directory;
+	}
+
 }

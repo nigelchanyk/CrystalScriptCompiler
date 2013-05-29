@@ -25,14 +25,11 @@ public class Main {
 		}
 
 		try {
-			Scanner scanner = new Scanner(new FileReader(args[0]));
-			Parser parser = new Parser(scanner);
-			parser.parse();
-			File file = new File(args[0]);
-			Namespace root = new Namespace(file.getParentFile());
-			root.add(file.getName().substring(0, file.getName().lastIndexOf(".")), parser.getRoot());
+			Compiler compiler = new Compiler(new File(args[0]));
+			compiler.start();
 		} catch (Exception e) {
-			System.err.println("[Error]" + e.getMessage());
+			System.err.println("[Error] " + e.getMessage());
+			e.printStackTrace(System.err);
 		}
 	}
 }

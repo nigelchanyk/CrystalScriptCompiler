@@ -5,6 +5,7 @@
 package crystalscriptcompiler;
 
 import crystalscriptcompiler.exceptions.ExtensionException;
+import crystalscriptcompiler.syntaxtree.names.Name;
 import java.io.File;
 
 /**
@@ -27,6 +28,15 @@ public class Helper {
 			throw new ExtensionException(file, expectedExtension);
 
 		return file.getName().substring(0, extStart);
+	}
+	
+	public static File getModuleFile(Name module, Namespace globalNamespace) {
+		StringBuilder sb = new StringBuilder(globalNamespace.getDirectory().getAbsolutePath());
+		for (String subPath : module)
+			sb.append('/').append(subPath);
+		sb.append('.').append(Configurations.CRYSTALSCRIPT_EXTENSION);
+
+		return new File(sb.toString());
 	}
 	
 }

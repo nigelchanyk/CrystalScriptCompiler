@@ -18,7 +18,6 @@ import crystalscriptcompiler.syntaxtree.statements.switches.*;
 import crystalscriptcompiler.syntaxtree.types.*;
 import crystalscriptcompiler.syntaxtree.variables.*;
 import crystalscriptcompiler.syntaxtree.variables.initializers.*;
-import java_cup.runtime.*;
 
 parser code  {:
 
@@ -351,10 +350,8 @@ formal_parameter_list ::=
 	|	formal_parameter_list:q COMMA formal_parameter:p {: RESULT = new Parameters((Parameter)p, (Parameters)q, SequentialCollection.Order.REVERSE); :}
 	;
 formal_parameter ::=
-		type:t variable_declarator_id:v {: RESULT = new Parameter((VariableDeclarator)v, (Type)t); :}
-	|	type:t variable_declarator_id:v EQ constant_expression:c {: RESULT = new Parameter((VariableDeclarator)v, (Type)t, (Expression)c); :}
-	|	variable_declarator_id:v {: RESULT = new Parameter((VariableDeclarator)v); :}
-	|	variable_declarator_id:v EQ constant_expression:c {: RESULT = new Parameter((VariableDeclarator)v, (Expression)c); :}
+		type:t variable_declarator:v {: RESULT = new Parameter((VariableDeclarator)v, (Type)t); :}
+	|	variable_declarator:v {: RESULT = new Parameter((VariableDeclarator)v); :}
 	;
 
 // 19.8.5) Constructor Declarations

@@ -18,6 +18,11 @@ public class ParseTreeRoot extends ParseTreeNode {
 	private ImportDeclarations imports;
 	private TopLevelSections sections;
 
+	public ParseTreeRoot() {
+		imports = new ImportDeclarations();
+		sections = new TopLevelSections();
+	}
+
 	public ParseTreeRoot(ImportDeclarations imports, TopLevelSections sections) {
 		this.imports = imports;
 		this.sections = sections;
