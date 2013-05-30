@@ -32,4 +32,8 @@ public class StringResources {
 
 		return sb.toString();
 	}
+
+	public static String errorDuplicateDeclaration(String id) {
+		return "Duplicate declaration detected for " + id;
+	}
 }

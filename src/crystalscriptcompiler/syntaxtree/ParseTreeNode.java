@@ -20,7 +20,10 @@ public abstract class ParseTreeNode {
 	}
 
 	public void setSymbolTable(SymbolTable symbolTable) {
-		symbolTable = symbolTable;
+		this.symbolTable = symbolTable;
+	}
+
+	public void addDeclarationToTable() {
 	}
 	
 }

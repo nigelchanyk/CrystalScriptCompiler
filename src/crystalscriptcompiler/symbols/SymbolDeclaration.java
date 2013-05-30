@@ -13,6 +13,7 @@ public abstract class SymbolDeclaration {
 	public static enum Kind {
 		CLASS,
 		INTERFACE,
+		METHOD,
 		VARIABLE
 	}
 

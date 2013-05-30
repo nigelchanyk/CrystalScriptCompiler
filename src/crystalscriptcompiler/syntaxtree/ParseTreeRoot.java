@@ -38,5 +38,10 @@ public class ParseTreeRoot extends ParseTreeNode {
 		imports.setSymbolTable(symbolTable);
 		sections.setSymbolTable(symbolTable);
 	}
+
+	@Override
+	public void addDeclarationToTable() {
+		sections.addDeclarationToTable();
+	}
 	
 }

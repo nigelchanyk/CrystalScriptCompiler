@@ -32,5 +32,9 @@ public class InterfaceDeclaration extends MemberDeclaration {
 		superInterfaces.setSymbolTable(symbolTable);
 		members.setSymbolTable(new SymbolTable(symbolTable));
 	}
+
+	@Override
+	public void addDeclarationToTable() {
+	}
 	
 }

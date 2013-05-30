@@ -4,6 +4,7 @@
  */
 package crystalscriptcompiler.syntaxtree.classes;
 
+import crystalscriptcompiler.exceptions.DuplicateDeclarationException;
 import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.interfaces.Interfaces;
 import crystalscriptcompiler.syntaxtree.names.Name;
@@ -33,6 +34,15 @@ public class ClassDeclaration extends MemberDeclaration {
 		superclass.setSymbolTable(symbolTable);
 		interfaces.setSymbolTable(symbolTable);
 		members.setSymbolTable(new SymbolTable(symbolTable));
+	}
+
+	@Override
+	public void addDeclarationToTable() {
+		if (symbolTable.hasSymbol(id, SymbolTable.Scope.LOCAL))
+			throw new DuplicateDeclarationException(id);
+
+		symbolTable.addSymbol(id, this);
+		members.addDeclarationToTable();
 	}
 	
 }

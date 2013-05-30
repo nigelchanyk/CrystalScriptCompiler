@@ -94,4 +94,10 @@ public class SequentialCollection<T extends ParseTreeNode> extends ParseTreeNode
 			element.setSymbolTable(symbolTable);
 	}
 
+	@Override
+	public void addDeclarationToTable() {
+		for (T element : this)
+			element.addDeclarationToTable();
+	}
+
 }
