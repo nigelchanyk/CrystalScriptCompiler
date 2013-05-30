@@ -4,6 +4,7 @@
  */
 package crystalscriptcompiler.syntaxtree.classes;
 
+import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.ParseTreeNode;
 import crystalscriptcompiler.syntaxtree.types.ClassOrInterfaceType;
 
@@ -25,4 +26,11 @@ public class SuperclassOptional extends ParseTreeNode {
 	public ClassOrInterfaceType getSuperclass() {
 		return type;
 	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		super.setSymbolTable(symbolTable);
+		type.setSymbolTable(symbolTable);
+	}
+
 }

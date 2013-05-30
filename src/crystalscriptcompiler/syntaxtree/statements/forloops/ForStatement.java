@@ -4,10 +4,10 @@
  */
 package crystalscriptcompiler.syntaxtree.statements.forloops;
 
+import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.expressions.Expression;
 import crystalscriptcompiler.syntaxtree.expressions.StatementExpressionList;
 import crystalscriptcompiler.syntaxtree.statements.BlockStatement;
-import crystalscriptcompiler.syntaxtree.statements.BlockStatements;
 
 /**
  *
@@ -25,6 +25,16 @@ public class ForStatement extends BlockStatement {
 		this.condition = condition;
 		this.updates = updates;
 		this.statement = statement;
+	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		super.setSymbolTable(symbolTable);
+		SymbolTable innerTable = new SymbolTable();
+		initializer.setSymbolTable(innerTable);
+		condition.setSymbolTable(innerTable);
+		updates.setSymbolTable(innerTable);
+		statement.setSymbolTable(innerTable);
 	}
 	
 }

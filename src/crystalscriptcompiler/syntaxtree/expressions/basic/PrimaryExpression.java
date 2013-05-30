@@ -4,6 +4,7 @@
  */
 package crystalscriptcompiler.syntaxtree.expressions.basic;
 
+import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.expressions.primary.Primary;
 
 /**
@@ -16,6 +17,12 @@ public class PrimaryExpression extends SingularExpression {
 
 	public PrimaryExpression(Primary primary) {
 		this.primary = primary;
+	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		super.setSymbolTable(symbolTable);
+		primary.setSymbolTable(symbolTable);
 	}
 	
 }

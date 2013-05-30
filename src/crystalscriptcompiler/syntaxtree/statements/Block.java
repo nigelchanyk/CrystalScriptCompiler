@@ -4,6 +4,8 @@
  */
 package crystalscriptcompiler.syntaxtree.statements;
 
+import crystalscriptcompiler.symbols.SymbolTable;
+
 /**
  *
  * @author User
@@ -18,6 +20,13 @@ public class Block extends BlockStatement {
 
 	public Block(BlockStatements statements) {
 		this.statements = statements;
+	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		SymbolTable nestedTable = new SymbolTable(symbolTable);
+		super.setSymbolTable(nestedTable);
+		statements.setSymbolTable(nestedTable);
 	}
 	
 }

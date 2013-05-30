@@ -12,6 +12,10 @@ import crystalscriptcompiler.syntaxtree.methods.Parameters;
  * @author User
  */
 public class ConstructorDeclarator extends ParseTreeNode {
+
+	/*
+	 * This node will not be included in the syntax tree
+	 */
 	
 	private String id;
 	private Parameters parameters;

@@ -4,6 +4,7 @@
  */
 package crystalscriptcompiler.syntaxtree.statements;
 
+import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.expressions.Expression;
 
 /**
@@ -26,4 +27,12 @@ public class WhileStatement extends BlockStatement {
 		this.statement = statement;
 		this.order = order;
 	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		super.setSymbolTable(symbolTable);
+		condition.setSymbolTable(symbolTable);
+		statement.setSymbolTable(symbolTable);
+	}
+
 }

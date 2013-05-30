@@ -13,7 +13,7 @@ import java.io.File;
 public class NamespaceException extends CompilerException {
 	
 	public NamespaceException(File file) {
-		super("Namespace must match the corresponding directory: " + file.getAbsolutePath());
+		super("The following namespace cannot be found: " + file.getAbsolutePath());
 	}
 	
 }

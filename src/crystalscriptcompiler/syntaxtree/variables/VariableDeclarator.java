@@ -4,6 +4,7 @@
  */
 package crystalscriptcompiler.syntaxtree.variables;
 
+import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.ParseTreeNode;
 import crystalscriptcompiler.syntaxtree.variables.initializers.GenericVariableInitializer;
 
@@ -27,6 +28,13 @@ public class VariableDeclarator extends ParseTreeNode {
 
 	public String getId() {
 		return id;
+	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		super.setSymbolTable(symbolTable);
+		init.setSymbolTable(symbolTable);
+		
 	}
 	
 }

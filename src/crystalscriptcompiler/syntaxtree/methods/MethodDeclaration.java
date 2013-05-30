@@ -4,9 +4,9 @@
  */
 package crystalscriptcompiler.syntaxtree.methods;
 
+import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.classes.MemberDeclaration;
 import crystalscriptcompiler.syntaxtree.statements.Block;
-import crystalscriptcompiler.syntaxtree.statements.BlockStatements;
 
 /**
  *
@@ -27,6 +27,15 @@ public class MethodDeclaration extends MemberDeclaration {
 		super(Kind.METHOD, header.getModifiers(), header.getType(), header.getDeclarator().getId());
 		this.block = block;
 		this.parameters = header.getDeclarator().getParameters();
+	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		super.setSymbolTable(symbolTable);
+
+		SymbolTable innerTable = new SymbolTable();
+		block.setSymbolTable(innerTable);
+		parameters.setSymbolTable(innerTable);
 	}
 	
 }

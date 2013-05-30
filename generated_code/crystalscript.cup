@@ -722,7 +722,7 @@ assignment_expression ::=
 		conditional_expression:e {: RESULT = e; :}
 	|	assignment:a {: RESULT = a; :}
 	;
-assignment ::=	left_hand_side:l assignment_operator:o assignment_expression:e {: RESULT = new Assignment((LeftValue)l, (Assignment.Operator)o, (AssignmentExpression)e); :}
+assignment ::=	left_hand_side:l assignment_operator:o assignment_expression:e {: RESULT = new Assignment((LeftValue)l, (Assignment.Operator)o, (Expression)e); :}
 	;
 left_hand_side ::=
 		name:n {: RESULT = n; :}

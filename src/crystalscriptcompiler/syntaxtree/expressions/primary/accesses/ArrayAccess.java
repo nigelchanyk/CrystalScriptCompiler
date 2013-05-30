@@ -4,6 +4,7 @@
  */
 package crystalscriptcompiler.syntaxtree.expressions.primary.accesses;
 
+import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.expressions.Expression;
 import crystalscriptcompiler.syntaxtree.expressions.primary.LeftValue;
 
@@ -17,6 +18,12 @@ public abstract class ArrayAccess extends LeftValue {
 
 	public ArrayAccess(Expression index) {
 		this.index = index;
+	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		super.setSymbolTable(symbolTable);
+		index.setSymbolTable(symbolTable);
 	}
 	
 }

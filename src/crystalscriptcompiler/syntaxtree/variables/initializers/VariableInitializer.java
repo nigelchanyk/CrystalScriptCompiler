@@ -4,7 +4,7 @@
  */
 package crystalscriptcompiler.syntaxtree.variables.initializers;
 
-import crystalscriptcompiler.syntaxtree.ParseTreeNode;
+import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.expressions.Expression;
 
 /**
@@ -17,6 +17,12 @@ public class VariableInitializer extends GenericVariableInitializer {
 
 	public VariableInitializer(Expression expression) {
 		this.expression = expression;
+	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		super.setSymbolTable(symbolTable);
+		expression.setSymbolTable(symbolTable);
 	}
 	
 }

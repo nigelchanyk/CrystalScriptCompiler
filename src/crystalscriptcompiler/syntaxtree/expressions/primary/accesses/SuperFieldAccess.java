@@ -4,6 +4,7 @@
  */
 package crystalscriptcompiler.syntaxtree.expressions.primary.accesses;
 
+import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.names.Name;
 
 /**
@@ -21,6 +22,12 @@ public class SuperFieldAccess extends FieldAccess {
 	public SuperFieldAccess(String id, Name superclassName) {
 		super(id);
 		this.superclassName = superclassName;
+	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		super.setSymbolTable(symbolTable);
+		superclassName.setSymbolTable(symbolTable);
 	}
 	
 }

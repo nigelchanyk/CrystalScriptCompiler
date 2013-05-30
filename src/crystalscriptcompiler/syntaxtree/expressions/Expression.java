@@ -4,10 +4,12 @@
  */
 package crystalscriptcompiler.syntaxtree.expressions;
 
+import crystalscriptcompiler.syntaxtree.ParseTreeNode;
+
 /**
  *
  * @author User
  */
-public class Expression {
+public class Expression extends ParseTreeNode {
 	
 }

@@ -4,6 +4,7 @@
  */
 package crystalscriptcompiler.syntaxtree.names;
 
+import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.expressions.primary.LeftValue;
 import java.util.Iterator;
 import java.util.Objects;
@@ -19,6 +20,12 @@ public class Name extends LeftValue implements Iterable<String> {
 	
 	public Name(String value) {
 		this.value = value;
+	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		super.setSymbolTable(symbolTable);
+		parent.setSymbolTable(symbolTable);
 	}
 
 	@Override

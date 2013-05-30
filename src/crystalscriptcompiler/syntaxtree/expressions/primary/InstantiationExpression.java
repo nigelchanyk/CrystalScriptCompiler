@@ -4,6 +4,7 @@
  */
 package crystalscriptcompiler.syntaxtree.expressions.primary;
 
+import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.classes.MemberDeclarations;
 import crystalscriptcompiler.syntaxtree.expressions.ArgumentList;
 import crystalscriptcompiler.syntaxtree.types.Type;
@@ -26,6 +27,14 @@ public class InstantiationExpression extends Primary {
 		this.type = type;
 		this.arguments = arguments;
 		this.overrides = overrides;
+	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		super.setSymbolTable(symbolTable);
+		type.setSymbolTable(symbolTable);
+		arguments.setSymbolTable(symbolTable);
+		overrides.setSymbolTable(new SymbolTable(symbolTable));
 	}
 	
 }

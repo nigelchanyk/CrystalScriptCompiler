@@ -4,6 +4,7 @@
  */
 package crystalscriptcompiler.syntaxtree.expressions.primary.methodinvocation;
 
+import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.ParseTreeNode;
 import crystalscriptcompiler.syntaxtree.expressions.ArgumentList;
 import crystalscriptcompiler.syntaxtree.expressions.primary.Primary;
@@ -22,6 +23,12 @@ public class NonInheritedMethodInvocation extends MethodInvocation {
 		super(arguments);
 		this.primary = primary;
 		this.methodId = methodId;
+	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		super.setSymbolTable(symbolTable);
+		primary.setSymbolTable(symbolTable);
 	}
 	
 }

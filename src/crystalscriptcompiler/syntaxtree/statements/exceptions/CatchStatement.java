@@ -4,6 +4,7 @@
  */
 package crystalscriptcompiler.syntaxtree.statements.exceptions;
 
+import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.ParseTreeNode;
 import crystalscriptcompiler.syntaxtree.methods.Parameter;
 import crystalscriptcompiler.syntaxtree.statements.Block;
@@ -20,6 +21,15 @@ public class CatchStatement extends ParseTreeNode {
 	public CatchStatement(Parameter parameter, Block block) {
 		this.parameter = parameter;
 		this.block = block;
+	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		super.setSymbolTable(symbolTable);
+
+		SymbolTable innerTable = new SymbolTable(symbolTable);
+		parameter.setSymbolTable(innerTable);
+		block.setSymbolTable(innerTable);
 	}
 	
 }

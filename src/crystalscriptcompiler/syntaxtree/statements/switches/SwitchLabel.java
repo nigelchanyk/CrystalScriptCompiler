@@ -4,6 +4,7 @@
  */
 package crystalscriptcompiler.syntaxtree.statements.switches;
 
+import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.ParseTreeNode;
 import crystalscriptcompiler.syntaxtree.expressions.Expression;
 
@@ -17,6 +18,12 @@ public class SwitchLabel extends ParseTreeNode {
 	
 	public SwitchLabel(Expression expression) {
 		this.expression = expression;
+	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		super.setSymbolTable(symbolTable);
+		expression.setSymbolTable(symbolTable);
 	}
 	
 }

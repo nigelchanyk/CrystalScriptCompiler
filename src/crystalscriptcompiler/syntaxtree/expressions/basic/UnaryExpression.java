@@ -4,6 +4,8 @@
  */
 package crystalscriptcompiler.syntaxtree.expressions.basic;
 
+import crystalscriptcompiler.symbols.SymbolTable;
+
 /**
  *
  * @author User
@@ -33,6 +35,12 @@ public class UnaryExpression extends SingularExpression {
 	public UnaryExpression(SingularExpression value, Kind kind) {
 		this.value = value;
 		this.kind = kind;
+	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		super.setSymbolTable(symbolTable);
+		value.setSymbolTable(symbolTable);
 	}
 	
 }

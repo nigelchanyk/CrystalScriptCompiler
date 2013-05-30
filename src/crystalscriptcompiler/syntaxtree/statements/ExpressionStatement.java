@@ -4,6 +4,7 @@
  */
 package crystalscriptcompiler.syntaxtree.statements;
 
+import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.expressions.StatementExpression;
 
 /**
@@ -16,6 +17,12 @@ public class ExpressionStatement extends BlockStatement {
 
 	public ExpressionStatement(StatementExpression expression) {
 		this.expression = expression;
+	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		super.setSymbolTable(symbolTable);
+		expression.setSymbolTable(symbolTable);
 	}
 	
 }

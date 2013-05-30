@@ -4,6 +4,7 @@
  */
 package crystalscriptcompiler.syntaxtree.names;
 
+import crystalscriptcompiler.symbols.SymbolTable;
 import java.util.Iterator;
 import java.util.Objects;
 
@@ -19,6 +20,12 @@ public class QualifiedName extends Name {
 		super(value);
 		this.context = context;
 		this.context.parent = this;
+	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		super.setSymbolTable(symbolTable);
+		context.setSymbolTable(symbolTable);
 	}
 
 	@Override

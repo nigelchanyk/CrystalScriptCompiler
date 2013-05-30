@@ -90,4 +90,24 @@ public class Namespace {
 		return directory;
 	}
 
+	public Iterable<ParseTreeRoot> moduleIterable() {
+		return new Iterable<ParseTreeRoot>() {
+
+			@Override
+			public Iterator<ParseTreeRoot> iterator() {
+				return new Helper.HashMapValueIterator<>(moduleMapper);
+			}
+		};
+	}
+
+	public Iterable<Namespace> subNamespaceIterable() {
+		return new Iterable<Namespace>() {
+
+			@Override
+			public Iterator<Namespace> iterator() {
+				return new Helper.HashMapValueIterator<>(subNamespaceMapper);
+			}
+		};
+	}
+
 }

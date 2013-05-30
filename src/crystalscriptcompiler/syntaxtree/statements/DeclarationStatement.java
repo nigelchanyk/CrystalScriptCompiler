@@ -4,6 +4,7 @@
  */
 package crystalscriptcompiler.syntaxtree.statements;
 
+import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.variables.LocalVariableDeclaration;
 
 /**
@@ -16,6 +17,12 @@ public class DeclarationStatement extends BlockStatement {
 	
 	public DeclarationStatement(LocalVariableDeclaration declaration) {
 		this.declaration = declaration;
+	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		super.setSymbolTable(symbolTable);
+		declaration.setSymbolTable(symbolTable);
 	}
 	
 }

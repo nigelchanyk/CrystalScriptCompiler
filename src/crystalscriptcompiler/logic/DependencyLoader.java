@@ -8,6 +8,7 @@ import crystalscriptcompiler.Helper;
 import crystalscriptcompiler.Namespace;
 import crystalscriptcompiler.Parser;
 import crystalscriptcompiler.Scanner;
+import crystalscriptcompiler.exceptions.DependencyException;
 import crystalscriptcompiler.syntaxtree.ParseTreeRoot;
 import crystalscriptcompiler.syntaxtree.names.Name;
 import java.io.FileInputStream;
@@ -36,15 +37,18 @@ public class DependencyLoader {
 				ParseTreeRoot root;
 				try {
 					root = buildSyntaxTree(name, globalNamespace);
+					moduleQueue.addLast(root);
 				} catch (Exception e) {
 					parserExceptions.addLast(e);
 					root = new ParseTreeRoot();
 				}
 				
 				globalNamespace.add(name, root);
-				moduleQueue.addLast(root);
 			}
 		}
+
+		if (!parserExceptions.isEmpty())
+			throw new DependencyException(parserExceptions);
 	}
 
 	private ParseTreeRoot buildSyntaxTree(Name name, Namespace globalNamespace) throws Exception {

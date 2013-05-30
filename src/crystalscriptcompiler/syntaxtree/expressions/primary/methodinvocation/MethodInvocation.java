@@ -4,6 +4,7 @@
  */
 package crystalscriptcompiler.syntaxtree.expressions.primary.methodinvocation;
 
+import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.expressions.ArgumentList;
 import crystalscriptcompiler.syntaxtree.expressions.primary.Primary;
 
@@ -17,6 +18,12 @@ public class MethodInvocation extends Primary {
 	
 	public MethodInvocation(ArgumentList arguments) {
 		this.arguments = arguments;
+	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		super.setSymbolTable(symbolTable);
+		arguments.setSymbolTable(symbolTable);
 	}
 	
 }

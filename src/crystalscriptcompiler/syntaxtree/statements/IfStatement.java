@@ -4,8 +4,8 @@
  */
 package crystalscriptcompiler.syntaxtree.statements;
 
+import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.expressions.Expression;
-import crystalscriptcompiler.syntaxtree.statements.BlockStatement;
 
 /**
  *
@@ -25,6 +25,14 @@ public class IfStatement extends BlockStatement {
 		this.condition = condition;
 		this.statement = statement;
 		this.elseStatement = elseStatement;
+	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		super.setSymbolTable(symbolTable);
+		condition.setSymbolTable(symbolTable);
+		statement.setSymbolTable(symbolTable);
+		elseStatement.setSymbolTable(symbolTable);
 	}
 	
 }

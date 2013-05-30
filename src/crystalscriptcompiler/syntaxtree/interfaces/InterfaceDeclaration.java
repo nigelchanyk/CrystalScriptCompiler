@@ -4,6 +4,7 @@
  */
 package crystalscriptcompiler.syntaxtree.interfaces;
 
+import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.classes.MemberDeclaration;
 import crystalscriptcompiler.syntaxtree.classes.MemberDeclarations;
 import crystalscriptcompiler.syntaxtree.classes.Modifiers;
@@ -23,6 +24,13 @@ public class InterfaceDeclaration extends MemberDeclaration {
 		super(Kind.INTERFACE, modifiers, new ClassOrInterfaceType(new Name(id)), id);
 		this.superInterfaces = superInterfaces;
 		this.members = members;
+	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		super.setSymbolTable(symbolTable);
+		superInterfaces.setSymbolTable(symbolTable);
+		members.setSymbolTable(new SymbolTable(symbolTable));
 	}
 	
 }

@@ -8,6 +8,6 @@ package crystalscriptcompiler.syntaxtree.expressions;
  *
  * @author User
  */
-public class StatementExpression extends Expression {
+public abstract class StatementExpression extends Expression {
 	
 }

@@ -4,6 +4,7 @@
  */
 package crystalscriptcompiler.syntaxtree.expressions.primary.methodinvocation;
 
+import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.expressions.ArgumentList;
 import crystalscriptcompiler.syntaxtree.names.Name;
 
@@ -24,6 +25,13 @@ public class SuperMethodInvocation extends MethodInvocation {
 		super(arguments);
 		this.methodId = methodId;
 		this.superclassName = superclassName;
+	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		super.setSymbolTable(symbolTable);
+		if (superclassName != null)
+			superclassName.setSymbolTable(symbolTable);
 	}
 
 }

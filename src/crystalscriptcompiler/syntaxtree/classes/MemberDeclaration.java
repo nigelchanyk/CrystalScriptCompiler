@@ -4,6 +4,7 @@
  */
 package crystalscriptcompiler.syntaxtree.classes;
 
+import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.ParseTreeNode;
 import crystalscriptcompiler.syntaxtree.types.Type;
 
@@ -32,6 +33,13 @@ public abstract class MemberDeclaration extends ParseTreeNode {
 		this.modifiers = modifiers;
 		this.type = type;
 		this.id = id;
+	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		super.setSymbolTable(symbolTable);
+		modifiers.setSymbolTable(symbolTable);
+		type.setSymbolTable(symbolTable);
 	}
 	
 }

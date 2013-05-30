@@ -4,6 +4,7 @@
  */
 package crystalscriptcompiler.syntaxtree.methods;
 
+import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.ParseTreeNode;
 import crystalscriptcompiler.syntaxtree.classes.Modifiers;
 import crystalscriptcompiler.syntaxtree.types.Type;
@@ -39,6 +40,14 @@ public class MethodHeader extends ParseTreeNode {
 
 	public Type getType() {
 		return type;
+	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		super.setSymbolTable(symbolTable);
+		modifiers.setSymbolTable(symbolTable);
+		declarator.setSymbolTable(symbolTable);
+		type.setSymbolTable(symbolTable);
 	}
 	
 }

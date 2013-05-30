@@ -4,6 +4,7 @@
  */
 package crystalscriptcompiler.syntaxtree.expressions.primary.methodinvocation;
 
+import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.expressions.ArgumentList;
 import crystalscriptcompiler.syntaxtree.names.Name;
 
@@ -19,4 +20,11 @@ public class ImplicitMethodInvocation extends MethodInvocation {
 		super(arguments);
 		this.name = name;
 	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		super.setSymbolTable(symbolTable);
+		name.setSymbolTable(symbolTable);
+	}
+
 }

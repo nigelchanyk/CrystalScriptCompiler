@@ -4,6 +4,7 @@
  */
 package crystalscriptcompiler.syntaxtree.statements.switches;
 
+import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.expressions.Expression;
 import crystalscriptcompiler.syntaxtree.statements.BlockStatement;
 
@@ -19,6 +20,13 @@ public class SwitchStatement extends BlockStatement {
 	public SwitchStatement(Expression condition, SwitchGroups groups) {
 		this.condition = condition;
 		this.groups = groups;
+	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		super.setSymbolTable(symbolTable);
+		condition.setSymbolTable(symbolTable);
+		groups.setSymbolTable(symbolTable);
 	}
 	
 }

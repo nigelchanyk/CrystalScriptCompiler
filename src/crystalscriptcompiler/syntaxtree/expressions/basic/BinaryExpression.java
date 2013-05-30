@@ -4,6 +4,8 @@
  */
 package crystalscriptcompiler.syntaxtree.expressions.basic;
 
+import crystalscriptcompiler.symbols.SymbolTable;
+
 /**
  *
  * @author User
@@ -24,6 +26,13 @@ public class BinaryExpression extends BasicExpression {
 		this.left = left;
 		this.right = right;
 		this.kind = kind;
+	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		super.setSymbolTable(symbolTable);
+		left.setSymbolTable(symbolTable);
+		right.setSymbolTable(symbolTable);
 	}
 	
 }

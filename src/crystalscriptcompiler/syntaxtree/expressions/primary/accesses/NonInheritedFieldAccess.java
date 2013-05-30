@@ -4,6 +4,7 @@
  */
 package crystalscriptcompiler.syntaxtree.expressions.primary.accesses;
 
+import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.expressions.primary.Primary;
 
 /**
@@ -16,6 +17,13 @@ public class NonInheritedFieldAccess extends FieldAccess {
 	
 	public NonInheritedFieldAccess(Primary primary, String id) {
 		super(id);
+	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		super.setSymbolTable(symbolTable);
+		if (primary != null)
+			super.setSymbolTable(symbolTable);
 	}
 	
 }

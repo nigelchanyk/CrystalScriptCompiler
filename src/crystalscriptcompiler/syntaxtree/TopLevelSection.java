@@ -4,6 +4,7 @@
  */
 package crystalscriptcompiler.syntaxtree;
 
+import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.classes.MemberDeclaration;
 
 /**
@@ -16,6 +17,12 @@ public class TopLevelSection extends ParseTreeNode {
 	
 	public TopLevelSection(MemberDeclaration declaration) {
 		this.declaration = declaration;
+	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		super.setSymbolTable(symbolTable);
+		declaration.setSymbolTable(symbolTable);
 	}
 	
 }

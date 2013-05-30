@@ -4,6 +4,7 @@
  */
 package crystalscriptcompiler.syntaxtree.types;
 
+import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.names.Name;
 
 /**
@@ -16,6 +17,12 @@ public class ClassOrInterfaceType extends Type {
 	
 	public ClassOrInterfaceType(Name name) {
 		this.name = name;
+	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		super.setSymbolTable(symbolTable);
+		name.setSymbolTable(symbolTable);
 	}
 	
 }

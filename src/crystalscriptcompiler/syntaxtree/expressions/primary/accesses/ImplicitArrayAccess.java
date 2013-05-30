@@ -4,6 +4,7 @@
  */
 package crystalscriptcompiler.syntaxtree.expressions.primary.accesses;
 
+import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.expressions.Expression;
 import crystalscriptcompiler.syntaxtree.names.Name;
 
@@ -19,4 +20,11 @@ public class ImplicitArrayAccess extends ArrayAccess {
 		super(index);
 		this.name = name;
 	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		super.setSymbolTable(symbolTable);
+		name.setSymbolTable(symbolTable);
+	}
+
 }

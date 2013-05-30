@@ -4,6 +4,7 @@
  */
 package crystalscriptcompiler.syntaxtree;
 
+import crystalscriptcompiler.symbols.SymbolTable;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -11,7 +12,7 @@ import java.util.LinkedList;
  *
  * @author User
  */
-public class SequentialCollection<T> extends ParseTreeNode implements Iterable<T> {
+public class SequentialCollection<T extends ParseTreeNode> extends ParseTreeNode implements Iterable<T> {
 
 	public static enum Order {
 		FORWARD,
@@ -84,4 +85,13 @@ public class SequentialCollection<T> extends ParseTreeNode implements Iterable<T
 	public int size() {
 		return collection.size();
 	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		super.setSymbolTable(symbolTable);
+
+		for (T element : this)
+			element.setSymbolTable(symbolTable);
+	}
+
 }

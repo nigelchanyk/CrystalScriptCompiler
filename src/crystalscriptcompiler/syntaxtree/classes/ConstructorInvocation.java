@@ -4,6 +4,7 @@
  */
 package crystalscriptcompiler.syntaxtree.classes;
 
+import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.ParseTreeNode;
 import crystalscriptcompiler.syntaxtree.expressions.ArgumentList;
 
@@ -24,6 +25,12 @@ public class ConstructorInvocation extends ParseTreeNode {
 	public ConstructorInvocation(Kind kind, ArgumentList arguments) {
 		this.kind = kind;
 		this.arguments = arguments;
+	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		super.setSymbolTable(symbolTable);
+		arguments.setSymbolTable(symbolTable);
 	}
 	
 }

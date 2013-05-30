@@ -4,6 +4,7 @@
  */
 package crystalscriptcompiler.symbols;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -12,7 +13,19 @@ import java.util.HashMap;
  */
 public class SymbolTable {
 	
-	private SymbolTable root;
+	private SymbolTable root; // Nullable
+	private ArrayList<SymbolTable> inheritedTables = new ArrayList<>();
 	private HashMap<String, SymbolDeclaration> symbolMapper = new HashMap<>();
+
+	public SymbolTable() {
+	}
+
+	public SymbolTable(SymbolTable root) {
+		this.root = root;
+	}
+
+	public void addInheritance(SymbolTable inheritedTable) {
+		inheritedTables.add(inheritedTable);
+	}
 	
 }

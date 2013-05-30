@@ -4,6 +4,7 @@
  */
 package crystalscriptcompiler.syntaxtree.classes;
 
+import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.ParseTreeNode;
 
 /**
@@ -23,6 +24,12 @@ public class ConstructorInvocationOptional extends ParseTreeNode {
 
 	public ConstructorInvocation getInvocation() {
 		return invocation;
+	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		super.setSymbolTable(symbolTable);
+		invocation.setSymbolTable(symbolTable);
 	}
 	
 }

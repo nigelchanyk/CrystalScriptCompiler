@@ -4,6 +4,7 @@
  */
 package crystalscriptcompiler.syntaxtree.imports;
 
+import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.ParseTreeNode;
 import crystalscriptcompiler.syntaxtree.names.Name;
 import java.util.List;
@@ -53,6 +54,12 @@ public class ImportDeclaration extends ParseTreeNode {
 		hash = 97 * hash + Objects.hashCode(this.module);
 		hash = 97 * hash + Objects.hashCode(this.alias);
 		return hash;
+	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		super.setSymbolTable(symbolTable);
+		module.setSymbolTable(symbolTable);
 	}
 
 }

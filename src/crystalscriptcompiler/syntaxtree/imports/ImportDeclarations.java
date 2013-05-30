@@ -4,7 +4,6 @@
  */
 package crystalscriptcompiler.syntaxtree.imports;
 
-import crystalscriptcompiler.Namespace;
 import crystalscriptcompiler.exceptions.ImportException;
 import crystalscriptcompiler.syntaxtree.SequentialCollection;
 import crystalscriptcompiler.syntaxtree.names.Name;

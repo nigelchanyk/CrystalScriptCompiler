@@ -4,10 +4,12 @@
  */
 package crystalscriptcompiler.syntaxtree.variables.initializers;
 
+import crystalscriptcompiler.syntaxtree.ParseTreeNode;
+
 /**
  *
  * @author User
  */
-public abstract class GenericVariableInitializer {
+public abstract class GenericVariableInitializer extends ParseTreeNode {
 	
 }

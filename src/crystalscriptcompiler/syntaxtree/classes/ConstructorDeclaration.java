@@ -4,10 +4,9 @@
  */
 package crystalscriptcompiler.syntaxtree.classes;
 
-import crystalscriptcompiler.syntaxtree.ParseTreeNode;
+import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.methods.Parameters;
 import crystalscriptcompiler.syntaxtree.statements.Block;
-import crystalscriptcompiler.syntaxtree.statements.BlockStatements;
 import crystalscriptcompiler.syntaxtree.types.VarType;
 
 /**
@@ -25,6 +24,16 @@ public class ConstructorDeclaration extends MemberDeclaration {
 		this.block = block;
 		this.parameters = declarator.getParameters();
 		this.superclassInvocation = declarator.getSuperclassInvocation();
+	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		super.setSymbolTable(symbolTable);
+		superclassInvocation.setSymbolTable(symbolTable);
+
+		SymbolTable innerTable = new SymbolTable(symbolTable);
+		parameters.setSymbolTable(innerTable);
+		block.setSymbolTable(innerTable);
 	}
 	
 }

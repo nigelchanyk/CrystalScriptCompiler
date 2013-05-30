@@ -4,6 +4,7 @@
  */
 package crystalscriptcompiler.syntaxtree.classes;
 
+import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.interfaces.Interfaces;
 import crystalscriptcompiler.syntaxtree.names.Name;
 import crystalscriptcompiler.syntaxtree.types.ClassOrInterfaceType;
@@ -24,6 +25,14 @@ public class ClassDeclaration extends MemberDeclaration {
 		this.interfaces = interfaces;
 		this.members = members;
 		this.superclass = superclassOptional.getSuperclass();
+	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		super.setSymbolTable(symbolTable);
+		superclass.setSymbolTable(symbolTable);
+		interfaces.setSymbolTable(symbolTable);
+		members.setSymbolTable(new SymbolTable(symbolTable));
 	}
 	
 }

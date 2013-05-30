@@ -4,7 +4,7 @@
  */
 package crystalscriptcompiler.syntaxtree;
 
-import crystalscriptcompiler.Namespace;
+import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.imports.ImportDeclarations;
 import crystalscriptcompiler.syntaxtree.names.Name;
 import java.util.List;
@@ -30,6 +30,13 @@ public class ParseTreeRoot extends ParseTreeNode {
 
 	@Override
 	public void addDependencies(List<Name> importList) {
+		imports.addDependencies(importList);
+	}
+
+	public void initializeSymbolTable() {
+		symbolTable = new SymbolTable();
+		imports.setSymbolTable(symbolTable);
+		sections.setSymbolTable(symbolTable);
 	}
 	
 }

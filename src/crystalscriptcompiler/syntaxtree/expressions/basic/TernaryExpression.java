@@ -4,6 +4,7 @@
  */
 package crystalscriptcompiler.syntaxtree.expressions.basic;
 
+import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.expressions.Expression;
 
 /**
@@ -20,6 +21,14 @@ public class TernaryExpression extends BasicExpression {
 		this.condition = condition;
 		this.trueExpression = trueExpression;
 		this.falseExpression = falseExpression;
+	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		super.setSymbolTable(symbolTable);
+		condition.setSymbolTable(symbolTable);
+		trueExpression.setSymbolTable(symbolTable);
+		falseExpression.setSymbolTable(symbolTable);
 	}
 	
 }

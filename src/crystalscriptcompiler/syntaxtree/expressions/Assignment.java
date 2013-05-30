@@ -4,14 +4,14 @@
  */
 package crystalscriptcompiler.syntaxtree.expressions;
 
-import crystalscriptcompiler.syntaxtree.ParseTreeNode;
+import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.expressions.primary.LeftValue;
 
 /**
  *
  * @author User
  */
-public class Assignment extends ParseTreeNode {
+public class Assignment extends Expression {
 	
 	public enum Operator {
 		EQ,
@@ -30,12 +30,19 @@ public class Assignment extends ParseTreeNode {
 
 	private LeftValue leftValue;
 	private Operator operator;
-	private AssignmentExpression assignmentExpression;
+	private Expression assignmentExpression;
 
-	public Assignment(LeftValue leftValue, Operator operator, AssignmentExpression assignmentExpression) {
+	public Assignment(LeftValue leftValue, Operator operator, Expression assignmentExpression) {
 		this.leftValue = leftValue;
 		this.operator = operator;
 		this.assignmentExpression = assignmentExpression;
+	}
+
+	@Override
+	public void setSymbolTable(SymbolTable symbolTable) {
+		super.setSymbolTable(symbolTable);
+		leftValue.setSymbolTable(symbolTable);
+		assignmentExpression.setSymbolTable(symbolTable);
 	}
 	
 }
