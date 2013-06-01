@@ -4,6 +4,7 @@
  */
 package crystalscriptcompiler;
 
+import crystalscriptcompiler.logic.DeclarationScanner;
 import crystalscriptcompiler.logic.DependencyLoader;
 import crystalscriptcompiler.logic.SymbolTableBuilder;
 import crystalscriptcompiler.syntaxtree.ParseTreeRoot;
@@ -22,6 +23,7 @@ public class Compiler {
 
 	private DependencyLoader dependencyLoader = new DependencyLoader();
 	private SymbolTableBuilder symbolTableBuilder = new SymbolTableBuilder();
+	private DeclarationScanner declarationScanner = new DeclarationScanner();
 	
 	public Compiler(File file) throws IOException {
 		rootFile = file.getCanonicalFile();
@@ -35,17 +37,22 @@ public class Compiler {
 		dependencyLoader.start(globalNamespace, rootTree);
 
 		// Step 2: Create symbol table
-		symbolTableBuilder.start(globalNamespace);
+		symbolTableBuilder.createTables(globalNamespace);
 
 		// Step 3: Fill symbol table with class/interface/method/extern declarations
+		declarationScanner.start(globalNamespace);
 
 		// Step 4: Link dependent symbol tables (for dependency import)
+		symbolTableBuilder.linkDependentTables(globalNamespace);
 
-		// Step 5: Fill symbol table with variables
+		// Step 5: Link inherited symbol tables
+		symbolTableBuilder.linkInheritedTables(globalNamespace);
 
-		// Step 6: Validation
+		// Step 6: Fill symbol table with variables
 
-		// Step 7: Compile to JavaScript
+		// Step 7: Validation
+
+		// Step 8: Compile to JavaScript
 	}
 	
 	private ParseTreeRoot buildTree(File file) throws Exception {

@@ -4,6 +4,7 @@
  */
 package crystalscriptcompiler.syntaxtree.imports;
 
+import crystalscriptcompiler.Namespace;
 import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.ParseTreeNode;
 import crystalscriptcompiler.syntaxtree.names.Name;
@@ -60,6 +61,11 @@ public class ImportDeclaration extends ParseTreeNode {
 	public void setSymbolTable(SymbolTable symbolTable) {
 		super.setSymbolTable(symbolTable);
 		module.setSymbolTable(symbolTable);
+	}
+
+	@Override
+	public void linkDependentSymbolTables(Namespace globalNamespace) {
+		symbolTable.addDependency(globalNamespace.get(module).getSymbolTable());
 	}
 
 }

@@ -15,7 +15,7 @@ import crystalscriptcompiler.syntaxtree.variables.initializers.GenericVariableIn
 public class VariableDeclarator extends ParseTreeNode {
 	
 	private String id;
-	private GenericVariableInitializer init;
+	private GenericVariableInitializer init; // Nullable
 
 	public VariableDeclarator(String id) {
 		this.id = id;
@@ -33,7 +33,9 @@ public class VariableDeclarator extends ParseTreeNode {
 	@Override
 	public void setSymbolTable(SymbolTable symbolTable) {
 		super.setSymbolTable(symbolTable);
-		init.setSymbolTable(symbolTable);
+
+		if (init != null)
+			init.setSymbolTable(symbolTable);
 		
 	}
 	

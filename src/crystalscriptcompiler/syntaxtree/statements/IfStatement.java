@@ -32,7 +32,8 @@ public class IfStatement extends BlockStatement {
 		super.setSymbolTable(symbolTable);
 		condition.setSymbolTable(symbolTable);
 		statement.setSymbolTable(symbolTable);
-		elseStatement.setSymbolTable(symbolTable);
+		if (elseStatement != null)
+			elseStatement.setSymbolTable(symbolTable);
 	}
 	
 }

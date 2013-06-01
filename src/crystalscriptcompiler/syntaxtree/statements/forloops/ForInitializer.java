@@ -31,7 +31,8 @@ public class ForInitializer extends ParseTreeNode {
 	@Override
 	public void setSymbolTable(SymbolTable symbolTable) {
 		super.setSymbolTable(symbolTable);
-		initialization.setSymbolTable(symbolTable);
+		if (initialization != null)
+			initialization.setSymbolTable(symbolTable);
 	}
 	
 }

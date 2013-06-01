@@ -5,6 +5,7 @@
 package crystalscriptcompiler;
 
 import crystalscriptcompiler.exceptions.NamespaceException;
+import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.ParseTreeRoot;
 import crystalscriptcompiler.syntaxtree.names.Name;
 import java.io.File;
@@ -65,7 +66,37 @@ public class Namespace {
 				moduleMapper.put(name, moduleTree);
 		}
 	}
+
+	public SymbolTable getModuleSymbolTable(Iterator<String> namespaceIterator) {
+		String name = namespaceIterator.next();
+		if (moduleMapper.containsKey(name))
+			return moduleMapper.get(name).getSymbolTable();
+		if (subNamespaceMapper.containsKey(name) && namespaceIterator.hasNext())
+			return subNamespaceMapper.get(name).getModuleSymbolTable(namespaceIterator);
+
+		return null;
+	}
 	
+	public ParseTreeRoot get(Name moduleName) {
+		if (parent != null)
+			return parent.get(moduleName);
+
+		return get(moduleName.iterator());
+	}
+
+	private ParseTreeRoot get(Iterator<String> namespaceIterator) {
+		String name = namespaceIterator.next();
+		if (namespaceIterator.hasNext()) {
+			// Current name is a directory
+			if (subNamespaceMapper.containsKey(name))
+				return subNamespaceMapper.get(name).get(namespaceIterator);
+
+			return null;
+		}
+		// Current name is a module
+		return moduleMapper.get(name);
+	}
+
 	public boolean contains(Name moduleName) {
 		if (parent != null)
 			return parent.contains(moduleName);

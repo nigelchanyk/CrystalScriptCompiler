@@ -4,6 +4,7 @@
  */
 package crystalscriptcompiler.syntaxtree;
 
+import crystalscriptcompiler.Namespace;
 import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.names.Name;
 import java.util.List;
@@ -23,7 +24,17 @@ public abstract class ParseTreeNode {
 		this.symbolTable = symbolTable;
 	}
 
+	public SymbolTable getSymbolTable() {
+		return symbolTable;
+	}
+
 	public void addDeclarationToTable() {
 	}
 	
+	public void linkDependentSymbolTables(Namespace globalNamespace) {
+	}
+
+	public void linkInheritedSymbolTables() {
+	}
+
 }

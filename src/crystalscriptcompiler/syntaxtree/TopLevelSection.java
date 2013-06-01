@@ -29,5 +29,10 @@ public class TopLevelSection extends ParseTreeNode {
 	public void addDeclarationToTable() {
 		declaration.addDeclarationToTable();
 	}
+
+	@Override
+	public void linkInheritedSymbolTables() {
+		declaration.linkInheritedSymbolTables();
+	}
 	
 }

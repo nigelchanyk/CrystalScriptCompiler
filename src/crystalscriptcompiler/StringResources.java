@@ -36,4 +36,29 @@ public class StringResources {
 	public static String errorDuplicateDeclaration(String id) {
 		return "Duplicate declaration detected for " + id;
 	}
+
+	public static String errorReferenceNotFound(String fullName) {
+		return "Reference to " + fullName + " cannot be found.";
+	}
+
+	public static String errorNotInheritable(String typeName, String expectedKind) {
+		return typeName + " is not " + prependArticle(expectedKind) + ", thus, it cannot be inherited.";
+	}
+
+	public static String errorNotImplementable(String typeName) {
+		return typeName + " is not an interface, thus, it cannot be implemented.";
+	}
+
+	private static String prependArticle(String word) {
+		// There are exceptions, but due to its complexity, we shall ignore them for now.
+		switch (word.toLowerCase().charAt(0)) {
+			case 'a':
+			case 'e':
+			case 'i':
+			case 'o':
+			case 'u':
+				return "an " + word;
+		}
+		return "a " + word;
+	}
 }

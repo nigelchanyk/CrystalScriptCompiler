@@ -4,7 +4,6 @@
  */
 package crystalscriptcompiler.syntaxtree.classes;
 
-import crystalscriptcompiler.exceptions.DuplicateDeclarationException;
 import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.interfaces.Interfaces;
 import crystalscriptcompiler.syntaxtree.names.Name;
@@ -16,7 +15,7 @@ import crystalscriptcompiler.syntaxtree.types.ClassOrInterfaceType;
  */
 public class ClassDeclaration extends MemberDeclaration {
 	
-	private ClassOrInterfaceType superclass;
+	private ClassOrInterfaceType superclass; // Nullable
 	private Interfaces interfaces;
 	private MemberDeclarations members;
 	
@@ -30,19 +29,31 @@ public class ClassDeclaration extends MemberDeclaration {
 
 	@Override
 	public void setSymbolTable(SymbolTable symbolTable) {
-		super.setSymbolTable(symbolTable);
-		superclass.setSymbolTable(symbolTable);
+		SymbolTable classSymbolTable = new SymbolTable(symbolTable);
+		super.setSymbolTable(classSymbolTable);
+		
+		if (superclass != null)
+			superclass.setSymbolTable(symbolTable);
+
 		interfaces.setSymbolTable(symbolTable);
-		members.setSymbolTable(new SymbolTable(symbolTable));
+		members.setSymbolTable(classSymbolTable);
 	}
 
 	@Override
 	public void addDeclarationToTable() {
-		if (symbolTable.hasSymbol(id, SymbolTable.Scope.LOCAL))
-			throw new DuplicateDeclarationException(id);
-
 		symbolTable.addSymbol(id, this);
 		members.addDeclarationToTable();
+	}
+
+	@Override
+	public void linkInheritedSymbolTables() {
+		if (superclass != null)
+			symbolTable.addClassInheritance(superclass);
+
+		for (ClassOrInterfaceType superType : interfaces)
+			symbolTable.addInterfaceImplementation(superType);
+
+		members.linkInheritedSymbolTables();
 	}
 	
 }

@@ -4,6 +4,7 @@
  */
 package crystalscriptcompiler.syntaxtree.imports;
 
+import crystalscriptcompiler.Namespace;
 import crystalscriptcompiler.exceptions.ImportException;
 import crystalscriptcompiler.syntaxtree.SequentialCollection;
 import crystalscriptcompiler.syntaxtree.names.Name;
@@ -38,6 +39,12 @@ public class ImportDeclarations extends SequentialCollection<ImportDeclaration> 
 
 			a.addDependencies(importList);
 		}
+	}
+
+	@Override
+	public void linkDependentSymbolTables(Namespace globalNamespace) {
+		for (ImportDeclaration declaration : this)
+			declaration.linkDependentSymbolTables(globalNamespace);
 	}
 	
 }

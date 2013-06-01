@@ -17,7 +17,7 @@ public class ConstructorDeclaration extends MemberDeclaration {
 
 	private Block block;
 	private Parameters parameters;
-	private ConstructorInvocation superclassInvocation;
+	private ConstructorInvocation superclassInvocation; // Nullable
 	
 	public ConstructorDeclaration(Modifiers modifiers, ConstructorDeclarator declarator, Block block) {
 		super(Kind.CONSTRUCTOR, modifiers, new VarType(), declarator.getId());
@@ -29,7 +29,9 @@ public class ConstructorDeclaration extends MemberDeclaration {
 	@Override
 	public void setSymbolTable(SymbolTable symbolTable) {
 		super.setSymbolTable(symbolTable);
-		superclassInvocation.setSymbolTable(symbolTable);
+
+		if (superclassInvocation != null)
+			superclassInvocation.setSymbolTable(symbolTable);
 
 		SymbolTable innerTable = new SymbolTable(symbolTable);
 		parameters.setSymbolTable(innerTable);

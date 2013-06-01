@@ -38,4 +38,9 @@ public class MethodDeclaration extends MemberDeclaration {
 		parameters.setSymbolTable(innerTable);
 	}
 	
+	@Override
+	public void addDeclarationToTable() {
+		symbolTable.addSymbol(id, this);
+	}
+
 }

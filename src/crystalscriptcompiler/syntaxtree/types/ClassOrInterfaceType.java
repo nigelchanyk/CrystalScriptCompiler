@@ -24,5 +24,9 @@ public class ClassOrInterfaceType extends Type {
 		super.setSymbolTable(symbolTable);
 		name.setSymbolTable(symbolTable);
 	}
+
+	public Name getName() {
+		return name;
+	}
 	
 }

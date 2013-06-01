@@ -18,5 +18,9 @@ public class ClassSymbolDeclaration extends SymbolDeclaration {
 		super(Kind.CLASS);
 		this.declaration = declaration;
 	}
+
+	public ClassDeclaration getDeclaration() {
+		return declaration;
+	}
 	
 }

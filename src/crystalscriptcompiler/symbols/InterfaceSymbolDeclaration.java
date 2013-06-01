@@ -18,4 +18,9 @@ public class InterfaceSymbolDeclaration extends SymbolDeclaration {
 		super(Kind.INTERFACE);
 		this.declaration = declaration;
 	}
+
+	public InterfaceDeclaration getDeclaration() {
+		return declaration;
+	}
+
 }

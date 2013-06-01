@@ -25,7 +25,6 @@ public class Name extends LeftValue implements Iterable<String> {
 	@Override
 	public void setSymbolTable(SymbolTable symbolTable) {
 		super.setSymbolTable(symbolTable);
-		parent.setSymbolTable(symbolTable);
 	}
 
 	@Override

@@ -28,13 +28,24 @@ public class InterfaceDeclaration extends MemberDeclaration {
 
 	@Override
 	public void setSymbolTable(SymbolTable symbolTable) {
-		super.setSymbolTable(symbolTable);
+		SymbolTable currentTable = new SymbolTable(symbolTable);
+		super.setSymbolTable(currentTable);
 		superInterfaces.setSymbolTable(symbolTable);
-		members.setSymbolTable(new SymbolTable(symbolTable));
+		members.setSymbolTable(currentTable);
 	}
 
 	@Override
 	public void addDeclarationToTable() {
+		symbolTable.addSymbol(id, this);
+		members.addDeclarationToTable();
+	}
+
+	@Override
+	public void linkInheritedSymbolTables() {
+		for (ClassOrInterfaceType interfaceType : superInterfaces)
+			symbolTable.addInterfaceInheritance(interfaceType);
+
+		members.linkInheritedSymbolTables();
 	}
 	
 }

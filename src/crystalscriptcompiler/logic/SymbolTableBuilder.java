@@ -13,12 +13,27 @@ import crystalscriptcompiler.syntaxtree.ParseTreeRoot;
  */
 public class SymbolTableBuilder {
 	
-	public void start(Namespace globalNamespace) {
+	public void createTables(Namespace globalNamespace) {
 		for (ParseTreeRoot root : globalNamespace.moduleIterable())
 			root.initializeSymbolTable();
 
 		for (Namespace namespace : globalNamespace.subNamespaceIterable())
-			start(namespace);
+			createTables(namespace);
+	}
+
+	public void linkDependentTables(Namespace globalNamespace) {
+		for (ParseTreeRoot root : globalNamespace.moduleIterable())
+			root.linkDependentSymbolTables(globalNamespace);
+
+		for (Namespace namespace : globalNamespace.subNamespaceIterable())
+			linkDependentTables(namespace);
 	}
 	
+	public void linkInheritedTables(Namespace globalNamespace) {
+		for (ParseTreeRoot root : globalNamespace.moduleIterable())
+			root.linkInheritedSymbolTables();
+
+		for (Namespace namespace : globalNamespace.subNamespaceIterable())
+			linkInheritedTables(namespace);
+	}
 }
