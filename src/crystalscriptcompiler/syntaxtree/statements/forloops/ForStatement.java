@@ -30,7 +30,7 @@ public class ForStatement extends BlockStatement {
 	@Override
 	public void setSymbolTable(SymbolTable symbolTable) {
 		super.setSymbolTable(symbolTable);
-		SymbolTable innerTable = new SymbolTable();
+		SymbolTable innerTable = new SymbolTable(symbolTable);
 		initializer.setSymbolTable(innerTable);
 		condition.setSymbolTable(innerTable);
 		updates.setSymbolTable(innerTable);

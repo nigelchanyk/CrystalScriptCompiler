@@ -34,8 +34,8 @@ public class ParseTreeRoot extends ParseTreeNode {
 		imports.addDependencies(importList);
 	}
 
-	public void initializeSymbolTable() {
-		symbolTable = new SymbolTable();
+	public void initializeSymbolTable(Namespace namespace) {
+		symbolTable = new SymbolTable(namespace);
 		imports.setSymbolTable(symbolTable);
 		sections.setSymbolTable(symbolTable);
 	}
@@ -48,6 +48,11 @@ public class ParseTreeRoot extends ParseTreeNode {
 	@Override
 	public void linkDependentSymbolTables(Namespace globalNamespace) {
 		imports.linkDependentSymbolTables(globalNamespace);
+	}
+
+	@Override
+	public void linkInheritedSymbolTables() {
+		sections.linkInheritedSymbolTables();
 	}
 	
 }

@@ -42,25 +42,23 @@ public class SymbolTable {
 		scopeMapper.put(Scope.ALL, 3);
 	}
 	
-	private Namespace globalNamespace;
+	private Namespace moduleNamespace;
 	private SymbolTable root; // Nullable
 	private ArrayList<SymbolTable> inheritedTables = new ArrayList<>();
 	private ArrayList<SymbolTable> dependentTables = new ArrayList<>();
 	private HashMap<String, SymbolDeclaration> symbolMapper = new HashMap<>();
 
-	public SymbolTable(Namespace globalNamespace) {
-		this.globalNamespace = globalNamespace;
+	public SymbolTable(Namespace moduleNamespace) {
+		this.moduleNamespace = moduleNamespace;
 	}
 
 	public SymbolTable(SymbolTable root) {
 		this.root = root;
-	}
-
-	public Namespace getGlobalNamespace() {
-		return globalNamespace == null ? root.getGlobalNamespace() : globalNamespace;
+		this.moduleNamespace = root.moduleNamespace;
 	}
 
 	public void addInheritance(SymbolTable inheritedTable) {
+		System.out.println(inheritedTable.moduleNamespace.toString());
 		inheritedTables.add(inheritedTable);
 	}
 
@@ -152,7 +150,7 @@ public class SymbolTable {
 			return declaration;
 		if (scope == Scope.ALL) {
 			Iterator<String> itr = name.iterator();
-			SymbolTable table = getGlobalNamespace().getModuleSymbolTable(itr);
+			SymbolTable table = moduleNamespace.getRoot().getModuleSymbolTable(itr);
 
 			if (table == null)
 				return null;
@@ -194,7 +192,7 @@ public class SymbolTable {
 		}
 
 		if (inScope(scope, Scope.MODULAR) && root != null) {
-			SymbolDeclaration declaration = root.get(id, Scope.INHERITED);
+			SymbolDeclaration declaration = root.get(id, scope);
 			if (declaration != null)
 				return declaration;
 		}

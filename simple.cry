@@ -1,6 +1,6 @@
 import abc.lol.woot;
 
-class a {
+class a extends b {
 
 	public static asdf(rawr) {
 	}

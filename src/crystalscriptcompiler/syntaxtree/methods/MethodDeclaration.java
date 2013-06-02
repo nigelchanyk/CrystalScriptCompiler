@@ -33,7 +33,7 @@ public class MethodDeclaration extends MemberDeclaration {
 	public void setSymbolTable(SymbolTable symbolTable) {
 		super.setSymbolTable(symbolTable);
 
-		SymbolTable innerTable = new SymbolTable();
+		SymbolTable innerTable = new SymbolTable(symbolTable);
 		block.setSymbolTable(innerTable);
 		parameters.setSymbolTable(innerTable);
 	}

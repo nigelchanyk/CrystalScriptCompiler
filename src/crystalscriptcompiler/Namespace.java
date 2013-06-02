@@ -20,6 +20,7 @@ public class Namespace {
 	
 	private File directory;
 	private Namespace parent; // Nullable
+	private Namespace root;
 	private HashMap<String, Namespace> subNamespaceMapper = new HashMap<>();
 	private HashMap<String, ParseTreeRoot> moduleMapper = new HashMap<>();
 
@@ -33,6 +34,7 @@ public class Namespace {
 
 		this.directory = directory;
 		this.parent = parent;
+		this.root = parent == null ? this : parent.root;
 	}
 
 	public void add(String name, ParseTreeRoot module) {
@@ -121,6 +123,10 @@ public class Namespace {
 		return directory;
 	}
 
+	public Namespace getRoot() {
+		return root;
+	}
+
 	public Iterable<ParseTreeRoot> moduleIterable() {
 		return new Iterable<ParseTreeRoot>() {
 
@@ -139,6 +145,14 @@ public class Namespace {
 				return new Helper.HashMapValueIterator<>(subNamespaceMapper);
 			}
 		};
+	}
+
+	@Override
+	public String toString() {
+		if (parent == null)
+			return directory.getName();
+
+		return parent.toString() + "." + directory.getName();
 	}
 
 }

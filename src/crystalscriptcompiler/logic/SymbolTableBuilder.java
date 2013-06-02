@@ -15,7 +15,7 @@ public class SymbolTableBuilder {
 	
 	public void createTables(Namespace globalNamespace) {
 		for (ParseTreeRoot root : globalNamespace.moduleIterable())
-			root.initializeSymbolTable();
+			root.initializeSymbolTable(globalNamespace);
 
 		for (Namespace namespace : globalNamespace.subNamespaceIterable())
 			createTables(namespace);
