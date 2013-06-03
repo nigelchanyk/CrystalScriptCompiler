@@ -4,10 +4,12 @@
  */
 package crystalscriptcompiler.syntaxtree.names;
 
+import crystalscriptcompiler.helpers.Helper;
 import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.expressions.primary.LeftValue;
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.Stack;
 
 /**
  *
@@ -20,6 +22,14 @@ public class Name extends LeftValue implements Iterable<String> {
 	
 	public Name(String value) {
 		this.value = value;
+	}
+
+	public String getLeftMostName() {
+		return value;
+	}
+
+	public String getRightMostName() {
+		return value;
 	}
 
 	@Override
@@ -62,13 +72,19 @@ public class Name extends LeftValue implements Iterable<String> {
 
 	@Override
 	public Iterator<String> iterator() {
+		return saveStackIterator();
+	}
+
+	public Helper.SaveStackIterator<String> saveStackIterator() {
 		return new NameIterator(this);
 	}
 
-	protected static class NameIterator implements Iterator<String> {
+	protected static class NameIterator implements Helper.SaveStackIterator<String> {
 
 		public Name root;
 		public boolean iterated = false;
+
+		private Stack<Name> positionStack = new Stack<>();
 		
 		public NameIterator(Name root) {
 			this.root = root;
@@ -92,6 +108,17 @@ public class Name extends LeftValue implements Iterable<String> {
 		@Override
 		public void remove() {
 		}
+
+		@Override
+		public void saveStack() {
+			positionStack.add(root);
+		}
+
+		@Override
+		public void restoreStack() {
+			root = positionStack.pop();
+		}
 		
 	}
+
 }

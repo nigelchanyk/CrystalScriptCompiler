@@ -132,7 +132,7 @@ public class Namespace {
 
 			@Override
 			public Iterator<ParseTreeRoot> iterator() {
-				return new Helper.HashMapValueIterator<>(moduleMapper);
+				return moduleMapper.values().iterator();
 			}
 		};
 	}
@@ -142,7 +142,7 @@ public class Namespace {
 
 			@Override
 			public Iterator<Namespace> iterator() {
-				return new Helper.HashMapValueIterator<>(subNamespaceMapper);
+				return subNamespaceMapper.values().iterator();
 			}
 		};
 	}

@@ -36,7 +36,7 @@ public class InterfaceDeclaration extends MemberDeclaration {
 
 	@Override
 	public void addDeclarationToTable() {
-		symbolTable.addSymbol(id, this);
+		symbolTable.getParent().addSymbol(id, this);
 		members.addDeclarationToTable();
 	}
 

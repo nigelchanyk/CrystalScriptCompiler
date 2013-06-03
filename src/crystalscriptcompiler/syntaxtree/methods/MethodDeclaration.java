@@ -31,16 +31,15 @@ public class MethodDeclaration extends MemberDeclaration {
 
 	@Override
 	public void setSymbolTable(SymbolTable symbolTable) {
-		super.setSymbolTable(symbolTable);
-
 		SymbolTable innerTable = new SymbolTable(symbolTable);
+		super.setSymbolTable(innerTable);
 		block.setSymbolTable(innerTable);
 		parameters.setSymbolTable(innerTable);
 	}
 	
 	@Override
 	public void addDeclarationToTable() {
-		symbolTable.addSymbol(id, this);
+		symbolTable.getParent().addSymbol(id, this);
 	}
 
 }

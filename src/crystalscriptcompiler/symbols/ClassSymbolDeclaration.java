@@ -15,12 +15,17 @@ public class ClassSymbolDeclaration extends SymbolDeclaration {
 	private ClassDeclaration declaration;
 
 	public ClassSymbolDeclaration(ClassDeclaration declaration) {
-		super(Kind.CLASS);
+		super(Kind.CLASS, declaration);
 		this.declaration = declaration;
 	}
 
 	public ClassDeclaration getDeclaration() {
 		return declaration;
+	}
+
+	@Override
+	public boolean hasChildDeclaration() {
+		return true;
 	}
 	
 }

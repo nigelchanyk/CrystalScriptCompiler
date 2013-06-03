@@ -15,12 +15,17 @@ public class InterfaceSymbolDeclaration extends SymbolDeclaration {
 	private InterfaceDeclaration declaration;
 
 	public InterfaceSymbolDeclaration(InterfaceDeclaration declaration) {
-		super(Kind.INTERFACE);
+		super(Kind.INTERFACE, declaration);
 		this.declaration = declaration;
 	}
 
 	public InterfaceDeclaration getDeclaration() {
 		return declaration;
+	}
+
+	@Override
+	public boolean hasChildDeclaration() {
+		return true;
 	}
 
 }

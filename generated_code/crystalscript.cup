@@ -56,6 +56,8 @@ terminal LBRACK, RBRACK; // array_type
 terminal DOT; // qualified_name
 terminal SEMICOLON, MULT, COMMA, EQ, LPAREN, RPAREN, LBRACE, RBRACE, COLON;
 terminal IMPORT; // import_declaration
+terminal AS;
+terminal FROM;
 terminal PUBLIC, PROTECTED, PRIVATE; // modifier
 terminal STATIC; // modifier
 terminal ABSTRACT;
@@ -117,6 +119,7 @@ non terminal name, qualified_name;
 // 19.6) Packages
 non terminal import_declarations_opt, import_declarations;
 non terminal import_declaration;
+non terminal import_items, import_name;
 // 19.7) Productions used only in the LALR(1) grammar
 non terminal modifiers_opt, modifiers, modifier;
 // 19.8.1) Class Declaration
@@ -255,7 +258,18 @@ import_declarations ::=
 	|	import_declarations:j import_declaration:i {: RESULT = new ImportDeclarations((ImportDeclaration)i, (ImportDeclarations)j, SequentialCollection.Order.REVERSE); :}
 	;
 import_declaration ::= 
-		IMPORT name:n SEMICOLON {: RESULT = new ImportDeclaration((Name)n); :}
+		IMPORT import_name:n SEMICOLON {: RESULT = new ImportDeclaration((ImportName)n); :}
+	|	FROM name:n IMPORT import_items:i SEMICOLON {: RESULT = new ImportDeclaration(new ImportName((Name)n), (ImportItems)i); :}
+	;
+	
+import_items ::=
+		import_name:n {: RESULT = new ImportItems((ImportName)n); :}
+	|	import_name:n COMMA import_items:i {: RESULT = new ImportItems((ImportName)n, (ImportItems)i); :}
+	;
+	
+import_name ::=
+		name:n {: RESULT = new ImportName((Name)n); :}
+	|	name:n AS IDENTIFIER:i {: RESULT = new ImportName((Name)n, (String)i); :}
 	;
 
 // 19.7) Productions used only in the LALR(1) grammar

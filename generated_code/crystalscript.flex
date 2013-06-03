@@ -98,6 +98,7 @@ EscapeCharacters = \\\'|\\\"|\\\\|\\n|\\r|\\t|\\b|\\f
   /* keywords */
   "abstract"                     { return symbol(ABSTRACT); }
   "array"						 { return symbol(ARRAY); }
+  "as"							 { return symbol(AS); }
   "boolean"                      { return symbol(BOOLEAN); }
   "break"                        { return symbol(BREAK); }
   "case"                         { return symbol(CASE); }
@@ -110,6 +111,7 @@ EscapeCharacters = \\\'|\\\"|\\\\|\\n|\\r|\\t|\\b|\\f
   "extends"                      { return symbol(EXTENDS); }
   "finally"                      { return symbol(FINALLY); }
   "for"                          { return symbol(FOR); }
+  "from"						 { return symbol(FROM); }
   "default"                      { return symbol(DEFAULT); }
   "implements"                   { return symbol(IMPLEMENTS); }
   "import"						 { return symbol(IMPORT); }

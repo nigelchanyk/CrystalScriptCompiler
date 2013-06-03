@@ -17,21 +17,23 @@ import java.util.Objects;
  */
 public class ImportDeclaration extends ParseTreeNode {
 	
-	private Name module;
-	private String alias;
+	private ImportName module;
+	private ImportItems items; // Nullable
 
-	public ImportDeclaration(Name module) {
+	public ImportDeclaration(ImportName module) {
+		// Import the module as a whole
 		this.module = module;
 	}
 
-	public ImportDeclaration(Name module, String alias) {
+	public ImportDeclaration(ImportName module, ImportItems items) {
+		// Import given components from the module
 		this.module = module;
-		this.alias = alias;
+		this.items = items;
 	}
 
 	@Override
 	public void addDependencies(List<Name> importList) {
-		importList.add(module);
+		importList.add(module.getRealName());
 	}
 
 	@Override
@@ -53,7 +55,7 @@ public class ImportDeclaration extends ParseTreeNode {
 	public int hashCode() {
 		int hash = 5;
 		hash = 97 * hash + Objects.hashCode(this.module);
-		hash = 97 * hash + Objects.hashCode(this.alias);
+		hash = 97 * hash + Objects.hashCode(this.items);
 		return hash;
 	}
 
@@ -65,7 +67,10 @@ public class ImportDeclaration extends ParseTreeNode {
 
 	@Override
 	public void linkDependentSymbolTables(Namespace globalNamespace) {
-		symbolTable.addDependency(globalNamespace.get(module).getSymbolTable());
+		if (items == null)
+			symbolTable.addDependency(module);
+		else
+			symbolTable.addDependency(module, items);
 	}
 
 }

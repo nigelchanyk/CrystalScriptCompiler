@@ -4,6 +4,7 @@
  */
 package crystalscriptcompiler;
 
+import crystalscriptcompiler.helpers.Helper;
 import crystalscriptcompiler.logic.DeclarationScanner;
 import crystalscriptcompiler.logic.DependencyLoader;
 import crystalscriptcompiler.logic.SymbolTableBuilder;
@@ -45,14 +46,16 @@ public class Compiler {
 		// Step 4: Link dependent symbol tables (for dependency import)
 		symbolTableBuilder.linkDependentTables(globalNamespace);
 
-		// Step 5: Link inherited symbol tables
+		// Step 5: Build inheritance tree (espeically circular inheritance)
+
+		// Step 6: Link inherited symbol tables
 		symbolTableBuilder.linkInheritedTables(globalNamespace);
 
-		// Step 6: Fill symbol table with variables
+		// Step 7: Fill symbol table with variables
 
-		// Step 7: Validation
+		// Step 8: Validation
 
-		// Step 8: Compile to JavaScript
+		// Step 9: Compile to JavaScript
 	}
 	
 	private ParseTreeRoot buildTree(File file) throws Exception {

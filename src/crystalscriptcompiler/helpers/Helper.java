@@ -2,14 +2,14 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package crystalscriptcompiler;
+package crystalscriptcompiler.helpers;
 
+import crystalscriptcompiler.Configurations;
+import crystalscriptcompiler.Namespace;
 import crystalscriptcompiler.exceptions.ExtensionException;
 import crystalscriptcompiler.syntaxtree.names.Name;
 import java.io.File;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map.Entry;
 
 /**
  *
@@ -42,27 +42,11 @@ public class Helper {
 		return new File(sb.toString());
 	}
 
-	public static class HashMapValueIterator<S, T> implements Iterator<T> {
+	public static interface SaveStackIterator<T> extends Iterator<T> {
 
-		private Iterator<Entry<S, T>> iterator;
+		public abstract void saveStack();
+		public abstract void restoreStack();
 		
-		public HashMapValueIterator(HashMap<S, T> moduleMapper) {
-			iterator = moduleMapper.entrySet().iterator();
-		}
-
-		@Override
-		public boolean hasNext() {
-			return iterator.hasNext();
-		}
-
-		@Override
-		public T next() {
-			return iterator.next().getValue();
-		}
-
-		@Override
-		public void remove() {
-		}
 	}
 	
 }

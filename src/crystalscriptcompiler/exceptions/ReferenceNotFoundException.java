@@ -16,5 +16,9 @@ public class ReferenceNotFoundException extends CompilerException {
 	public ReferenceNotFoundException(Name name) {
 		super(StringResources.errorReferenceNotFound(name.toString()));
 	}
+
+	public ReferenceNotFoundException(Name name, Name scope) {
+		super(StringResources.errorReferenceNotFound(name.toString(), scope.toString()));
+	}
 	
 }

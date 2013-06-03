@@ -15,7 +15,7 @@ public class VariableSymbolDeclaration extends SymbolDeclaration {
 	private Type type;
 	
 	public VariableSymbolDeclaration(Type type) {
-		super(Kind.VARIABLE);
+		super(Kind.VARIABLE, type);
 		this.type = type;
 	}
 	

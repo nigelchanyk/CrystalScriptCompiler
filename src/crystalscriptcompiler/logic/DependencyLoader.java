@@ -4,7 +4,7 @@
  */
 package crystalscriptcompiler.logic;
 
-import crystalscriptcompiler.Helper;
+import crystalscriptcompiler.helpers.Helper;
 import crystalscriptcompiler.Namespace;
 import crystalscriptcompiler.Parser;
 import crystalscriptcompiler.Scanner;

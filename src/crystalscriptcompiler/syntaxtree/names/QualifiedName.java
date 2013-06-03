@@ -23,6 +23,11 @@ public class QualifiedName extends Name {
 	}
 
 	@Override
+	public String getLeftMostName() {
+		return context.getLeftMostName();
+	}
+
+	@Override
 	public void setSymbolTable(SymbolTable symbolTable) {
 		super.setSymbolTable(symbolTable);
 		context.setSymbolTable(symbolTable);

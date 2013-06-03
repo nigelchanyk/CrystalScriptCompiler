@@ -1,4 +1,4 @@
-import abc.lol.woot;
+from abc.lol.woot import b;
 
 class a extends b {
 

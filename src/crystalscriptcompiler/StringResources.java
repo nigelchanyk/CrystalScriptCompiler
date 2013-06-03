@@ -41,6 +41,10 @@ public class StringResources {
 		return "Reference to " + fullName + " cannot be found.";
 	}
 
+	public static String errorReferenceNotFound(String name, String scope) {
+		return "Reference to " + name + " cannot be found in " + scope + ".";
+	}
+
 	public static String errorNotInheritable(String typeName, String expectedKind) {
 		return typeName + " is not " + prependArticle(expectedKind) + ", thus, it cannot be inherited.";
 	}

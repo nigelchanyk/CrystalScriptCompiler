@@ -15,7 +15,7 @@ public class MethodSymbolDeclaration extends SymbolDeclaration {
 	private MethodDeclaration declaration;
 
 	public MethodSymbolDeclaration(MethodDeclaration declaration) {
-		super(Kind.METHOD);
+		super(Kind.METHOD, declaration);
 		this.declaration = declaration;
 	}
 	
