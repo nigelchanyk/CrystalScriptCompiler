@@ -28,6 +28,14 @@ public class SymbolTableBuilder {
 		for (Namespace namespace : globalNamespace.subNamespaceIterable())
 			linkDependentTables(namespace);
 	}
+
+	public void createInheritanceTree(Namespace globalNamespace) {
+		for (ParseTreeRoot root : globalNamespace.moduleIterable())
+			root.createInheritanceTree();
+
+		for (Namespace namespace : globalNamespace.subNamespaceIterable())
+			createInheritanceTree(namespace);
+	}
 	
 	public void linkInheritedTables(Namespace globalNamespace) {
 		for (ParseTreeRoot root : globalNamespace.moduleIterable())

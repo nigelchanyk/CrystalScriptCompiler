@@ -34,6 +34,9 @@ public abstract class ParseTreeNode {
 	public void linkDependentSymbolTables(Namespace globalNamespace) {
 	}
 
+	public void createInheritanceTree() {
+	}
+
 	public void linkInheritedSymbolTables() {
 	}
 

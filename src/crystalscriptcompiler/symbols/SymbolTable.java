@@ -6,8 +6,6 @@ package crystalscriptcompiler.symbols;
 
 import crystalscriptcompiler.Namespace;
 import crystalscriptcompiler.exceptions.DuplicateDeclarationException;
-import crystalscriptcompiler.exceptions.InheritanceException;
-import crystalscriptcompiler.exceptions.InterfaceException;
 import crystalscriptcompiler.exceptions.ReferenceNotFoundException;
 import crystalscriptcompiler.helpers.Helper.SaveStackIterator;
 import crystalscriptcompiler.syntaxtree.ParseTreeRoot;
@@ -17,7 +15,6 @@ import crystalscriptcompiler.syntaxtree.imports.ImportName;
 import crystalscriptcompiler.syntaxtree.interfaces.InterfaceDeclaration;
 import crystalscriptcompiler.syntaxtree.methods.MethodDeclaration;
 import crystalscriptcompiler.syntaxtree.names.Name;
-import crystalscriptcompiler.syntaxtree.types.ClassOrInterfaceType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -67,38 +64,6 @@ public class SymbolTable {
 
 	public void addInheritance(SymbolTable inheritedTable) {
 		inheritedTables.add(inheritedTable);
-	}
-
-	public void addClassInheritance(ClassOrInterfaceType superClassType) {
-		SymbolDeclaration symbol = getNestedSymbolDeclaration(superClassType);
-		if (!(symbol instanceof ClassSymbolDeclaration))
-			throw new InheritanceException(superClassType, InheritanceException.ExpectedKind.CLASS);
-
-		addInheritance(((ClassSymbolDeclaration)symbol).getDeclaration().getSymbolTable());
-	}
-
-	public void addInterfaceImplementation(ClassOrInterfaceType interfaceType) {
-		SymbolDeclaration symbol = getNestedSymbolDeclaration(interfaceType);
-		if (!(symbol instanceof InterfaceSymbolDeclaration))
-			throw new InterfaceException(interfaceType);
-
-		addInheritance(((InterfaceSymbolDeclaration)symbol).getDeclaration().getSymbolTable());
-	}
-
-	public void addInterfaceInheritance(ClassOrInterfaceType superInterfaceType) {
-		SymbolDeclaration symbol = getNestedSymbolDeclaration(superInterfaceType);
-		if (!(symbol instanceof InterfaceSymbolDeclaration))
-			throw new InheritanceException(superInterfaceType, InheritanceException.ExpectedKind.INTERFACE);
-
-		addInheritance(((InterfaceSymbolDeclaration)symbol).getDeclaration().getSymbolTable());
-	}
-
-	private SymbolDeclaration getNestedSymbolDeclaration(ClassOrInterfaceType type) {
-		SymbolDeclaration symbol = get(type.getName(), Scope.ALL);
-		if (symbol == null)
-			throw new ReferenceNotFoundException(type.getName());
-
-		return symbol;
 	}
 
 	public void addDependency(ImportName importName) {

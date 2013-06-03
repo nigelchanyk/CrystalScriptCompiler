@@ -53,6 +53,10 @@ public class StringResources {
 		return typeName + " is not an interface, thus, it cannot be implemented.";
 	}
 
+	public static String errorCircularInheritance(String className, String parentName) {
+		return className + " cannot be a subclass of " + parentName + " because " + parentName + " is already a subclass of " + className;
+	}
+
 	private static String prependArticle(String word) {
 		// There are exceptions, but due to its complexity, we shall ignore them for now.
 		switch (word.toLowerCase().charAt(0)) {

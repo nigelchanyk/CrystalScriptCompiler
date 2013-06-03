@@ -46,7 +46,8 @@ public class Compiler {
 		// Step 4: Link dependent symbol tables (for dependency import)
 		symbolTableBuilder.linkDependentTables(globalNamespace);
 
-		// Step 5: Build inheritance tree (espeically circular inheritance)
+		// Step 5: Build inheritance tree (Required before step 6 to prevent circular inheritance)
+		symbolTableBuilder.createInheritanceTree(globalNamespace);
 
 		// Step 6: Link inherited symbol tables
 		symbolTableBuilder.linkInheritedTables(globalNamespace);

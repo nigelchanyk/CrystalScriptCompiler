@@ -51,6 +51,11 @@ public class ParseTreeRoot extends ParseTreeNode {
 	}
 
 	@Override
+	public void createInheritanceTree() {
+		sections.createInheritanceTree();
+	}
+
+	@Override
 	public void linkInheritedSymbolTables() {
 		sections.linkInheritedSymbolTables();
 	}

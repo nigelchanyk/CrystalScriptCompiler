@@ -4,6 +4,11 @@
  */
 package crystalscriptcompiler.syntaxtree.classes;
 
+import crystalscriptcompiler.exceptions.InheritanceException;
+import crystalscriptcompiler.exceptions.InterfaceException;
+import crystalscriptcompiler.symbols.ClassSymbolDeclaration;
+import crystalscriptcompiler.symbols.InterfaceSymbolDeclaration;
+import crystalscriptcompiler.symbols.SymbolDeclaration;
 import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.interfaces.Interfaces;
 import crystalscriptcompiler.syntaxtree.names.Name;
@@ -13,7 +18,7 @@ import crystalscriptcompiler.syntaxtree.types.ClassOrInterfaceType;
  *
  * @author User
  */
-public class ClassDeclaration extends MemberDeclaration {
+public class ClassDeclaration extends TypeDeclaration {
 	
 	private ClassOrInterfaceType superclass; // Nullable
 	private Interfaces interfaces;
@@ -46,13 +51,29 @@ public class ClassDeclaration extends MemberDeclaration {
 	}
 
 	@Override
+	public void createInheritanceTree() {
+		if (superclass != null) {
+			SymbolDeclaration symbol = symbolTable.get(superclass.getName(), SymbolTable.Scope.ALL);
+			if (!(symbol instanceof ClassSymbolDeclaration))
+				throw new InheritanceException(superclass, InheritanceException.ExpectedKind.CLASS);
+			
+			inherit(((ClassSymbolDeclaration)symbol).getDeclaration(), superclass);
+		}
+
+		for (ClassOrInterfaceType superType : interfaces) {
+			SymbolDeclaration symbol = symbolTable.get(superType.getName(), SymbolTable.Scope.ALL);
+			if (!(symbol instanceof InterfaceSymbolDeclaration))
+				throw new InterfaceException(superType);
+
+			inherit(((InterfaceSymbolDeclaration)symbol).getDeclaration(), superType);
+		}
+		
+		members.createInheritanceTree();
+	}
+
+	@Override
 	public void linkInheritedSymbolTables() {
-		if (superclass != null)
-			symbolTable.addClassInheritance(superclass);
-
-		for (ClassOrInterfaceType superType : interfaces)
-			symbolTable.addInterfaceImplementation(superType);
-
+		super.linkInheritedSymbolTables();
 		members.linkInheritedSymbolTables();
 	}
 	
