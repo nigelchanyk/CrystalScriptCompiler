@@ -5,6 +5,7 @@
 package crystalscriptcompiler.syntaxtree.interfaces;
 
 import crystalscriptcompiler.exceptions.InheritanceException;
+import crystalscriptcompiler.exceptions.ReferenceNotFoundException;
 import crystalscriptcompiler.symbols.InterfaceSymbolDeclaration;
 import crystalscriptcompiler.symbols.SymbolDeclaration;
 import crystalscriptcompiler.symbols.SymbolTable;
@@ -47,6 +48,8 @@ public class InterfaceDeclaration extends TypeDeclaration {
 	public void createInheritanceTree() {
 		for (ClassOrInterfaceType interfaceType : superInterfaces) {
 			SymbolDeclaration symbol = symbolTable.get(interfaceType.getName(), SymbolTable.Scope.ALL);
+			if (symbol == null)
+				throw new ReferenceNotFoundException(interfaceType.getName());
 			if (!(symbol instanceof InterfaceSymbolDeclaration))
 				throw new InheritanceException(interfaceType, InheritanceException.ExpectedKind.INTERFACE);
 

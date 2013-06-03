@@ -32,6 +32,10 @@ public class Name extends LeftValue implements Iterable<String> {
 		return value;
 	}
 
+	protected Name getRoot() {
+		return this;
+	}
+
 	@Override
 	public void setSymbolTable(SymbolTable symbolTable) {
 		super.setSymbolTable(symbolTable);
@@ -76,7 +80,7 @@ public class Name extends LeftValue implements Iterable<String> {
 	}
 
 	public Helper.SaveStackIterator<String> saveStackIterator() {
-		return new NameIterator(this);
+		return new NameIterator(getRoot());
 	}
 
 	protected static class NameIterator implements Helper.SaveStackIterator<String> {

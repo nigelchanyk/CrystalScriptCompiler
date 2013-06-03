@@ -54,7 +54,7 @@ public class StringResources {
 	}
 
 	public static String errorCircularInheritance(String className, String parentName) {
-		return className + " cannot be a subclass of " + parentName + " because " + parentName + " is already a subclass of " + className;
+		return "Circular subclass detected. " + className + " cannot be a subclass of " + parentName + " because " + parentName + " is already a subclass of " + className + ".";
 	}
 
 	private static String prependArticle(String word) {

@@ -198,7 +198,12 @@ public class SymbolTable {
 	}
 
 	private SymbolDeclaration getDependent(Name name) {
+		// Only root has access to dependent tables
+		if (parent != null)
+			return parent.getDependent(name);
+		
 		SaveStackIterator<String> itr = name.saveStackIterator();
+		
 		String context = itr.next();
 		if (!dependentSymbolMapper.containsKey(context))
 			return null;

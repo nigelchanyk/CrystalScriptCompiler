@@ -28,6 +28,11 @@ public class QualifiedName extends Name {
 	}
 
 	@Override
+	protected Name getRoot() {
+		return context.getRoot();
+	}
+
+	@Override
 	public void setSymbolTable(SymbolTable symbolTable) {
 		super.setSymbolTable(symbolTable);
 		context.setSymbolTable(symbolTable);
