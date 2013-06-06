@@ -38,5 +38,5 @@ public class MemberDeclarations extends SequentialCollection<MemberDeclaration> 
 	public MemberDeclarations(MemberDeclarations members, MemberDeclarations next, Order order) {
 		super(members, next, order);
 	}
-	
+
 }

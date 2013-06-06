@@ -5,6 +5,7 @@
 package crystalscriptcompiler.syntaxtree.methods;
 
 import crystalscriptcompiler.symbols.SymbolTable;
+import crystalscriptcompiler.symbols.VariableSymbolDeclaration;
 import crystalscriptcompiler.syntaxtree.ParseTreeNode;
 import crystalscriptcompiler.syntaxtree.types.Type;
 import crystalscriptcompiler.syntaxtree.types.VarType;
@@ -34,6 +35,11 @@ public class Parameter extends ParseTreeNode {
 		super.setSymbolTable(symbolTable);
 		variable.setSymbolTable(symbolTable);
 		type.setSymbolTable(symbolTable);
+	}
+
+	@Override
+	public void addVariablesToTable(int statementIndex) {
+		symbolTable.addSymbol(variable.getId(), type, statementIndex, VariableSymbolDeclaration.Scope.LOCAL);
 	}
 
 }

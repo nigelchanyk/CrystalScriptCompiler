@@ -15,6 +15,7 @@ import crystalscriptcompiler.syntaxtree.imports.ImportName;
 import crystalscriptcompiler.syntaxtree.interfaces.InterfaceDeclaration;
 import crystalscriptcompiler.syntaxtree.methods.MethodDeclaration;
 import crystalscriptcompiler.syntaxtree.names.Name;
+import crystalscriptcompiler.syntaxtree.types.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -26,6 +27,7 @@ import java.util.Iterator;
 public class SymbolTable {
 
 	public static enum Scope {
+		BLOCK,
 		LOCAL,
 		INHERITED,
 		MODULAR,
@@ -37,25 +39,33 @@ public class SymbolTable {
 	static {
 		// It is very tempting to use ordinal(), but its order cannot be trusted.
 		
-		scopeMapper.put(Scope.LOCAL, 0);
-		scopeMapper.put(Scope.INHERITED, 1);
-		scopeMapper.put(Scope.MODULAR, 2);
-		scopeMapper.put(Scope.ALL, 3);
+		scopeMapper.put(Scope.BLOCK, 0);
+		scopeMapper.put(Scope.LOCAL, 1);
+		scopeMapper.put(Scope.INHERITED, 2);
+		scopeMapper.put(Scope.MODULAR, 3);
+		scopeMapper.put(Scope.ALL, 4);
 	}
 	
 	private Namespace moduleNamespace;
 	private SymbolTable parent; // Nullable
+	private SymbolTable localRoot; // Nullable
 	private ArrayList<SymbolTable> inheritedTables = new ArrayList<>();
 	private HashMap<String, SymbolDeclaration> dependentSymbolMapper = new HashMap<>();
 	private HashMap<String, SymbolDeclaration> symbolMapper = new HashMap<>();
 
 	public SymbolTable(Namespace moduleNamespace) {
 		this.moduleNamespace = moduleNamespace;
+		this.localRoot = null;
 	}
 
 	public SymbolTable(SymbolTable parent) {
+		this(parent, false);
+	}
+
+	public SymbolTable(SymbolTable parent, boolean isLocalRoot) {
 		this.parent = parent;
 		this.moduleNamespace = parent.moduleNamespace;
+		this.localRoot = isLocalRoot ? this : parent.localRoot;
 	}
 
 	public SymbolTable getParent() {
@@ -94,8 +104,15 @@ public class SymbolTable {
 		addSymbol(id, new MethodSymbolDeclaration(declaration));
 	}
 
+	public void addSymbol(String id, Type type, int declarationIndex, VariableSymbolDeclaration.Scope scope) {
+		// Check at local scope for local variables
+		if (scope == VariableSymbolDeclaration.Scope.LOCAL && hasSymbol(id, SymbolTable.Scope.LOCAL))
+			throw new DuplicateDeclarationException(id);
+		addSymbol(id, new VariableSymbolDeclaration(type, declarationIndex, scope));
+	}
+
 	private void addSymbol(String id, SymbolDeclaration declaration) {
-		if (hasSymbol(id, SymbolTable.Scope.LOCAL))
+		if (hasSymbol(id, SymbolTable.Scope.BLOCK))
 			throw new DuplicateDeclarationException(id);
 
 		symbolMapper.put(id, declaration);
@@ -108,6 +125,12 @@ public class SymbolTable {
 	private SymbolDeclaration get(String id, Scope scope) {
 		if (symbolMapper.containsKey(id))
 			return symbolMapper.get(id);
+
+		if (inScope(scope, Scope.LOCAL) && localRoot != null) {
+			SymbolDeclaration declaration = parent.get(id, scope);
+			if (declaration != null)
+				return declaration;
+		}
 
 		if (inScope(scope, Scope.INHERITED)) {
 			for (SymbolTable table : inheritedTables) {
@@ -136,6 +159,11 @@ public class SymbolTable {
 
 		if (result != null)
 			return result;
+		if (inScope(scope, Scope.LOCAL) && localRoot != null) {
+			result = parent.getLocal(name.iterator());
+			if (result != null)
+				return result;
+		}
 		if (inScope(scope, Scope.INHERITED)) {
 			result = getInherited(name.saveStackIterator());
 			if (result != null)
@@ -164,7 +192,7 @@ public class SymbolTable {
 			return declaration.hasChildDeclaration() ? declaration.getSymbolTable().getLocal(nameIterator) : null;
 		}
 		
-		return get(name, Scope.LOCAL);
+		return get(name, Scope.BLOCK);
 	}
 
 	private SymbolDeclaration getInherited(SaveStackIterator<String> nameIterator) {

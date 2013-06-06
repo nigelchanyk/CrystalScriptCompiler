@@ -41,7 +41,7 @@ public class Compiler {
 		symbolTableBuilder.createTables(globalNamespace);
 
 		// Step 3: Fill symbol table with class/interface/method/extern declarations
-		declarationScanner.start(globalNamespace);
+		declarationScanner.scanTypes(globalNamespace);
 
 		// Step 4: Link dependent symbol tables (for dependency import)
 		symbolTableBuilder.linkDependentTables(globalNamespace);
@@ -53,6 +53,7 @@ public class Compiler {
 		symbolTableBuilder.linkInheritedTables(globalNamespace);
 
 		// Step 7: Fill symbol table with variables
+		declarationScanner.scanVariableDeclarations(globalNamespace);
 
 		// Step 8: Validation
 

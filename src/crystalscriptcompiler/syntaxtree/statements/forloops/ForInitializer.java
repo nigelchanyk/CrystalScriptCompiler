@@ -34,5 +34,11 @@ public class ForInitializer extends ParseTreeNode {
 		if (initialization != null)
 			initialization.setSymbolTable(symbolTable);
 	}
+
+	@Override
+	public void addVariablesToTable(int statementIndex) {
+		if (initialization != null)
+			initialization.addVariablesToTable(statementIndex);
+	}
 	
 }

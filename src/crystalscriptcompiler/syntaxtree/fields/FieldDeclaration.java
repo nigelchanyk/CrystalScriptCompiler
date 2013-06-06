@@ -5,6 +5,7 @@
 package crystalscriptcompiler.syntaxtree.fields;
 
 import crystalscriptcompiler.symbols.SymbolTable;
+import crystalscriptcompiler.symbols.VariableSymbolDeclaration;
 import crystalscriptcompiler.syntaxtree.classes.MemberDeclaration;
 import crystalscriptcompiler.syntaxtree.classes.Modifiers;
 import crystalscriptcompiler.syntaxtree.types.Type;
@@ -27,6 +28,11 @@ public class FieldDeclaration extends MemberDeclaration {
 	public void setSymbolTable(SymbolTable symbolTable) {
 		super.setSymbolTable(symbolTable);
 		variable.setSymbolTable(symbolTable);
+	}
+
+	@Override
+	public void addVariablesToTable(int statementIndex) {
+		symbolTable.addSymbol(id, type, VariableSymbolDeclaration.NO_INDEX, VariableSymbolDeclaration.Scope.FIELD);
 	}
 	
 }

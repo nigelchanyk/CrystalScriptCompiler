@@ -12,11 +12,26 @@ import crystalscriptcompiler.syntaxtree.types.Type;
  */
 public class VariableSymbolDeclaration extends SymbolDeclaration {
 	
-	private Type type;
+	public static enum Scope {
+		FIELD,
+		LOCAL
+	}
 	
-	public VariableSymbolDeclaration(Type type) {
+	public static final int NO_INDEX = -1;
+	
+	private Type type;
+	private int declarationIndex;
+	private Scope scope;
+
+	public VariableSymbolDeclaration(Type type, Scope scope) {
+		this(type, NO_INDEX, scope);
+	}
+	
+	public VariableSymbolDeclaration(Type type, int declarationIndex, Scope scope) {
 		super(Kind.VARIABLE, type);
 		this.type = type;
+		this.declarationIndex = declarationIndex;
+		this.scope = scope;
 	}
 	
 }

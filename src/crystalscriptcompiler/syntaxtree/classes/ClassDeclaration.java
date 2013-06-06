@@ -7,10 +7,7 @@ package crystalscriptcompiler.syntaxtree.classes;
 import crystalscriptcompiler.exceptions.InheritanceException;
 import crystalscriptcompiler.exceptions.InterfaceException;
 import crystalscriptcompiler.exceptions.ReferenceNotFoundException;
-import crystalscriptcompiler.symbols.ClassSymbolDeclaration;
-import crystalscriptcompiler.symbols.InterfaceSymbolDeclaration;
-import crystalscriptcompiler.symbols.SymbolDeclaration;
-import crystalscriptcompiler.symbols.SymbolTable;
+import crystalscriptcompiler.symbols.*;
 import crystalscriptcompiler.syntaxtree.interfaces.Interfaces;
 import crystalscriptcompiler.syntaxtree.names.Name;
 import crystalscriptcompiler.syntaxtree.types.ClassOrInterfaceType;
@@ -80,6 +77,11 @@ public class ClassDeclaration extends TypeDeclaration {
 	public void linkInheritedSymbolTables() {
 		super.linkInheritedSymbolTables();
 		members.linkInheritedSymbolTables();
+	}
+
+	@Override
+	public void addVariablesToTable(int statementIndex) {
+		members.addVariablesToTable(VariableSymbolDeclaration.NO_INDEX);
 	}
 	
 }

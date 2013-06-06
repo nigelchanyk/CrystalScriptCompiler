@@ -112,4 +112,10 @@ public class SequentialCollection<T extends ParseTreeNode> extends ParseTreeNode
 			element.linkInheritedSymbolTables();
 	}
 
+	@Override
+	public void addVariablesToTable(int statementIndex) {
+		for (T element : this)
+			element.addVariablesToTable(statementIndex);
+	}
+
 }

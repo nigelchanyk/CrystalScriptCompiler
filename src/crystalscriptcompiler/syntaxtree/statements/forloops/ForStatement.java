@@ -5,6 +5,7 @@
 package crystalscriptcompiler.syntaxtree.statements.forloops;
 
 import crystalscriptcompiler.symbols.SymbolTable;
+import crystalscriptcompiler.symbols.VariableSymbolDeclaration;
 import crystalscriptcompiler.syntaxtree.expressions.Expression;
 import crystalscriptcompiler.syntaxtree.expressions.StatementExpressionList;
 import crystalscriptcompiler.syntaxtree.statements.BlockStatement;
@@ -35,6 +36,11 @@ public class ForStatement extends BlockStatement {
 		condition.setSymbolTable(innerTable);
 		updates.setSymbolTable(innerTable);
 		statement.setSymbolTable(innerTable);
+	}
+
+	@Override
+	public void addVariablesToTable(int statementIndex) {
+		initializer.addVariablesToTable(VariableSymbolDeclaration.NO_INDEX);
 	}
 	
 }

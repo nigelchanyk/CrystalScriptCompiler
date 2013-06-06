@@ -4,11 +4,11 @@
  */
 package crystalscriptcompiler.logic;
 
-import crystalscriptcompiler.helpers.Helper;
 import crystalscriptcompiler.Namespace;
 import crystalscriptcompiler.Parser;
 import crystalscriptcompiler.Scanner;
 import crystalscriptcompiler.exceptions.DependencyException;
+import crystalscriptcompiler.helpers.Helper;
 import crystalscriptcompiler.syntaxtree.ParseTreeRoot;
 import crystalscriptcompiler.syntaxtree.names.Name;
 import java.io.FileInputStream;

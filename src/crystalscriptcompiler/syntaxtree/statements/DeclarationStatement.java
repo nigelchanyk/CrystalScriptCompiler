@@ -24,5 +24,10 @@ public class DeclarationStatement extends BlockStatement {
 		super.setSymbolTable(symbolTable);
 		declaration.setSymbolTable(symbolTable);
 	}
+
+	@Override
+	public void addVariablesToTable(int statementIndex) {
+		declaration.addVariablesToTable(statementIndex);
+	}
 	
 }

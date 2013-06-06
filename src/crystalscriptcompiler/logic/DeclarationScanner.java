@@ -5,6 +5,7 @@
 package crystalscriptcompiler.logic;
 
 import crystalscriptcompiler.Namespace;
+import crystalscriptcompiler.symbols.VariableSymbolDeclaration;
 import crystalscriptcompiler.syntaxtree.ParseTreeRoot;
 
 /**
@@ -13,16 +14,20 @@ import crystalscriptcompiler.syntaxtree.ParseTreeRoot;
  */
 public class DeclarationScanner {
 
-	/*
-	 * This scanner does not scan for fields
-	 */
-	
-	public void start(Namespace globalNamespace) {
+	public void scanTypes(Namespace globalNamespace) {
 		for (ParseTreeRoot root : globalNamespace.moduleIterable())
 			root.addDeclarationToTable();
 
 		for (Namespace namespace : globalNamespace.subNamespaceIterable())
-			start(namespace);
+			scanTypes(namespace);
+	}
+
+	public void scanVariableDeclarations(Namespace globalNamespace) {
+		for (ParseTreeRoot root : globalNamespace.moduleIterable())
+			root.addVariablesToTable(VariableSymbolDeclaration.NO_INDEX);
+
+		for (Namespace namespace : globalNamespace.subNamespaceIterable())
+			scanVariableDeclarations(namespace);
 	}
 
 }

@@ -2,7 +2,8 @@ from abc.lol.woot import b;
 
 class a extends b {
 
-	public static asdf(rawr) {
+	public static number asdf(rawr) {
+		number c, d;
 	}
 
 }

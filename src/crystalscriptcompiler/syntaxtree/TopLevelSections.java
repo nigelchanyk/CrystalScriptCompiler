@@ -20,5 +20,12 @@ public class TopLevelSections extends SequentialCollection<TopLevelSection> {
 	public TopLevelSections(TopLevelSection section, TopLevelSections next) {
 		super(section, next);
 	}
+
+	@Override
+	public void addVariablesToTable(int statementIndex) {
+		int index = 0;
+		for (TopLevelSection section : this)
+			section.addVariablesToTable(index++);
+	}
 	
 }

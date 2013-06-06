@@ -5,6 +5,7 @@
 package crystalscriptcompiler.syntaxtree.methods;
 
 import crystalscriptcompiler.symbols.SymbolTable;
+import crystalscriptcompiler.symbols.VariableSymbolDeclaration;
 import crystalscriptcompiler.syntaxtree.classes.MemberDeclaration;
 import crystalscriptcompiler.syntaxtree.statements.Block;
 
@@ -31,7 +32,7 @@ public class MethodDeclaration extends MemberDeclaration {
 
 	@Override
 	public void setSymbolTable(SymbolTable symbolTable) {
-		SymbolTable innerTable = new SymbolTable(symbolTable);
+		SymbolTable innerTable = new SymbolTable(symbolTable, true);
 		super.setSymbolTable(innerTable);
 		block.setSymbolTable(innerTable);
 		parameters.setSymbolTable(innerTable);
@@ -42,4 +43,10 @@ public class MethodDeclaration extends MemberDeclaration {
 		symbolTable.getParent().addSymbol(id, this);
 	}
 
+	@Override
+	public void addVariablesToTable(int statementIndex) {
+		parameters.addVariablesToTable(VariableSymbolDeclaration.NO_INDEX);
+		block.addVariablesToTable(VariableSymbolDeclaration.NO_INDEX);
+	}
+	
 }

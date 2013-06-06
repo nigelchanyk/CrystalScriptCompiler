@@ -5,6 +5,7 @@
 package crystalscriptcompiler.syntaxtree.variables;
 
 import crystalscriptcompiler.symbols.SymbolTable;
+import crystalscriptcompiler.symbols.VariableSymbolDeclaration;
 import crystalscriptcompiler.syntaxtree.ParseTreeNode;
 import crystalscriptcompiler.syntaxtree.types.Type;
 
@@ -27,6 +28,12 @@ public class LocalVariableDeclaration extends ParseTreeNode {
 		super.setSymbolTable(symbolTable);
 		type.setSymbolTable(symbolTable);
 		declarators.setSymbolTable(symbolTable);
+	}
+
+	@Override
+	public void addVariablesToTable(int statementIndex) {
+		for (VariableDeclarator declarator : declarators)
+			symbolTable.addSymbol(declarator.getId(), type, statementIndex, VariableSymbolDeclaration.Scope.LOCAL);
 	}
 	
 }

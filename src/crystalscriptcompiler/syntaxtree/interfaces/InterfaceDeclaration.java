@@ -9,6 +9,7 @@ import crystalscriptcompiler.exceptions.ReferenceNotFoundException;
 import crystalscriptcompiler.symbols.InterfaceSymbolDeclaration;
 import crystalscriptcompiler.symbols.SymbolDeclaration;
 import crystalscriptcompiler.symbols.SymbolTable;
+import crystalscriptcompiler.symbols.VariableSymbolDeclaration;
 import crystalscriptcompiler.syntaxtree.classes.MemberDeclarations;
 import crystalscriptcompiler.syntaxtree.classes.Modifiers;
 import crystalscriptcompiler.syntaxtree.classes.TypeDeclaration;
@@ -61,6 +62,11 @@ public class InterfaceDeclaration extends TypeDeclaration {
 	public void linkInheritedSymbolTables() {
 		super.linkInheritedSymbolTables();
 		members.linkInheritedSymbolTables();
+	}
+
+	@Override
+	public void addVariablesToTable(int statementIndex) {
+		members.addVariablesToTable(VariableSymbolDeclaration.NO_INDEX);
 	}
 	
 }
