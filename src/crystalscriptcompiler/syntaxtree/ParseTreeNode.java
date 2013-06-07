@@ -40,6 +40,12 @@ public abstract class ParseTreeNode {
 	public void linkInheritedSymbolTables() {
 	}
 
+	public void determineReferenceType() {
+	}
+
+	public void addMethodToTable() {
+	}
+
 	public void addVariablesToTable(int statementIndex) {
 	}
 

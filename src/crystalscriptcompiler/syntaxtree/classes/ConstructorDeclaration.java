@@ -21,7 +21,7 @@ public class ConstructorDeclaration extends MemberDeclaration {
 	private ConstructorInvocation superclassInvocation; // Nullable
 	
 	public ConstructorDeclaration(Modifiers modifiers, ConstructorDeclarator declarator, Block block) {
-		super(Kind.CONSTRUCTOR, modifiers, new VarType(), declarator.getId());
+		super(Kind.CONSTRUCTOR, modifiers, new VarType(), "constructor");
 		this.block = block;
 		this.parameters = declarator.getParameters();
 		this.superclassInvocation = declarator.getSuperclassInvocation();

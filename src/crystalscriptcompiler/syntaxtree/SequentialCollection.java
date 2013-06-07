@@ -113,6 +113,18 @@ public class SequentialCollection<T extends ParseTreeNode> extends ParseTreeNode
 	}
 
 	@Override
+	public void determineReferenceType() {
+		for (T element : this)
+			element.determineReferenceType();
+	}
+
+	@Override
+	public void addMethodToTable() {
+		for (T element : this)
+			element.addMethodToTable();
+	}
+
+	@Override
 	public void addVariablesToTable(int statementIndex) {
 		for (T element : this)
 			element.addVariablesToTable(statementIndex);

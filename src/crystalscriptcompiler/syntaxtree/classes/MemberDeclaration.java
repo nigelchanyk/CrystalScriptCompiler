@@ -35,11 +35,23 @@ public abstract class MemberDeclaration extends ParseTreeNode {
 		this.id = id;
 	}
 
+	public String getId() {
+		return id;
+	}
+
+	public Kind getKind() {
+		return kind;
+	}
+
 	@Override
 	public void setSymbolTable(SymbolTable symbolTable) {
 		super.setSymbolTable(symbolTable);
 		modifiers.setSymbolTable(symbolTable);
 		type.setSymbolTable(symbolTable);
 	}
-	
+
+	@Override
+	public void determineReferenceType() {
+		type.determineReferenceType();
+	}
 }

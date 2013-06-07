@@ -101,14 +101,20 @@ public class SymbolTable {
 	}
 
 	public void addSymbol(String id, MethodDeclaration declaration) {
-		addSymbol(id, new MethodSymbolDeclaration(declaration));
+		addSymbol(id, new SignatureTree(declaration));
 	}
 
 	public void addSymbol(String id, Type type, int declarationIndex, VariableSymbolDeclaration.Scope scope) {
 		// Check at local scope for local variables
-		if (scope == VariableSymbolDeclaration.Scope.LOCAL && hasSymbol(id, SymbolTable.Scope.LOCAL))
-			throw new DuplicateDeclarationException(id);
-		addSymbol(id, new VariableSymbolDeclaration(type, declarationIndex, scope));
+		if (scope == VariableSymbolDeclaration.Scope.LOCAL) {
+			if (hasSymbol(id, SymbolTable.Scope.LOCAL))
+				throw new DuplicateDeclarationException(id);
+		}
+		else {
+			if (hasSymbol(id, SymbolTable.Scope.BLOCK))
+				throw new DuplicateDeclarationException(id);
+		}
+		symbolMapper.put(id, new VariableSymbolDeclaration(type, declarationIndex, scope));
 	}
 
 	private void addSymbol(String id, SymbolDeclaration declaration) {

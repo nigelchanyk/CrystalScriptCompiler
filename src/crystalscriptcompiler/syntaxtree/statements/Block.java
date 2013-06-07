@@ -41,5 +41,11 @@ public class Block extends BlockStatement implements Iterable<BlockStatement> {
 		for (BlockStatement statement : this)
 			statement.addVariablesToTable(index++);
 	}
+
+	@Override
+	public void determineReferenceType() {
+		for (BlockStatement statement : this)
+			statement.determineReferenceType();
+	}
 	
 }

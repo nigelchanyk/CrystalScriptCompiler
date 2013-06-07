@@ -64,6 +64,7 @@ terminal ABSTRACT;
 terminal CLASS; // class_declaration
 terminal EXTENDS; // super
 terminal IMPLEMENTS; // interfaces
+terminal CONSTRUCTOR;
 terminal DEF; // method_declaration
 terminal THIS, SUPER; // explicit_constructor_invocation
 terminal INTERFACE; // interface_declaration
@@ -374,8 +375,8 @@ constructor_declaration ::=
 		{: RESULT = new ConstructorDeclaration((Modifiers)m, (ConstructorDeclarator)d, (Block)b); :}
 	;
 constructor_declarator ::=
-		IDENTIFIER:i LPAREN formal_parameter_list_opt:p RPAREN explicit_constructor_invocation_opt:e
-		{: RESULT = new ConstructorDeclarator((String)i, (Parameters)p, (ConstructorInvocationOptional)e); :}
+		CONSTRUCTOR LPAREN formal_parameter_list_opt:p RPAREN explicit_constructor_invocation_opt:e
+		{: RESULT = new ConstructorDeclarator((Parameters)p, (ConstructorInvocationOptional)e); :}
 	;
 explicit_constructor_invocation_opt ::= {: RESULT = new ConstructorInvocationOptional(); :}
 	|	COLON explicit_constructor_invocation:e {: RESULT = new ConstructorInvocationOptional((ConstructorInvocation)e); :}

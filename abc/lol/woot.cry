@@ -1,6 +1,6 @@
 class b {
 
-	public static bacon(rawr) {
+	public static boolean bacon(rawr) {
 	}
 
 }

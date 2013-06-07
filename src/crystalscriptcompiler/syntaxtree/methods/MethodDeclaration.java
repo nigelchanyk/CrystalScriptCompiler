@@ -30,6 +30,10 @@ public class MethodDeclaration extends MemberDeclaration {
 		this.parameters = header.getDeclarator().getParameters();
 	}
 
+	public Parameters getParameters() {
+		return parameters;
+	}
+
 	@Override
 	public void setSymbolTable(SymbolTable symbolTable) {
 		SymbolTable innerTable = new SymbolTable(symbolTable, true);
@@ -37,16 +41,23 @@ public class MethodDeclaration extends MemberDeclaration {
 		block.setSymbolTable(innerTable);
 		parameters.setSymbolTable(innerTable);
 	}
-	
-	@Override
-	public void addDeclarationToTable() {
-		symbolTable.getParent().addSymbol(id, this);
-	}
 
 	@Override
 	public void addVariablesToTable(int statementIndex) {
 		parameters.addVariablesToTable(VariableSymbolDeclaration.NO_INDEX);
 		block.addVariablesToTable(VariableSymbolDeclaration.NO_INDEX);
+	}
+
+	@Override
+	public void addMethodToTable() {
+		symbolTable.getParent().addSymbol(id, this);
+	}
+
+	@Override
+	public void determineReferenceType() {
+		super.determineReferenceType();
+		parameters.determineReferenceType();
+		block.determineReferenceType();
 	}
 	
 }

@@ -17,18 +17,12 @@ public class ConstructorDeclarator extends ParseTreeNode {
 	 * This node will not be included in the syntax tree
 	 */
 	
-	private String id;
 	private Parameters parameters;
 	private ConstructorInvocation superclassInvocation; //Nullable
 
-	public ConstructorDeclarator(String id, Parameters parameters, ConstructorInvocationOptional superclassInvocationOptional) {
-		this.id = id;
+	public ConstructorDeclarator(Parameters parameters, ConstructorInvocationOptional superclassInvocationOptional) {
 		this.parameters = parameters;
 		this.superclassInvocation = superclassInvocationOptional.getInvocation();
-	}
-
-	public String getId() {
-		return id;
 	}
 
 	public Parameters getParameters() {

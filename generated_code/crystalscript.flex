@@ -104,6 +104,7 @@ EscapeCharacters = \\\'|\\\"|\\\\|\\n|\\r|\\t|\\b|\\f
   "case"                         { return symbol(CASE); }
   "catch"                        { return symbol(CATCH); }
   "class"                        { return symbol(CLASS); }
+  "constructor"					 { return symbol(CONSTRUCTOR); }
   "continue"                     { return symbol(CONTINUE); }
   "do"                           { return symbol(DO); }
   "def"							 { return symbol(DEF); }

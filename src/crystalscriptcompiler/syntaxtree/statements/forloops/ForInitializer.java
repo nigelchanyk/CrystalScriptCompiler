@@ -40,5 +40,11 @@ public class ForInitializer extends ParseTreeNode {
 		if (initialization != null)
 			initialization.addVariablesToTable(statementIndex);
 	}
+
+	@Override
+	public void determineReferenceType() {
+		if (initialization != null)
+			initialization.determineReferenceType();
+	}
 	
 }

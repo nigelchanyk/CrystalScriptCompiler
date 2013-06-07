@@ -40,7 +40,7 @@ public class Compiler {
 		// Step 2: Create symbol table
 		symbolTableBuilder.createTables(globalNamespace);
 
-		// Step 3: Fill symbol table with class/interface/method/extern declarations
+		// Step 3: Fill symbol table with class/interface/extern declarations
 		declarationScanner.scanTypes(globalNamespace);
 
 		// Step 4: Link dependent symbol tables (for dependency import)
@@ -52,12 +52,18 @@ public class Compiler {
 		// Step 6: Link inherited symbol tables
 		symbolTableBuilder.linkInheritedTables(globalNamespace);
 
-		// Step 7: Fill symbol table with variables
+		// Step 7: Determine class/interface type reference
+		declarationScanner.scanReference(globalNamespace);
+
+		// Step 8: Fill symbol table with methods
+		declarationScanner.scanMethodDeclarations(globalNamespace);
+
+		// Step 9: Fill symbol table with variables
 		declarationScanner.scanVariableDeclarations(globalNamespace);
 
-		// Step 8: Validation
+		// Step 10: Validation
 
-		// Step 9: Compile to JavaScript
+		// Step 11: Compile to JavaScript
 	}
 	
 	private ParseTreeRoot buildTree(File file) throws Exception {

@@ -65,6 +65,16 @@ public class InterfaceDeclaration extends TypeDeclaration {
 	}
 
 	@Override
+	public void determineReferenceType() {
+		members.determineReferenceType();
+	}
+
+	@Override
+	public void addMethodToTable() {
+		members.addMethodToTable();
+	}
+
+	@Override
 	public void addVariablesToTable(int statementIndex) {
 		members.addVariablesToTable(VariableSymbolDeclaration.NO_INDEX);
 	}

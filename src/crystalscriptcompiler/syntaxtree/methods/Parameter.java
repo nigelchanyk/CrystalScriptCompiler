@@ -30,6 +30,10 @@ public class Parameter extends ParseTreeNode {
 		this.type = type;
 	}
 
+	public Type getType() {
+		return type;
+	}
+
 	@Override
 	public void setSymbolTable(SymbolTable symbolTable) {
 		super.setSymbolTable(symbolTable);

@@ -57,6 +57,14 @@ public class StringResources {
 		return "Circular subclass detected. " + className + " cannot be a subclass of " + parentName + " because " + parentName + " is already a subclass of " + className + ".";
 	}
 
+	public static String errorTypeMismatch(String expected, String given) {
+		return "Expecting " + expected + ", but " + given + " is detected.";
+	}
+
+	public static String errorDuplicateSignature(String method) {
+		return "Method " + method + " has more than one equivalent signature.";
+	}
+
 	private static String prependArticle(String word) {
 		// There are exceptions, but due to its complexity, we shall ignore them for now.
 		switch (word.toLowerCase().charAt(0)) {

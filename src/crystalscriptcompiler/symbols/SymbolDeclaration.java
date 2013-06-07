@@ -20,8 +20,12 @@ public abstract class SymbolDeclaration {
 		VARIABLE
 	}
 
-	private ParseTreeNode node;
+	private ParseTreeNode node; // Nullable
 	private Kind kind;
+
+	public SymbolDeclaration(Kind kind) {
+		this(kind, null);
+	}
 	
 	public SymbolDeclaration(Kind kind, ParseTreeNode node) {
 		this.kind = kind;
@@ -33,7 +37,11 @@ public abstract class SymbolDeclaration {
 	}
 
 	public SymbolTable getSymbolTable() {
-		return node.getSymbolTable();
+		return hasChildDeclaration() ? node.getSymbolTable() : null;
+	}
+
+	public Kind getKind() {
+		return kind;
 	}
 	
 }

@@ -35,5 +35,10 @@ public class LocalVariableDeclaration extends ParseTreeNode {
 		for (VariableDeclarator declarator : declarators)
 			symbolTable.addSymbol(declarator.getId(), type, statementIndex, VariableSymbolDeclaration.Scope.LOCAL);
 	}
+
+	@Override
+	public void determineReferenceType() {
+		type.determineReferenceType();
+	}
 	
 }

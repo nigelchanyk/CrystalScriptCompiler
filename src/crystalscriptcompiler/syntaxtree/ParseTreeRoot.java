@@ -61,6 +61,16 @@ public class ParseTreeRoot extends ParseTreeNode {
 	}
 
 	@Override
+	public void determineReferenceType() {
+		sections.determineReferenceType();
+	}
+
+	@Override
+	public void addMethodToTable() {
+		sections.addMethodToTable();
+	}
+
+	@Override
 	public void addVariablesToTable(int statementIndex) {
 		sections.addVariablesToTable(statementIndex);
 	}

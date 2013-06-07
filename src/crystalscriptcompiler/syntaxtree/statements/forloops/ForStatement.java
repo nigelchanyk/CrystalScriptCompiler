@@ -42,5 +42,10 @@ public class ForStatement extends BlockStatement {
 	public void addVariablesToTable(int statementIndex) {
 		initializer.addVariablesToTable(VariableSymbolDeclaration.NO_INDEX);
 	}
+
+	@Override
+	public void determineReferenceType() {
+		initializer.determineReferenceType();
+	}
 	
 }
