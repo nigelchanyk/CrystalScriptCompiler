@@ -13,6 +13,7 @@ import java.util.Collection;
 public class StringResources {
 	
 	public static final String ERROR_NO_ARGUMENTS = "No arguments provided.";
+	public static final String ERROR_MULTIPLE_ACCESS_MODIFIERS = "Only one access modifier is allowed.";
 	
 	public static final String HINT_SIMPLE_USAGE = "Usage: java -jar CrystalScriptCompiler.jar [File].";
 	
@@ -63,6 +64,18 @@ public class StringResources {
 
 	public static String errorDuplicateSignature(String method) {
 		return "Method " + method + " has more than one equivalent signature.";
+	}
+
+	public static String errorInvalidModifier(String modifier) {
+		return "Modifier " + modifier + " is not allowed in this context.";
+	}
+
+	public static String errorModifierConflict(String m1, String m2) {
+		return "Modifiers " + m1 + " and " + m2 + " cannot be used at the same time.";
+	}
+
+	public static String errorAccessViolation(String target, String accessModifier) {
+		return target + " is " + accessModifier + " and cannot be accessed in current context";
 	}
 
 	private static String prependArticle(String word) {

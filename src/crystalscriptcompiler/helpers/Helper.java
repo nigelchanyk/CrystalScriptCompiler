@@ -42,11 +42,4 @@ public class Helper {
 		return new File(sb.toString());
 	}
 
-	public static interface SaveStackIterator<T> extends Iterator<T> {
-
-		public abstract void saveStack();
-		public abstract void restoreStack();
-		
-	}
-	
 }

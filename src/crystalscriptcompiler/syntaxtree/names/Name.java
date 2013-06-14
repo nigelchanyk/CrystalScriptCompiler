@@ -4,7 +4,7 @@
  */
 package crystalscriptcompiler.syntaxtree.names;
 
-import crystalscriptcompiler.helpers.Helper;
+import crystalscriptcompiler.helpers.SaveStackIterator;
 import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.expressions.primary.LeftValue;
 import java.util.Iterator;
@@ -79,11 +79,11 @@ public class Name extends LeftValue implements Iterable<String> {
 		return saveStackIterator();
 	}
 
-	public Helper.SaveStackIterator<String> saveStackIterator() {
+	public SaveStackIterator<String> saveStackIterator() {
 		return new NameIterator(getRoot());
 	}
 
-	protected static class NameIterator implements Helper.SaveStackIterator<String> {
+	protected static class NameIterator implements SaveStackIterator<String> {
 
 		public Name root;
 		public boolean iterated = false;

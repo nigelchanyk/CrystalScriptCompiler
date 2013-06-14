@@ -21,5 +21,10 @@ public class Type extends ParseTreeNode {
 	public int hashCode() {
 		return super.hashCode();
 	}
+
+	@Override
+	public String toString() {
+		return getClass().getName();
+	}
 	
 }

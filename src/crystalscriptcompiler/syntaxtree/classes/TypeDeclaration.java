@@ -4,7 +4,9 @@
  */
 package crystalscriptcompiler.syntaxtree.classes;
 
+import crystalscriptcompiler.exceptions.AccessViolationException;
 import crystalscriptcompiler.exceptions.CircularInheritanceException;
+import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.types.ClassOrInterfaceType;
 import java.util.LinkedList;
 
@@ -47,6 +49,16 @@ public abstract class TypeDeclaration extends MemberDeclaration {
 	public void linkInheritedSymbolTables() {
 		for (TypeDeclaration declaration : directParents)
 			symbolTable.addInheritance(declaration.getSymbolTable());
+	}
+
+	public void validateParentAccess(ClassOrInterfaceType parentAlias) {
+		Modifier accessModifier = parentAlias.getReferenceType().getAccessModifier();
+		if (accessModifier == Modifier.PUBLIC)
+			return;
+		if (symbolTable.containsSymbol(parentAlias.getName(), SymbolTable.Scope.MODULAR))
+			return;
+
+		throw new AccessViolationException(parentAlias.getName(), accessModifier);
 	}
 	
 }

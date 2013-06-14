@@ -7,6 +7,7 @@ package crystalscriptcompiler.syntaxtree;
 import crystalscriptcompiler.Namespace;
 import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.names.Name;
+import crystalscriptcompiler.syntaxtree.types.Type;
 import java.util.List;
 
 /**
@@ -47,6 +48,13 @@ public abstract class ParseTreeNode {
 	}
 
 	public void addVariablesToTable(int statementIndex) {
+	}
+
+	public void validateModifiers() {
+	}
+
+	public Type validate() {
+		return null;
 	}
 
 }

@@ -11,6 +11,7 @@ import crystalscriptcompiler.symbols.*;
 import crystalscriptcompiler.syntaxtree.interfaces.Interfaces;
 import crystalscriptcompiler.syntaxtree.names.Name;
 import crystalscriptcompiler.syntaxtree.types.ClassOrInterfaceType;
+import crystalscriptcompiler.syntaxtree.types.Type;
 
 /**
  *
@@ -32,7 +33,8 @@ public class ClassDeclaration extends TypeDeclaration {
 
 	@Override
 	public void setSymbolTable(SymbolTable symbolTable) {
-		SymbolTable classSymbolTable = new SymbolTable(symbolTable);
+		SymbolTable classSymbolTable = new SymbolTable(symbolTable,
+				moduleLevel ? SymbolTable.Kind.OUTER_CLASS_ROOT : SymbolTable.Kind.INNER_CLASS_ROOT);
 		super.setSymbolTable(classSymbolTable);
 		
 		if (superclass != null)
@@ -81,6 +83,7 @@ public class ClassDeclaration extends TypeDeclaration {
 
 	@Override
 	public void determineReferenceType() {
+		superclass.determineReferenceType();
 		members.determineReferenceType();
 	}
 
@@ -92,6 +95,23 @@ public class ClassDeclaration extends TypeDeclaration {
 	@Override
 	public void addVariablesToTable(int statementIndex) {
 		members.addVariablesToTable(VariableSymbolDeclaration.NO_INDEX);
+	}
+
+	@Override
+	public void validateModifiers() {
+		modifiers.setForbiddenModifiers(Modifier.STATIC, Modifier.OVERRIDE);
+		modifiers.validateModifiers();
+		modifiers.setDefaultAccessModifier(Modifier.PUBLIC);
+		members.validateModifiers();
+	}
+
+	@Override
+	public Type validate() {
+		validateParentAccess(superclass);
+		for (ClassOrInterfaceType i : interfaces)
+			validateParentAccess(i);
+		members.validate();
+		return null;
 	}
 	
 }

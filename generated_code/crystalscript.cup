@@ -278,13 +278,13 @@ modifiers_opt ::= {: RESULT = new Modifiers(); :}
 	|	modifiers:m {: RESULT = m; :}
 	;
 modifiers ::= modifier:m {: RESULT = new Modifiers((Modifier)m); :}
-	|	modifiers:n modifier:m {: RESULT = new Modifiers((Modifier)m, (Modifiers)n, SequentialCollection.Order.REVERSE); :}
+	|	modifiers:n modifier:m {: RESULT = new Modifiers((Modifier)m, (Modifiers)n); :}
 	;
-modifier ::= PUBLIC {: RESULT = new Modifier(Modifier.Kind.PUBLIC); :}
-	| PROTECTED {: RESULT = new Modifier(Modifier.Kind.PROTECTED); :}
-	| PRIVATE {: RESULT = new Modifier(Modifier.Kind.PRIVATE); :}
-	| STATIC {: RESULT = new Modifier(Modifier.Kind.STATIC); :}
-	| ABSTRACT {: RESULT = new Modifier(Modifier.Kind.ABSTRACT); :}
+modifier ::= PUBLIC {: RESULT = Modifier.PUBLIC; :}
+	| PROTECTED {: RESULT = Modifier.PROTECTED; :}
+	| PRIVATE {: RESULT = Modifier.PRIVATE; :}
+	| STATIC {: RESULT = Modifier.STATIC; :}
+	| ABSTRACT {: RESULT = Modifier.ABSTRACT; :}
 	;
 
 // 19.8) Classes

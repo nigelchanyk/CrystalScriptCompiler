@@ -32,5 +32,13 @@ public class ConstructorInvocation extends ParseTreeNode {
 		super.setSymbolTable(symbolTable);
 		arguments.setSymbolTable(symbolTable);
 	}
+
+	public ArgumentList getArguments() {
+		return arguments;
+	}
+
+	public Kind getKind() {
+		return kind;
+	}
 	
 }

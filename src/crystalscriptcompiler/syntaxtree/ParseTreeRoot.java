@@ -8,6 +8,7 @@ import crystalscriptcompiler.Namespace;
 import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.imports.ImportDeclarations;
 import crystalscriptcompiler.syntaxtree.names.Name;
+import crystalscriptcompiler.syntaxtree.types.Type;
 import java.util.List;
 
 /**
@@ -73,6 +74,17 @@ public class ParseTreeRoot extends ParseTreeNode {
 	@Override
 	public void addVariablesToTable(int statementIndex) {
 		sections.addVariablesToTable(statementIndex);
+	}
+
+	@Override
+	public void validateModifiers() {
+		sections.validateModifiers();
+	}
+
+	@Override
+	public Type validate() {
+		sections.validate();
+		return null;
 	}
 	
 }

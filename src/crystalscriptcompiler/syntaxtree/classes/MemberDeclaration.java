@@ -25,6 +25,7 @@ public abstract class MemberDeclaration extends ParseTreeNode {
 	protected Modifiers modifiers;
 	protected Type type;
 	protected String id;
+	protected boolean moduleLevel = false;
 
 	private Kind kind;
 	
@@ -41,6 +42,14 @@ public abstract class MemberDeclaration extends ParseTreeNode {
 
 	public Kind getKind() {
 		return kind;
+	}
+
+	public void setModuleLevel(boolean moduleLevel) {
+		this.moduleLevel = moduleLevel;
+	}
+
+	public Modifier getAccessModifier() {
+		return modifiers.getAccessModifier();
 	}
 
 	@Override

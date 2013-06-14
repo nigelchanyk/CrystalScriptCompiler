@@ -13,35 +13,43 @@ import crystalscriptcompiler.syntaxtree.ParseTreeRoot;
  */
 public class SymbolTableBuilder {
 	
-	public void createTables(Namespace globalNamespace) {
-		for (ParseTreeRoot root : globalNamespace.moduleIterable())
-			root.initializeSymbolTable(globalNamespace);
+	public void createTables(final Namespace globalNamespace) {
+		globalNamespace.executeAll(new Namespace.ModuleAction() {
 
-		for (Namespace namespace : globalNamespace.subNamespaceIterable())
-			createTables(namespace);
+			@Override
+			public void execute(ParseTreeRoot module) {
+				module.initializeSymbolTable(globalNamespace);
+			}
+		});
 	}
 
-	public void linkDependentTables(Namespace globalNamespace) {
-		for (ParseTreeRoot root : globalNamespace.moduleIterable())
-			root.linkDependentSymbolTables(globalNamespace);
+	public void linkDependentTables(final Namespace globalNamespace) {
+		globalNamespace.executeAll(new Namespace.ModuleAction() {
 
-		for (Namespace namespace : globalNamespace.subNamespaceIterable())
-			linkDependentTables(namespace);
+			@Override
+			public void execute(ParseTreeRoot module) {
+				module.linkDependentSymbolTables(globalNamespace);
+			}
+		});
 	}
 
-	public void createInheritanceTree(Namespace globalNamespace) {
-		for (ParseTreeRoot root : globalNamespace.moduleIterable())
-			root.createInheritanceTree();
+	public void createInheritanceTree(final Namespace globalNamespace) {
+		globalNamespace.executeAll(new Namespace.ModuleAction() {
 
-		for (Namespace namespace : globalNamespace.subNamespaceIterable())
-			createInheritanceTree(namespace);
+			@Override
+			public void execute(ParseTreeRoot module) {
+				module.createInheritanceTree();
+			}
+		});
 	}
 	
-	public void linkInheritedTables(Namespace globalNamespace) {
-		for (ParseTreeRoot root : globalNamespace.moduleIterable())
-			root.linkInheritedSymbolTables();
+	public void linkInheritedTables(final Namespace globalNamespace) {
+		globalNamespace.executeAll(new Namespace.ModuleAction() {
 
-		for (Namespace namespace : globalNamespace.subNamespaceIterable())
-			linkInheritedTables(namespace);
+			@Override
+			public void execute(ParseTreeRoot module) {
+				module.linkInheritedSymbolTables();
+			}
+		});
 	}
 }

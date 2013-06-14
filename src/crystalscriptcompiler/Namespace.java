@@ -147,12 +147,27 @@ public class Namespace {
 		};
 	}
 
+	public void executeAll(ModuleAction action) {
+		for (ParseTreeRoot module : moduleIterable())
+			action.execute(module);
+
+		for (Namespace subNamespace : subNamespaceIterable())
+			subNamespace.executeAll(action);
+	}
+	
 	@Override
 	public String toString() {
 		if (parent == null)
 			return directory.getName();
 
 		return parent.toString() + "." + directory.getName();
+	}
+
+
+	public static interface ModuleAction {
+		
+		public abstract void execute(ParseTreeRoot module);
+		
 	}
 
 }

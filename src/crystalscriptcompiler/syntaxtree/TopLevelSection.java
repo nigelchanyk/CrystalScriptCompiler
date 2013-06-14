@@ -6,6 +6,7 @@ package crystalscriptcompiler.syntaxtree;
 
 import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.syntaxtree.classes.MemberDeclaration;
+import crystalscriptcompiler.syntaxtree.types.Type;
 
 /**
  *
@@ -17,6 +18,7 @@ public class TopLevelSection extends ParseTreeNode {
 	
 	public TopLevelSection(MemberDeclaration declaration) {
 		this.declaration = declaration;
+		declaration.setModuleLevel(true);
 	}
 
 	@Override
@@ -41,8 +43,28 @@ public class TopLevelSection extends ParseTreeNode {
 	}
 
 	@Override
+	public void addMethodToTable() {
+		declaration.addMethodToTable();
+	}
+
+	@Override
 	public void addVariablesToTable(int statementIndex) {
 		declaration.addVariablesToTable(statementIndex);
+	}
+
+	@Override
+	public void determineReferenceType() {
+		declaration.determineReferenceType();
+	}
+
+	@Override
+	public void validateModifiers() {
+		declaration.validateModifiers();
+	}
+
+	@Override
+	public Type validate() {
+		return declaration.validate();
 	}
 	
 }

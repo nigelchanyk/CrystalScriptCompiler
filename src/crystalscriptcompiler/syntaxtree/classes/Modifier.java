@@ -4,25 +4,15 @@
  */
 package crystalscriptcompiler.syntaxtree.classes;
 
-import crystalscriptcompiler.syntaxtree.ParseTreeNode;
-
 /**
  *
  * @author User
  */
-public class Modifier extends ParseTreeNode {
-	
-	public static enum Kind {
-		PUBLIC,
-		PROTECTED,
-		PRIVATE,
-		ABSTRACT,
-		STATIC
-	}
-	
-	private Kind kind;
-	
-	public Modifier(Kind kind) {
-		this.kind = kind;
-	}
+public enum Modifier {
+	PUBLIC,
+	PROTECTED,
+	PRIVATE,
+	ABSTRACT,
+	STATIC,
+	OVERRIDE
 }

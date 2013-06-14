@@ -36,6 +36,10 @@ public class ClassOrInterfaceType extends Type {
 		return name;
 	}
 
+	public TypeDeclaration getReferenceType() {
+		return referenceType;
+	}
+
 	@Override
 	public void determineReferenceType() {
 		SymbolDeclaration declaration = symbolTable.get(name, SymbolTable.Scope.ALL);
@@ -54,6 +58,9 @@ public class ClassOrInterfaceType extends Type {
 	public boolean equals(Object obj) {
 		if (obj == null) {
 			return false;
+		}
+		if (obj instanceof PrimitiveType) {
+			return obj.equals(this);
 		}
 		if (getClass() != obj.getClass()) {
 			return false;

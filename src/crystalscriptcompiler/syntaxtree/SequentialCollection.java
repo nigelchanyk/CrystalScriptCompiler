@@ -5,6 +5,7 @@
 package crystalscriptcompiler.syntaxtree;
 
 import crystalscriptcompiler.symbols.SymbolTable;
+import crystalscriptcompiler.syntaxtree.types.Type;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -128,6 +129,20 @@ public class SequentialCollection<T extends ParseTreeNode> extends ParseTreeNode
 	public void addVariablesToTable(int statementIndex) {
 		for (T element : this)
 			element.addVariablesToTable(statementIndex);
+	}
+
+	@Override
+	public void validateModifiers() {
+		for (T element : this)
+			element.validateModifiers();
+	}
+
+	@Override
+	public Type validate() {
+		for (T element : this)
+			element.validate();
+
+		return null;
 	}
 
 }

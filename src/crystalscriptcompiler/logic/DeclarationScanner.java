@@ -14,36 +14,44 @@ import crystalscriptcompiler.syntaxtree.ParseTreeRoot;
  */
 public class DeclarationScanner {
 
-	public void scanTypes(Namespace globalNamespace) {
-		for (ParseTreeRoot root : globalNamespace.moduleIterable())
-			root.addDeclarationToTable();
+	public void scanTypes(final Namespace globalNamespace) {
+		globalNamespace.executeAll(new Namespace.ModuleAction() {
 
-		for (Namespace namespace : globalNamespace.subNamespaceIterable())
-			scanTypes(namespace);
+			@Override
+			public void execute(ParseTreeRoot module) {
+				module.addDeclarationToTable();
+			}
+		});
 	}
 
-	public void scanReference(Namespace globalNamespace) {
-		for (ParseTreeRoot root : globalNamespace.moduleIterable())
-			root.determineReferenceType();
+	public void scanReference(final Namespace globalNamespace) {
+		globalNamespace.executeAll(new Namespace.ModuleAction() {
 
-		for (Namespace namespace : globalNamespace.subNamespaceIterable())
-			scanReference(namespace);
+			@Override
+			public void execute(ParseTreeRoot module) {
+				module.determineReferenceType();
+			}
+		});
 	}
 
-	public void scanMethodDeclarations(Namespace globalNamespace) {
-		for (ParseTreeRoot root : globalNamespace.moduleIterable())
-			root.addMethodToTable();
+	public void scanMethodDeclarations(final Namespace globalNamespace) {
+		globalNamespace.executeAll(new Namespace.ModuleAction() {
 
-		for (Namespace namespace : globalNamespace.subNamespaceIterable())
-			scanMethodDeclarations(namespace);
+			@Override
+			public void execute(ParseTreeRoot module) {
+				module.addMethodToTable();
+			}
+		});
 	}
 
-	public void scanVariableDeclarations(Namespace globalNamespace) {
-		for (ParseTreeRoot root : globalNamespace.moduleIterable())
-			root.addVariablesToTable(VariableSymbolDeclaration.NO_INDEX);
+	public void scanVariableDeclarations(final Namespace globalNamespace) {
+		globalNamespace.executeAll(new Namespace.ModuleAction() {
 
-		for (Namespace namespace : globalNamespace.subNamespaceIterable())
-			scanVariableDeclarations(namespace);
+			@Override
+			public void execute(ParseTreeRoot module) {
+				module.addVariablesToTable(VariableSymbolDeclaration.NO_INDEX);
+			}
+		});
 	}
 
 }

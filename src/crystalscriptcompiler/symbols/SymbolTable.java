@@ -7,7 +7,7 @@ package crystalscriptcompiler.symbols;
 import crystalscriptcompiler.Namespace;
 import crystalscriptcompiler.exceptions.DuplicateDeclarationException;
 import crystalscriptcompiler.exceptions.ReferenceNotFoundException;
-import crystalscriptcompiler.helpers.Helper.SaveStackIterator;
+import crystalscriptcompiler.helpers.SaveStackIterator;
 import crystalscriptcompiler.syntaxtree.ParseTreeRoot;
 import crystalscriptcompiler.syntaxtree.classes.ClassDeclaration;
 import crystalscriptcompiler.syntaxtree.imports.ImportItems;
@@ -26,10 +26,21 @@ import java.util.Iterator;
  */
 public class SymbolTable {
 
+	public static enum Kind {
+		REGULAR,
+		LOCAL_ROOT,
+		INNER_CLASS_ROOT,
+		OUTER_CLASS_ROOT,
+		MODULE_ROOT
+	}
+
 	public static enum Scope {
 		BLOCK,
 		LOCAL,
+		CURRENT_CLASS,
 		INHERITED,
+		OUTER_CLASS_ONLY, // No inheritance allowed
+		OUTER_INHERITED,
 		MODULAR,
 		ALL
 	}
@@ -41,31 +52,34 @@ public class SymbolTable {
 		
 		scopeMapper.put(Scope.BLOCK, 0);
 		scopeMapper.put(Scope.LOCAL, 1);
-		scopeMapper.put(Scope.INHERITED, 2);
-		scopeMapper.put(Scope.MODULAR, 3);
-		scopeMapper.put(Scope.ALL, 4);
+		scopeMapper.put(Scope.CURRENT_CLASS, 2);
+		scopeMapper.put(Scope.INHERITED, 3);
+		scopeMapper.put(Scope.OUTER_CLASS_ONLY, 4);
+		scopeMapper.put(Scope.OUTER_INHERITED, 4);
+		scopeMapper.put(Scope.MODULAR, 5);
+		scopeMapper.put(Scope.ALL, 6);
 	}
 	
 	private Namespace moduleNamespace;
 	private SymbolTable parent; // Nullable
-	private SymbolTable localRoot; // Nullable
+	private Kind kind;
 	private ArrayList<SymbolTable> inheritedTables = new ArrayList<>();
 	private HashMap<String, SymbolDeclaration> dependentSymbolMapper = new HashMap<>();
 	private HashMap<String, SymbolDeclaration> symbolMapper = new HashMap<>();
 
 	public SymbolTable(Namespace moduleNamespace) {
 		this.moduleNamespace = moduleNamespace;
-		this.localRoot = null;
+		this.kind = Kind.MODULE_ROOT;
 	}
 
 	public SymbolTable(SymbolTable parent) {
-		this(parent, false);
+		this(parent, Kind.REGULAR);
 	}
 
-	public SymbolTable(SymbolTable parent, boolean isLocalRoot) {
+	public SymbolTable(SymbolTable parent, Kind kind) {
 		this.parent = parent;
 		this.moduleNamespace = parent.moduleNamespace;
-		this.localRoot = isLocalRoot ? this : parent.localRoot;
+		this.kind = kind;
 	}
 
 	public SymbolTable getParent() {
@@ -107,38 +121,33 @@ public class SymbolTable {
 	public void addSymbol(String id, Type type, int declarationIndex, VariableSymbolDeclaration.Scope scope) {
 		// Check at local scope for local variables
 		if (scope == VariableSymbolDeclaration.Scope.LOCAL) {
-			if (hasSymbol(id, SymbolTable.Scope.LOCAL))
+			if (containsSymbol(id, SymbolTable.Scope.LOCAL))
 				throw new DuplicateDeclarationException(id);
 		}
 		else {
-			if (hasSymbol(id, SymbolTable.Scope.BLOCK))
+			if (containsSymbol(id, SymbolTable.Scope.BLOCK))
 				throw new DuplicateDeclarationException(id);
 		}
 		symbolMapper.put(id, new VariableSymbolDeclaration(type, declarationIndex, scope));
 	}
 
 	private void addSymbol(String id, SymbolDeclaration declaration) {
-		if (hasSymbol(id, SymbolTable.Scope.BLOCK))
+		if (containsSymbol(id, SymbolTable.Scope.BLOCK))
 			throw new DuplicateDeclarationException(id);
 
 		symbolMapper.put(id, declaration);
 	}
 
-	public boolean hasSymbol(String id, Scope scope) {
+	public boolean containsSymbol(String id, Scope scope) {
 		return get(id, scope) != null;
 	}
 
 	private SymbolDeclaration get(String id, Scope scope) {
 		if (symbolMapper.containsKey(id))
 			return symbolMapper.get(id);
-
-		if (inScope(scope, Scope.LOCAL) && localRoot != null) {
-			SymbolDeclaration declaration = parent.get(id, scope);
-			if (declaration != null)
-				return declaration;
-		}
-
-		if (inScope(scope, Scope.INHERITED)) {
+		
+		// Scan for inherited symbols (does nothing if scope is not a class/interface)
+		if (inScope(scope, Scope.INHERITED) && scope != Scope.OUTER_CLASS_ONLY) {
 			for (SymbolTable table : inheritedTables) {
 				SymbolDeclaration declaration = table.get(id, Scope.INHERITED);
 				if (declaration != null)
@@ -146,18 +155,24 @@ public class SymbolTable {
 			}
 		}
 
-		if (inScope(scope, Scope.MODULAR) && parent != null) {
-			SymbolDeclaration declaration = parent.get(id, scope);
-			if (declaration != null)
-				return declaration;
-		}
-
+		// Scan for imported symbols (does nothing if scope is not root)
 		if (inScope(scope, Scope.ALL)) {
 			if (dependentSymbolMapper.containsKey(id))
 				return symbolMapper.get(id);
 		}
 
+		if (!isEndOfScope(scope)) {
+			// Involve parent
+			SymbolDeclaration declaration = parent.get(id, scope);
+			if (declaration != null)
+				return declaration;
+		}
+
 		return null;
+	}
+
+	public boolean containsSymbol(Name name, Scope scope) {
+		return get(name, scope) != null;
 	}
 
 	public SymbolDeclaration get(Name name, Scope scope) {
@@ -165,23 +180,24 @@ public class SymbolTable {
 
 		if (result != null)
 			return result;
-		if (inScope(scope, Scope.LOCAL) && localRoot != null) {
-			result = parent.getLocal(name.iterator());
-			if (result != null)
-				return result;
-		}
-		if (inScope(scope, Scope.INHERITED)) {
+
+		// Scan for inherited symbols (does nothing if scope is not a class/interface)
+		if (inScope(scope, Scope.INHERITED) && scope != Scope.OUTER_CLASS_ONLY) {
 			result = getInherited(name.saveStackIterator());
 			if (result != null)
 				return result;
 		}
-		if (inScope(scope, Scope.MODULAR)) {
-			result = parent.getLocal(name.iterator());
+
+		// Scan for imported symbols (does nothing if scope is not root)
+		if (inScope(scope, Scope.ALL)) {
+			result = parent.getDependent(name);
 			if (result != null)
 				return result;
 		}
-		if (inScope(scope, Scope.ALL)) {
-			result = parent.getDependent(name);
+
+		if (!isEndOfScope(scope)) {
+			// Involve parent
+			result = parent.getLocal(name.iterator());
 			if (result != null)
 				return result;
 		}
@@ -255,6 +271,21 @@ public class SymbolTable {
 
 	private boolean inScope(Scope scope, Scope requirement) {
 		return scopeMapper.get(scope) >= scopeMapper.get(requirement);
+	}
+
+	private boolean isEndOfScope(Scope scope) {
+		switch (kind) {
+			case REGULAR:
+				return true;
+			case LOCAL_ROOT:
+				return scopeMapper.get(scope) <= scopeMapper.get(Scope.LOCAL);
+			case INNER_CLASS_ROOT:
+				return scopeMapper.get(scope) <= scopeMapper.get(Scope.INHERITED);
+			case OUTER_CLASS_ROOT:
+				return scopeMapper.get(scope) <= scopeMapper.get(Scope.OUTER_INHERITED);
+		}
+
+		return true;
 	}
 	
 }

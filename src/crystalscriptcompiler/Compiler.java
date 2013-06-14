@@ -8,6 +8,7 @@ import crystalscriptcompiler.helpers.Helper;
 import crystalscriptcompiler.logic.DeclarationScanner;
 import crystalscriptcompiler.logic.DependencyLoader;
 import crystalscriptcompiler.logic.SymbolTableBuilder;
+import crystalscriptcompiler.logic.Validator;
 import crystalscriptcompiler.syntaxtree.ParseTreeRoot;
 import java.io.File;
 import java.io.FileReader;
@@ -25,6 +26,7 @@ public class Compiler {
 	private DependencyLoader dependencyLoader = new DependencyLoader();
 	private SymbolTableBuilder symbolTableBuilder = new SymbolTableBuilder();
 	private DeclarationScanner declarationScanner = new DeclarationScanner();
+	private Validator validator = new Validator();
 	
 	public Compiler(File file) throws IOException {
 		rootFile = file.getCanonicalFile();
@@ -61,7 +63,11 @@ public class Compiler {
 		// Step 9: Fill symbol table with variables
 		declarationScanner.scanVariableDeclarations(globalNamespace);
 
+		// Step 10: Validate modifiers
+		
+
 		// Step 10: Validation
+		validator.validate(globalNamespace);
 
 		// Step 11: Compile to JavaScript
 	}
@@ -72,4 +78,5 @@ public class Compiler {
 		parser.parse();
 		return parser.getRoot();
 	}
+
 }

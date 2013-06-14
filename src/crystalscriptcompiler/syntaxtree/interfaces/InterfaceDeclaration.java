@@ -11,10 +11,12 @@ import crystalscriptcompiler.symbols.SymbolDeclaration;
 import crystalscriptcompiler.symbols.SymbolTable;
 import crystalscriptcompiler.symbols.VariableSymbolDeclaration;
 import crystalscriptcompiler.syntaxtree.classes.MemberDeclarations;
+import crystalscriptcompiler.syntaxtree.classes.Modifier;
 import crystalscriptcompiler.syntaxtree.classes.Modifiers;
 import crystalscriptcompiler.syntaxtree.classes.TypeDeclaration;
 import crystalscriptcompiler.syntaxtree.names.Name;
 import crystalscriptcompiler.syntaxtree.types.ClassOrInterfaceType;
+import crystalscriptcompiler.syntaxtree.types.Type;
 
 /**
  *
@@ -33,7 +35,8 @@ public class InterfaceDeclaration extends TypeDeclaration {
 
 	@Override
 	public void setSymbolTable(SymbolTable symbolTable) {
-		SymbolTable currentTable = new SymbolTable(symbolTable);
+		SymbolTable currentTable = new SymbolTable(symbolTable,
+				moduleLevel ? SymbolTable.Kind.OUTER_CLASS_ROOT : SymbolTable.Kind.INNER_CLASS_ROOT);
 		super.setSymbolTable(currentTable);
 		superInterfaces.setSymbolTable(symbolTable);
 		members.setSymbolTable(currentTable);
@@ -66,6 +69,7 @@ public class InterfaceDeclaration extends TypeDeclaration {
 
 	@Override
 	public void determineReferenceType() {
+		superInterfaces.determineReferenceType();
 		members.determineReferenceType();
 	}
 
@@ -75,8 +79,24 @@ public class InterfaceDeclaration extends TypeDeclaration {
 	}
 
 	@Override
+	public void validateModifiers() {
+		modifiers.setForbiddenModifiers(Modifier.ABSTRACT, Modifier.STATIC, Modifier.OVERRIDE);
+		modifiers.validateModifiers();
+		modifiers.setDefaultAccessModifier(Modifier.PUBLIC);
+		members.validateModifiers();
+	}
+
+	@Override
 	public void addVariablesToTable(int statementIndex) {
 		members.addVariablesToTable(VariableSymbolDeclaration.NO_INDEX);
+	}
+
+	@Override
+	public Type validate() {
+		for (ClassOrInterfaceType superInterface : superInterfaces)
+			validateParentAccess(superInterface);
+		members.validate();
+		return null;
 	}
 	
 }

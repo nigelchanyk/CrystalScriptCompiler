@@ -47,5 +47,10 @@ public class Block extends BlockStatement implements Iterable<BlockStatement> {
 		for (BlockStatement statement : this)
 			statement.determineReferenceType();
 	}
+
+	@Override
+	public void validateModifiers() {
+		statements.validateModifiers();
+	}
 	
 }
