@@ -4,6 +4,7 @@
  */
 package crystalscriptcompiler.syntaxtree.types;
 
+import crystalscriptcompiler.helpers.SaveStackIterator;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Objects;
@@ -48,12 +49,38 @@ public class MultipleTypes extends Type implements Iterable {
 
 	@Override
 	public String toString() {
-		return "MultipleTypes{" + '}';
+		if (types.isEmpty())
+			return "";
+		StringBuilder sb = new StringBuilder(types.get(0).toString());
+		for (int i = 0; i < types.size(); ++i)
+			sb.append(", ").append(types.get(i).toString());
+
+		return sb.toString();
 	}
 
 	@Override
 	public Iterator iterator() {
 		return types.iterator();
+	}
+
+	public SaveStackIterator<Type> saveStackIterator() {
+		return new SaveStackIterator.ArrayListIterator<>(types);
+	}
+
+	@Override
+	public boolean isAssignableTo(Type type) {
+		if (!(type instanceof MultipleTypes))
+			return false;
+		MultipleTypes other = (MultipleTypes) type;
+		if (other.types.size() != types.size())
+			return false;
+
+		for (int i = 0; i < types.size(); ++i) {
+			if (!types.get(i).isAssignableTo(other.types.get(i)))
+				return false;
+		}
+
+		return true;
 	}
 	
 }

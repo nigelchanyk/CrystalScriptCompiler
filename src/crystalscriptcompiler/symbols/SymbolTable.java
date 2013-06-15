@@ -13,7 +13,7 @@ import crystalscriptcompiler.syntaxtree.classes.ClassDeclaration;
 import crystalscriptcompiler.syntaxtree.imports.ImportItems;
 import crystalscriptcompiler.syntaxtree.imports.ImportName;
 import crystalscriptcompiler.syntaxtree.interfaces.InterfaceDeclaration;
-import crystalscriptcompiler.syntaxtree.methods.MethodDeclaration;
+import crystalscriptcompiler.syntaxtree.methods.OverloadableDeclaration;
 import crystalscriptcompiler.syntaxtree.names.Name;
 import crystalscriptcompiler.syntaxtree.types.Type;
 import java.util.ArrayList;
@@ -114,7 +114,7 @@ public class SymbolTable {
 		addSymbol(id, new InterfaceSymbolDeclaration(declaration));
 	}
 
-	public void addSymbol(String id, MethodDeclaration declaration) {
+	public void addSymbol(String id, OverloadableDeclaration declaration) {
 		addSymbol(id, new SignatureTree(declaration));
 	}
 
@@ -142,7 +142,7 @@ public class SymbolTable {
 		return get(id, scope) != null;
 	}
 
-	private SymbolDeclaration get(String id, Scope scope) {
+	public SymbolDeclaration get(String id, Scope scope) {
 		if (symbolMapper.containsKey(id))
 			return symbolMapper.get(id);
 		

@@ -29,7 +29,7 @@ public class ConstructorDeclarator extends ParseTreeNode {
 		return parameters;
 	}
 
-	public ConstructorInvocation getSuperclassInvocation() {
+	public ConstructorInvocation getConstructorInvocation() {
 		return superclassInvocation;
 	}
 	

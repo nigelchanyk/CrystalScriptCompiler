@@ -5,6 +5,7 @@
 package crystalscriptcompiler.syntaxtree.methods;
 
 import crystalscriptcompiler.syntaxtree.SequentialCollection;
+import crystalscriptcompiler.syntaxtree.types.MultipleTypes;
 
 /**
  *
@@ -21,6 +22,14 @@ public class Parameters extends SequentialCollection<Parameter> {
 
 	public Parameters(Parameter parameter, Parameters next, Order order) {
 		super(parameter, next, order);
+	}
+
+	public MultipleTypes getTypes() {
+		MultipleTypes types = new MultipleTypes();
+		for (Parameter parameter : this)
+			types.addType(parameter.getType());
+
+		return types;
 	}
 	
 }

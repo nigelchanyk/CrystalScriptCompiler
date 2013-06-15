@@ -27,4 +27,7 @@ public class Type extends ParseTreeNode {
 		return getClass().getName();
 	}
 	
+	public boolean isAssignableTo(Type type) {
+		return equals(type);
+	}
 }

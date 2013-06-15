@@ -11,10 +11,10 @@ import crystalscriptcompiler.syntaxtree.methods.OverloadableDeclaration;
  *
  * @author User
  */
-public class DuplicateSignatureException extends CompilerException {
+public class AmbiguousSignatureException extends CompilerException {
 	
-	public DuplicateSignatureException(OverloadableDeclaration m1, OverloadableDeclaration m2) {
-		super(StringResources.errorDuplicateSignature(m1.getId(), m2.getId()));
+	public AmbiguousSignatureException(OverloadableDeclaration declaration) {
+		super(StringResources.errorAmbiguousSignature(declaration.getId()));
 	}
 	
 }

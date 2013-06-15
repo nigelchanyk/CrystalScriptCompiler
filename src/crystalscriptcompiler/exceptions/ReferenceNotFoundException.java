@@ -12,7 +12,11 @@ import crystalscriptcompiler.syntaxtree.names.Name;
  * @author User
  */
 public class ReferenceNotFoundException extends CompilerException {
-	
+
+	public ReferenceNotFoundException(String name) {
+		super(StringResources.errorReferenceNotFound(name));
+	}
+
 	public ReferenceNotFoundException(Name name) {
 		super(StringResources.errorReferenceNotFound(name.toString()));
 	}

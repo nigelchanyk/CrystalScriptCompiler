@@ -74,5 +74,20 @@ public class ClassOrInterfaceType extends Type {
 		int hash = 7 * referenceType.hashCode();
 		return hash;
 	}
+
+	@Override
+	public boolean isAssignableTo(Type type) {
+		if (type instanceof VarType)
+			return true;
+		if (!(type instanceof ClassOrInterfaceType))
+			return false;
+		ClassOrInterfaceType other = (ClassOrInterfaceType) type;
+		return referenceType.isSubclassOf(other.referenceType);
+	}
+
+	@Override
+	public String toString() {
+		return referenceType.getId();
+	}
 	
 }

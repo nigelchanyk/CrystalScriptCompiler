@@ -62,8 +62,8 @@ public class StringResources {
 		return "Expecting " + expected + ", but " + given + " is detected.";
 	}
 
-	public static String errorDuplicateSignature(String method) {
-		return "Method " + method + " has more than one equivalent signature.";
+	public static String errorDuplicateSignature(String m1, String m2) {
+		return "Method " + m1 + " has more than one equivalent signature.";
 	}
 
 	public static String errorInvalidModifier(String modifier) {
@@ -76,6 +76,14 @@ public class StringResources {
 
 	public static String errorAccessViolation(String target, String accessModifier) {
 		return target + " is " + accessModifier + " and cannot be accessed in current context";
+	}
+
+	public static String errorAmbiguousSignature(String methodName) {
+		return methodName + " method call is ambiguous, and cannot be distinguished between overloaded methods.";
+	}
+
+	public static String errorSignatureNotFound(String methodName, String types) {
+		return methodName + " does not support arguments with types: " + types + ".";
 	}
 
 	private static String prependArticle(String word) {

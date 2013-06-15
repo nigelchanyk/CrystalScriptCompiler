@@ -4,10 +4,14 @@
  */
 package crystalscriptcompiler.syntaxtree.classes;
 
+import crystalscriptcompiler.exceptions.ReferenceNotFoundException;
+import crystalscriptcompiler.exceptions.SignatureNotFoundException;
+import crystalscriptcompiler.symbols.SignatureTree;
+import crystalscriptcompiler.symbols.SymbolDeclaration;
 import crystalscriptcompiler.symbols.SymbolTable;
-import crystalscriptcompiler.symbols.VariableSymbolDeclaration;
-import crystalscriptcompiler.syntaxtree.methods.Parameters;
+import crystalscriptcompiler.syntaxtree.methods.OverloadableDeclaration;
 import crystalscriptcompiler.syntaxtree.statements.Block;
+import crystalscriptcompiler.syntaxtree.types.MultipleTypes;
 import crystalscriptcompiler.syntaxtree.types.Type;
 import crystalscriptcompiler.syntaxtree.types.VarType;
 
@@ -15,29 +19,23 @@ import crystalscriptcompiler.syntaxtree.types.VarType;
  *
  * @author User
  */
-public class ConstructorDeclaration extends MemberDeclaration {
+public class ConstructorDeclaration extends OverloadableDeclaration {
 
-	private Block block;
-	private Parameters parameters;
-	private ConstructorInvocation superclassInvocation; // Nullable
+	private static final String CONSTRUCTOR_NAME = "constructor";
+
+	private ConstructorInvocation constructorInvocation; // Nullable
 	
 	public ConstructorDeclaration(Modifiers modifiers, ConstructorDeclarator declarator, Block block) {
-		super(Kind.CONSTRUCTOR, modifiers, new VarType(), "constructor");
-		this.block = block;
-		this.parameters = declarator.getParameters();
-		this.superclassInvocation = declarator.getSuperclassInvocation();
+		super(Kind.CONSTRUCTOR, modifiers, new VarType(), CONSTRUCTOR_NAME, block, declarator.getParameters());
+		this.constructorInvocation = declarator.getConstructorInvocation();
 	}
 
 	@Override
 	public void setSymbolTable(SymbolTable symbolTable) {
 		super.setSymbolTable(symbolTable);
 
-		if (superclassInvocation != null)
-			superclassInvocation.setSymbolTable(symbolTable);
-
-		SymbolTable innerTable = new SymbolTable(symbolTable, SymbolTable.Kind.LOCAL_ROOT);
-		parameters.setSymbolTable(innerTable);
-		block.setSymbolTable(innerTable);
+		if (constructorInvocation != null)
+			constructorInvocation.setSymbolTable(this.symbolTable);
 	}
 
 	@Override
@@ -49,17 +47,19 @@ public class ConstructorDeclaration extends MemberDeclaration {
 	}
 
 	@Override
-	public void addVariablesToTable(int statementIndex) {
-		parameters.addVariablesToTable(VariableSymbolDeclaration.NO_INDEX);
-		block.addVariablesToTable(VariableSymbolDeclaration.NO_INDEX);
-	}
-
-	@Override
 	public Type validate() {
-		parameters.validate();
-		block.validate();
-		if (superclassInvocation != null) {
-			
+		super.validate();
+		if (constructorInvocation != null) {
+			Type invocationType = constructorInvocation.getArguments().validate();
+			if (constructorInvocation.getKind() == ConstructorInvocation.Kind.THIS) {
+				SymbolDeclaration declaration = symbolTable.get(CONSTRUCTOR_NAME, SymbolTable.Scope.CURRENT_CLASS);
+				if (declaration == null)
+					throw new ReferenceNotFoundException(CONSTRUCTOR_NAME);
+				// No type checking required because it is impossible to create a reference named "constructor"
+				SignatureTree tree = (SignatureTree)declaration;
+				if (!tree.containsDeclaration((MultipleTypes)invocationType))
+					throw new SignatureNotFoundException(CONSTRUCTOR_NAME, (MultipleTypes)invocationType);
+			}
 		}
 		return null;
 	}
